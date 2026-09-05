@@ -37,7 +37,7 @@
                     </div>
                 }
                 @else if ('field' in col) {
-                <span [class.cursor-pointer]="isCellClickable(col)" (click)="onCellClick(col, row)">{{ get(row, col.field || '') }}</span>
+                <span [class.cursor-pointer]="isCellClickable(col)">{{ get(row, col.field || '') }}</span>
                 }
             </td>
             }

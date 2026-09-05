@@ -10,11 +10,12 @@
         public Stream GenQrCodeByText(string text);
 
         /// <summary>
-        /// Sinh mã QR với text bên dưới
+        /// Sinh mã QR với text bên trên và bên dưới
         /// </summary>
         /// <param name="qrText"></param>
+        /// <param name="textAbove"></param>
         /// <param name="textBelow"></param>
         /// <returns></returns>
-        public Stream GenerateQrWithText(string qrText, string textBelow);
+        public Stream GenerateQrWithText(string qrText, string textAbove, string textBelow);
     }
 }

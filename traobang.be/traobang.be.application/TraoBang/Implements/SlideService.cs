@@ -140,7 +140,7 @@ namespace traobang.be.application.TraoBang.Implements
                     sv.SoQuyetDinhTotNghiep = dto.SinhVien.SoQuyetDinhTotNghiep;
                     sv.NgayQuyetDinh = dto.SinhVien.NgayQuyetDinh;
                     sv.Note = dto.SinhVien.Note;
-                    sv.LinkQR = dto.SinhVien.LinkQR;
+                    // LinkQR do server sinh ở GenerateQr, không nhận từ client
                 }
                 else
                 {
@@ -160,7 +160,7 @@ namespace traobang.be.application.TraoBang.Implements
                         SoQuyetDinhTotNghiep = dto.SinhVien.SoQuyetDinhTotNghiep,
                         NgayQuyetDinh = dto.SinhVien.NgayQuyetDinh,
                         Note = dto.SinhVien.Note,
-                        LinkQR = dto.SinhVien.LinkQR,
+                        // LinkQR do server sinh ở GenerateQr, không nhận từ client
                     };
                     _tbDbContext.DanhSachSinhVienNhanBangs.Add(newsv);
                     _tbDbContext.SaveChanges();
@@ -257,6 +257,17 @@ namespace traobang.be.application.TraoBang.Implements
                         };
 #pragma warning restore CS8601 // Possible null reference assignment.
             var items = query.Paging(dto).ToList();
+
+            // cộng domain vào link qr để FE hiển thị được ảnh, chỉ áp dụng với slide sinh viên
+            foreach (var item in items)
+            {
+                if (item.LoaiSlide == LoaiSlides.SINH_VIEN
+                    && item.SinhVien != null
+                    && !string.IsNullOrEmpty(item.SinhVien.LinkQR))
+                {
+                    item.SinhVien.LinkQR = $"{_fileS3Config.BaseUrl}/{item.SinhVien.LinkQR}";
+                }
+            }
 
             return new BaseResponsePagingDto<ViewSlideDto>
             {
@@ -671,17 +682,18 @@ namespace traobang.be.application.TraoBang.Implements
 
             var content = templateContent.Replace("[mssv]", sv.MaSoSinhVien);
 
-            string notice = $@"{sv.QrTenKhoa}
-{sv.QrHoTen}
-MSSV: {sv.MaSoSinhVien}";
+            string infoTren = $@"{sv.QrTenKhoa}
+Lớp: {sv.Lop}";
 
             if (sp.Order <= 2)
             {
-                notice = $@"{sv.QrHoTen}
-MSSV: {sv.MaSoSinhVien}";
+                infoTren = $"Lớp: {sv.Lop}";
             }
 
-            var qrcode = _qrCodeService.GenerateQrWithText(content, notice);
+            string notice = $@"{sv.QrHoTen}
+MSSV: {sv.MaSoSinhVien}";
+
+            var qrcode = _qrCodeService.GenerateQrWithText(content, infoTren, notice);
             string filename = $"{folder}/{sv.MaSoSinhVien}.jpg";
 
             try
