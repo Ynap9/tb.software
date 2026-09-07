@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using traobang.be.infrastructure.data;
 
@@ -11,9 +12,11 @@ using traobang.be.infrastructure.data;
 namespace traobang.be.infrastructure.data.Migrations
 {
     [DbContext(typeof(TbDbContext))]
-    partial class TbDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260907070150_add-link-qr-only")]
+    partial class addlinkqronly
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

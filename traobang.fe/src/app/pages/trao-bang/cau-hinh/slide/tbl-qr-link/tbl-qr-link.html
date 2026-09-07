@@ -1,0 +1,8 @@
+<div class="flex flex-col">
+    @if (row.sinhVien?.linkQR) {
+    <span class="cursor-pointer break-all" (click)="onClick(actionType.viewQr)">{{ row.sinhVien.linkQR }}</span>
+    }
+    @if (row.sinhVien?.linkQrOnly) {
+    <span class="cursor-pointer break-all" (click)="onClick(actionType.viewQrOnly)">{{ row.sinhVien.linkQrOnly }}</span>
+    }
+</div>

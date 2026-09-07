@@ -14,6 +14,7 @@ using traobang.be.infrastructure.external.Excel;
 using traobang.be.infrastructure.external.File;
 using traobang.be.infrastructure.external.File.Dtos;
 using traobang.be.infrastructure.external.QrCode;
+using traobang.be.infrastructure.external.QrCode.Dtos;
 using traobang.be.shared.Constants.TraoBang;
 using traobang.be.shared.HttpRequest.AppException;
 using traobang.be.shared.HttpRequest.BaseRequest;
@@ -140,7 +141,7 @@ namespace traobang.be.application.TraoBang.Implements
                     sv.SoQuyetDinhTotNghiep = dto.SinhVien.SoQuyetDinhTotNghiep;
                     sv.NgayQuyetDinh = dto.SinhVien.NgayQuyetDinh;
                     sv.Note = dto.SinhVien.Note;
-                    sv.LinkQR = dto.SinhVien.LinkQR;
+                    // LinkQR do server sinh ở GenerateQr, không nhận từ client
                 }
                 else
                 {
@@ -160,7 +161,7 @@ namespace traobang.be.application.TraoBang.Implements
                         SoQuyetDinhTotNghiep = dto.SinhVien.SoQuyetDinhTotNghiep,
                         NgayQuyetDinh = dto.SinhVien.NgayQuyetDinh,
                         Note = dto.SinhVien.Note,
-                        LinkQR = dto.SinhVien.LinkQR,
+                        // LinkQR do server sinh ở GenerateQr, không nhận từ client
                     };
                     _tbDbContext.DanhSachSinhVienNhanBangs.Add(newsv);
                     _tbDbContext.SaveChanges();
@@ -246,6 +247,7 @@ namespace traobang.be.application.TraoBang.Implements
                                 HoVaTen = sv.HoVaTen,
                                 KhoaQuanLy = sv.KhoaQuanLy,
                                 LinkQR = sv.LinkQR,
+                                LinkQrOnly = sv.LinkQrOnly,
                                 Lop = sv.Lop,
                                 MaSoSinhVien = sv.MaSoSinhVien,
                                 NgayQuyetDinh = sv.NgayQuyetDinh,
@@ -257,6 +259,23 @@ namespace traobang.be.application.TraoBang.Implements
                         };
 #pragma warning restore CS8601 // Possible null reference assignment.
             var items = query.Paging(dto).ToList();
+
+            // cộng domain vào link qr để FE hiển thị được ảnh, chỉ áp dụng với slide sinh viên
+            foreach (var item in items)
+            {
+                if (item.LoaiSlide == LoaiSlides.SINH_VIEN && item.SinhVien != null)
+                {
+                    if (!string.IsNullOrEmpty(item.SinhVien.LinkQR))
+                    {
+                        item.SinhVien.LinkQR = $"{_fileS3Config.BaseUrl}/{item.SinhVien.LinkQR}";
+                    }
+
+                    if (!string.IsNullOrEmpty(item.SinhVien.LinkQrOnly))
+                    {
+                        item.SinhVien.LinkQrOnly = $"{_fileS3Config.BaseUrl}/{item.SinhVien.LinkQrOnly}";
+                    }
+                }
+            }
 
             return new BaseResponsePagingDto<ViewSlideDto>
             {
@@ -290,6 +309,86 @@ namespace traobang.be.application.TraoBang.Implements
             var bytes = File.ReadAllBytes(path);
 
             return bytes;
+        }
+
+        public byte[] ExportSlideSinhVien(ExportSlideSinhVienDto dto)
+        {
+            _logger.LogInformation($"{nameof(ExportSlideSinhVien)}, dto = {JsonSerializer.Serialize(dto)}");
+
+            var query = (
+                    from sl in _tbDbContext.Slides
+                    join sv in _tbDbContext.DanhSachSinhVienNhanBangs on sl.IdSinhVienNhanBang equals sv.Id
+                    join sp in _tbDbContext.SubPlans on sl.IdSubPlan equals sp.Id
+                    where !sl.Deleted && !sv.Deleted && !sp.Deleted
+                        && sl.LoaiSlide == LoaiSlides.SINH_VIEN
+                    select new { sl, sv, sp }
+                );
+
+            if (dto.IdPlan.HasValue)
+            {
+                query = query.Where(x => x.sp.IdPlan == dto.IdPlan);
+            }
+
+            if (dto.IdSubPlan.HasValue)
+            {
+                query = query.Where(x => x.sp.Id == dto.IdSubPlan);
+            }
+
+            var listSlide = query.OrderBy(x => x.sp.Order).ThenBy(x => x.sl.Order).ToList();
+
+            // bỏ QR tên khoa, QR họ tên, note cho MC so với file mẫu import, thêm 2 cột link QR
+            var headers = new List<string>
+            {
+                "STT",
+                "Khoa",
+                "Loại Slide",
+                "MSSV",
+                "Họ và tên / Nội dung",
+                "Lớp",
+                "Ngày sinh",
+                "Cấp bằng",
+                "Tên ngành đào tạo",
+                "Xếp hạng",
+                "Thành tích",
+                "Email",
+                "Khoa Quản lý",
+                "Trưởng Khoa",
+                "Số quyết định tốt nghiệp",
+                "Ngày quyết định",
+                "Link QR",
+                "Link QR (không có thông tin)",
+            };
+
+            var rows = new List<List<string>>();
+            int stt = 1;
+            foreach (var item in listSlide)
+            {
+                rows.Add(new List<string>
+                {
+                    stt.ToString(),
+                    item.sp.Ten,
+                    item.sl.LoaiSlide.ToString(),
+                    item.sv.MaSoSinhVien,
+                    item.sv.HoVaTen,
+                    item.sv.Lop,
+                    item.sv.NgaySinh?.ToString("dd/MM/yyyy") ?? string.Empty,
+                    item.sv.CapBang,
+                    item.sv.TenNganhDaoTao,
+                    item.sv.XepHang,
+                    item.sv.ThanhTich,
+                    item.sv.Email,
+                    item.sv.KhoaQuanLy,
+                    item.sp.TruongKhoa,
+                    item.sv.SoQuyetDinhTotNghiep,
+                    item.sv.NgayQuyetDinh?.ToString("dd/MM/yyyy") ?? string.Empty,
+                    string.IsNullOrEmpty(item.sv.LinkQR) ? string.Empty : $"{_fileS3Config.BaseUrl}/{item.sv.LinkQR}",
+                    string.IsNullOrEmpty(item.sv.LinkQrOnly) ? string.Empty : $"{_fileS3Config.BaseUrl}/{item.sv.LinkQrOnly}",
+                });
+
+                stt++;
+            }
+
+            return _excelService.WriteExcelFile(headers, rows, "Sheet1");
         }
 
         public void ImportSlide(ImportExcelSlideDto dto)
@@ -497,12 +596,12 @@ namespace traobang.be.application.TraoBang.Implements
                         && sl.LoaiSlide == LoaiSlides.SINH_VIEN
                         && sp.IdPlan == plan.Id
                         && !string.IsNullOrEmpty(sv.MaSoSinhVien)
-                    select new { sv, sp }
+                    select sv
                 ).ToList();
 
             foreach (var item in listSv)
             {
-                await _generateQrCommon(item.sv, item.sp);
+                await _generateQrCommon(item, plan);
             }
 
             _tbDbContext.SaveChanges();
@@ -516,15 +615,16 @@ namespace traobang.be.application.TraoBang.Implements
                     from sl in _tbDbContext.Slides
                     join sv in _tbDbContext.DanhSachSinhVienNhanBangs on sl.IdSinhVienNhanBang equals sv.Id
                     join sp in _tbDbContext.SubPlans on sl.IdSubPlan equals sp.Id
-                    where !sl.Deleted && !sv.Deleted && !sp.Deleted
+                    join p in _tbDbContext.Plans on sp.IdPlan equals p.Id
+                    where !sl.Deleted && !sv.Deleted && !sp.Deleted && !p.Deleted
                         && sl.LoaiSlide == LoaiSlides.SINH_VIEN
                         && sl.Id == idSlide
                         && !string.IsNullOrEmpty(sv.MaSoSinhVien)
-                    select new { sv, sp }
+                    select new { sv, p }
                 ).FirstOrDefault()
                 ?? throw new UserFriendlyException(ErrorCodes.TraoBangErrorSinhVienNotFound);
 
-            await _generateQrCommon(svSlide.sv, svSlide.sp);
+            await _generateQrCommon(svSlide.sv, svSlide.p);
             _tbDbContext.SaveChanges();
         }
 
@@ -664,24 +764,69 @@ namespace traobang.be.application.TraoBang.Implements
             }
         }
 
-        private async Task _generateQrCommon(DanhSachSinhVienNhanBang sv, SubPlan sp)
+        private async Task _generateQrCommon(DanhSachSinhVienNhanBang sv, Plan plan)
         {
             string templateContent = _templateSettings.UrlSvInfo;
             string folder = "QrSinhVien";
 
             var content = templateContent.Replace("[mssv]", sv.MaSoSinhVien);
 
-            string notice = $@"{sv.QrTenKhoa}
-{sv.QrHoTen}
-MSSV: {sv.MaSoSinhVien}";
-
-            if (sp.Order <= 2)
+            // khối text bên trái, từ trên xuống, STT để trống điền tay
+            float fontSize = 64;
+            var info = new List<QrTextLine>
             {
-                notice = $@"{sv.QrHoTen}
-MSSV: {sv.MaSoSinhVien}";
-            }
+                new QrTextLine { Text = sv.QrTenKhoa.ToUpper(), FontSize = fontSize },
+                new QrTextLine { Text = $"Lớp: {sv.Lop}", FontSize = fontSize },
+                new QrTextLine { Text = sv.QrHoTen, FontSize = fontSize },
+                new QrTextLine { Text = $"MSSV: {sv.MaSoSinhVien}", FontSize = fontSize },
+                new QrTextLine { Text = "STT: ", FontSize = fontSize },
+            };
 
-            var qrcode = _qrCodeService.GenerateQrWithText(content, notice);
+            var qrcode = _qrCodeService.GenerateQrWithText(content, info);
+            string filename = $"{folder}/{sv.MaSoSinhVien}.png";
+
+            // ảnh chỉ có mỗi mã QR, không kèm thông tin gì
+            var qrcodeOnly = _qrCodeService.GenQrCodeByText(content);
+            string filenameOnly = $"{folder}/{sv.MaSoSinhVien}_only.png";
+
+            try
+            {
+                _logger.LogInformation($"Sinh qr cho SV mssv = {sv.MaSoSinhVien}");
+
+                var upload = await _fileS3Service.WriteStreamFileAsync(filename, qrcode);
+                sv.LinkQR = $"{_fileS3Config.BucketName}/{filename}";
+
+                var uploadOnly = await _fileS3Service.WriteStreamFileAsync(filenameOnly, qrcodeOnly);
+                sv.LinkQrOnly = $"{_fileS3Config.BucketName}/{filenameOnly}";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+        }
+
+        [Obsolete("Không dùng nữa, giữ lại để tham khảo mẫu ảnh QR có thêm tên đợt, ngành và STT cỡ chữ to")]
+        private async Task _generateQrCommon2(DanhSachSinhVienNhanBang sv, Plan plan)
+        {
+            string templateContent = _templateSettings.UrlSvInfo;
+            string folder = "QrSinhVien";
+
+            var content = templateContent.Replace("[mssv]", sv.MaSoSinhVien);
+
+            // khối text bên trái, từ trên xuống, STT để trống điền tay
+            float fontSize = 64;
+            var info = new List<QrTextLine>
+            {
+                new QrTextLine { Text = "Mã QR lên nhận bằng tốt nghiệp", FontSize = fontSize },
+                new QrTextLine { Text = $"(đợt {plan.Ten})", FontSize = fontSize },
+                new QrTextLine { Text = sv.QrHoTen.ToUpper(), FontSize = fontSize * 1.5f },
+                new QrTextLine { Text = $"Khoa: {sv.QrTenKhoa}", FontSize = fontSize },
+                new QrTextLine { Text = $"Ngành: {sv.TenNganhDaoTao}", FontSize = fontSize },
+                new QrTextLine { Text = $"MSSV: {sv.MaSoSinhVien}", FontSize = fontSize },
+                new QrTextLine { Text = "STT: ", FontSize = fontSize * 2, FillRemaining = true },
+            };
+
+            var qrcode = _qrCodeService.GenerateQrWithText(content, info);
             string filename = $"{folder}/{sv.MaSoSinhVien}.jpg";
 
             try

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "dotnet-backend": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/dotnet-backend/SKILL.md",
+      "computedHash": "e7addbff31f84d64fc23c53a8e63a6abb6ccaa424fe5e4aac0d57bcafbe63d73"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "106acf230014cbb43ca34e6410371321b56ca742f9ee0442e8ec05bf02eb0384"
+    }
+  }
+}

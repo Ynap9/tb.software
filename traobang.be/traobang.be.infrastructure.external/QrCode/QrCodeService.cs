@@ -1,10 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using QRCoder;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using traobang.be.infrastructure.external.QrCode.Dtos;
 
 namespace traobang.be.infrastructure.external.QrCode
 {
@@ -32,50 +33,79 @@ namespace traobang.be.infrastructure.external.QrCode
             }
         }
 
-        public Stream GenerateQrWithText(string qrText, string textBelow)
+        public Stream GenerateQrWithText(string qrText, List<QrTextLine> textLines)
         {
             using var qrGenerator = new QRCodeGenerator();
             using var qrData = qrGenerator.CreateQrCode(qrText, QRCodeGenerator.ECCLevel.Q);
             var qrCode = new PngByteQRCode(qrData);
-            byte[] qrBytes = qrCode.GetGraphic(20);
+            int pixelsPerModule = 20;
+            byte[] qrBytes = qrCode.GetGraphic(pixelsPerModule);
             using Image<Rgba32> qrImage = Image.Load<Rgba32>(qrBytes);
 
+            int qrQuietZone = pixelsPerModule * 4; // QRCoder chừa sẵn viền trắng 4 module quanh mã
             int padding = 5;
+            int paddingLeft = 40; // lề trái cho khối text đỡ sát mép ảnh
             float lineSpacing = 5;
-            float fontSize = 64;
-            Font font = SystemFonts.CreateFont("Arial", fontSize, FontStyle.Bold);
-            var lines = textBelow.Split('\n');
 
-            // Use font size as fixed line height — reliable across all lines
-            float lineHeight = fontSize * 1.2f;
-            float totalTextHeight = lines.Length * lineHeight + (lines.Length - 1) * lineSpacing;
+            var lines = textLines ?? new List<QrTextLine>();
 
+            // đo trước font và kích thước từng dòng vì mỗi dòng có cỡ chữ riêng
+            List<Font> fonts = new();
+            List<float> lineHeights = new();
             float maxTextWidth = 0;
-            List<float> lineWidths = new();
+            float totalTextHeight = 0;
             foreach (var line in lines)
             {
-                var size = TextMeasurer.MeasureSize(line, new TextOptions(font));
-                lineWidths.Add(size.Width);
+                Font font = SystemFonts.CreateFont("Arial", line.FontSize, FontStyle.Bold);
+                fonts.Add(font);
+
+                var size = TextMeasurer.MeasureSize(line.Text, new TextOptions(font));
                 if (size.Width > maxTextWidth)
                     maxTextWidth = size.Width;
+
+                // Use font size as fixed line height — reliable across all lines
+                float lineHeight = line.FontSize * 1.2f;
+                lineHeights.Add(lineHeight);
+
+                // mỗi dòng chiếm lineHeight, cộng thêm lineSpacing để cách dòng tiếp theo
+                totalTextHeight += lineHeight + lineSpacing;
             }
 
-            int width = (int)Math.Max(qrImage.Width, maxTextWidth + padding * 2);
-            int height = (int)(qrImage.Height + totalTextHeight + padding * 2);
+            // khối bên trái là text, khối bên phải là mã QR
+            int leftWidth = (int)(maxTextWidth + paddingLeft + padding);
+            int width = leftWidth + qrImage.Width + padding;
+
+            // ảnh QR căn giữa theo chiều dọc nên lề trên của nó = (height - qrHeight) / 2,
+            // khối text bắt đầu ngang phần đen của mã QR, tức là bỏ qua viền trắng của ảnh QR
+            float qrTop = Math.Max(padding, qrQuietZone + totalTextHeight + padding - qrImage.Height);
+            float paddingTop = qrTop + qrQuietZone;
+            int height = (int)(qrTop * 2 + qrImage.Height);
 
             var finalImage = new Image<Rgba32>(width, height, Color.White);
             finalImage.Mutate(ctx =>
             {
-                int qrX = (width - qrImage.Width) / 2;
-                ctx.DrawImage(qrImage, new Point(qrX, 0), 1f);
-
-                float currentY = qrImage.Height + padding;
-                for (int i = 0; i < lines.Length; i++)
+                // khối text bên trái, vẽ từ trên xuống
+                float currentY = paddingTop;
+                for (int i = 0; i < lines.Count; i++)
                 {
-                    float textX = (width - lineWidths[i]) / 2;
-                    ctx.DrawText(lines[i], font, Color.Black, new PointF(textX, currentY));
-                    currentY += lineHeight + lineSpacing; // lineHeight advances, lineSpacing adds gap
+                    if (lines[i].FillRemaining)
+                    {
+                        // dòng này chiếm hết khoảng trống còn lại, chữ căn giữa theo chiều dọc
+                        float remainHeight = height - padding - currentY;
+                        float textY = Math.Max(currentY, currentY + (remainHeight - lineHeights[i]) / 2);
+                        ctx.DrawText(lines[i].Text, fonts[i], Color.Black, new PointF(paddingLeft, textY));
+                        currentY += remainHeight;
+                        continue;
+                    }
+
+                    ctx.DrawText(lines[i].Text, fonts[i], Color.Black, new PointF(paddingLeft, currentY));
+                    currentY += lineHeights[i] + lineSpacing; // lineHeight advances, lineSpacing adds gap
                 }
+
+                // khối QR bên phải, căn giữa theo chiều dọc
+                int qrX = leftWidth;
+                int qrY = (height - qrImage.Height) / 2;
+                ctx.DrawImage(qrImage, new Point(qrX, qrY), 1f);
             });
 
             MemoryStream ms = new MemoryStream();

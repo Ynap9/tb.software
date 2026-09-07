@@ -16,6 +16,7 @@ export interface SinhVien {
     ngayQuyetDinh?: Date;
     note?: string;
     linkQR?: string;
+    linkQrOnly?: string;
     id?: number;
 }
 export interface IViewRowSlide {

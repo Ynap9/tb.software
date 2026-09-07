@@ -26,6 +26,7 @@
         public string Order { get; set; } = String.Empty;
         public int TrangThai { get; set; }
         public string LinkQR { get; set; } = String.Empty;
+        public string LinkQrOnly { get; set; } = String.Empty;
         public string QrHoTen { get; set; } = string.Empty;
 
     }

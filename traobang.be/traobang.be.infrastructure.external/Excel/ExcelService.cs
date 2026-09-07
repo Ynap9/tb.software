@@ -47,5 +47,32 @@ namespace traobang.be.infrastructure.external.Excel
             }
             return result;
         }
+
+        public byte[] WriteExcelFile(List<string> headers, List<List<string>> rows, string sheetName)
+        {
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add(sheetName);
+
+            for (int col = 0; col < headers.Count; col++)
+            {
+                var cell = worksheet.Cell(1, col + 1);
+                cell.Value = headers[col];
+                cell.Style.Font.Bold = true;
+            }
+
+            for (int row = 0; row < rows.Count; row++)
+            {
+                for (int col = 0; col < rows[row].Count; col++)
+                {
+                    worksheet.Cell(row + 2, col + 1).Value = rows[row][col];
+                }
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            return stream.ToArray();
+        }
     }
 }
