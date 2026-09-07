@@ -1,0 +1,17 @@
+<form [formGroup]="form">
+    <div class="grid gap-2">
+        <div class="mb-3">
+            <label for="IdPlan" class="block text-surface-900 dark:text-surface-0 font-medium mb-2">Chương trình<span
+                    class="text-red-500">*</span></label>
+            <p-select id="IdPlan" formControlName="idPlan" [options]="listPlan" optionLabel="ten" optionValue="id"
+                [filter]="true" placeholder="Chọn chương trình" class="w-full mb-2" appendTo="body" />
+            @if (form.get('IdPlan')?.hasError('required') && form.get('IdPlan')?.touched) {
+            <p-message severity="error" variant="simple" size="small">{{ getError('IdPlan') }} </p-message>
+            }
+        </div>
+    </div>
+</form>
+
+<div class="mt-5 flex flex-row justify-end">
+    <p-button label="Xuất excel" icon="pi pi-file-excel" (onClick)="onSubmit()" type="submit" [loading]="loading" />
+</div>

@@ -137,6 +137,32 @@ namespace traobang.be.Controllers.Config
         }
 
         /// <summary>
+        /// Xuất excel danh sách slide sinh viên
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpGet("export/slide-sinh-vien")]
+        [Permission(PermissionKeys.SlideView)]
+        public IActionResult ExportSlideSinhVien([FromQuery] ExportSlideSinhVienDto dto)
+        {
+            try
+            {
+                var excel = _slideService.ExportSlideSinhVien(dto);
+
+                return File(
+                   excel,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "SlideSinhVien.xlsx"
+                 );
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse(ex.Message));
+            }
+        }
+
+        /// <summary>
         /// Import excel slide
         /// </summary>
         /// <param name="dto"></param>

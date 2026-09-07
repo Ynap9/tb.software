@@ -109,7 +109,7 @@ namespace traobang.be.infrastructure.external.QrCode
             });
 
             MemoryStream ms = new MemoryStream();
-            finalImage.SaveAsJpeg(ms);
+            finalImage.SaveAsPng(ms);
             ms.Position = 0;
             return ms;
         }

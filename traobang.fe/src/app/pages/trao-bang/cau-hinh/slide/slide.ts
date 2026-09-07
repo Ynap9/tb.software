@@ -20,6 +20,8 @@ import { TraoBangSubPlanService } from '@/service/sub-plan.service';
 import { IViewRowConfigSubPlan } from '@/models/traobang/sub-plan.models';
 import { GenQrCode } from './gen-qr-code/gen-qr-code';
 import { ViewQr } from './view-qr/view-qr';
+import { TblQrLink, TblQrLinkTypes } from './tbl-qr-link/tbl-qr-link';
+import { ExportExcel } from './export-excel/export-excel';
 @Component({
     selector: 'app-slide',
     imports: [SharedImports, DataTable, FileUploadModule],
@@ -45,7 +47,7 @@ export class SlideScreen extends BaseComponent {
         { header: 'STT', cellViewType: CellViewTypes.INDEX, headerContainerStyle: 'width: 6rem' },
         { header: 'Nội dung', field: 'noiDung', headerContainerStyle: 'min-width: 10rem' },
         { header: 'Mã Sinh viên', field: 'sinhVien.maSoSinhVien', headerContainerStyle: 'min-width: 10rem' },
-        { header: 'QR', field: 'sinhVien.linkQR', headerContainerStyle: 'min-width: 10rem', cellClass: 'break-all', clickable: true },
+        { header: 'QR', headerContainerStyle: 'min-width: 10rem', cellViewType: CellViewTypes.CUSTOM_COMP, customComponent: TblQrLink },
         { header: 'Note', field: 'note', headerContainerStyle: 'min-width: 10rem' },
         {
             header: 'Loại Slide',
@@ -172,13 +174,16 @@ export class SlideScreen extends BaseComponent {
         else if (data.type === TblActionTypes.qrCode) {
             this.genQrCode(data.data)
         }
-        else if (data.type === 'cellClick' && data.field === 'sinhVien.linkQR') {
-            this.onViewQr(data.data);
+        else if (data.type === TblQrLinkTypes.viewQr) {
+            this.onViewQr(data.data.sinhVien?.linkQR);
+        }
+        else if (data.type === TblQrLinkTypes.viewQrOnly) {
+            this.onViewQr(data.data.sinhVien?.linkQrOnly);
         }
     }
 
-    onViewQr(data: IViewRowSlide) {
-        if (!data.sinhVien?.linkQR) {
+    onViewQr(linkQR?: string) {
+        if (!linkQR) {
             return;
         }
 
@@ -188,7 +193,7 @@ export class SlideScreen extends BaseComponent {
             modal: true,
             styleClass: 'w-[500px]',
             focusOnShow: false,
-            data: { linkQR: data.sinhVien.linkQR }
+            data: { linkQR }
         });
     }
 
@@ -243,6 +248,10 @@ export class SlideScreen extends BaseComponent {
                 this.loading = false;
             }
         });
+    }
+
+    onExportExcel() {
+        this._dialogService.open(ExportExcel, { header: 'Xuất excel slide sinh viên', closable: true, modal: true, styleClass: 'w-[700px]', focusOnShow: false });
     }
 
     onUpload() {

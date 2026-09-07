@@ -247,6 +247,7 @@ namespace traobang.be.application.TraoBang.Implements
                                 HoVaTen = sv.HoVaTen,
                                 KhoaQuanLy = sv.KhoaQuanLy,
                                 LinkQR = sv.LinkQR,
+                                LinkQrOnly = sv.LinkQrOnly,
                                 Lop = sv.Lop,
                                 MaSoSinhVien = sv.MaSoSinhVien,
                                 NgayQuyetDinh = sv.NgayQuyetDinh,
@@ -262,11 +263,17 @@ namespace traobang.be.application.TraoBang.Implements
             // cộng domain vào link qr để FE hiển thị được ảnh, chỉ áp dụng với slide sinh viên
             foreach (var item in items)
             {
-                if (item.LoaiSlide == LoaiSlides.SINH_VIEN
-                    && item.SinhVien != null
-                    && !string.IsNullOrEmpty(item.SinhVien.LinkQR))
+                if (item.LoaiSlide == LoaiSlides.SINH_VIEN && item.SinhVien != null)
                 {
-                    item.SinhVien.LinkQR = $"{_fileS3Config.BaseUrl}/{item.SinhVien.LinkQR}";
+                    if (!string.IsNullOrEmpty(item.SinhVien.LinkQR))
+                    {
+                        item.SinhVien.LinkQR = $"{_fileS3Config.BaseUrl}/{item.SinhVien.LinkQR}";
+                    }
+
+                    if (!string.IsNullOrEmpty(item.SinhVien.LinkQrOnly))
+                    {
+                        item.SinhVien.LinkQrOnly = $"{_fileS3Config.BaseUrl}/{item.SinhVien.LinkQrOnly}";
+                    }
                 }
             }
 
@@ -302,6 +309,86 @@ namespace traobang.be.application.TraoBang.Implements
             var bytes = File.ReadAllBytes(path);
 
             return bytes;
+        }
+
+        public byte[] ExportSlideSinhVien(ExportSlideSinhVienDto dto)
+        {
+            _logger.LogInformation($"{nameof(ExportSlideSinhVien)}, dto = {JsonSerializer.Serialize(dto)}");
+
+            var query = (
+                    from sl in _tbDbContext.Slides
+                    join sv in _tbDbContext.DanhSachSinhVienNhanBangs on sl.IdSinhVienNhanBang equals sv.Id
+                    join sp in _tbDbContext.SubPlans on sl.IdSubPlan equals sp.Id
+                    where !sl.Deleted && !sv.Deleted && !sp.Deleted
+                        && sl.LoaiSlide == LoaiSlides.SINH_VIEN
+                    select new { sl, sv, sp }
+                );
+
+            if (dto.IdPlan.HasValue)
+            {
+                query = query.Where(x => x.sp.IdPlan == dto.IdPlan);
+            }
+
+            if (dto.IdSubPlan.HasValue)
+            {
+                query = query.Where(x => x.sp.Id == dto.IdSubPlan);
+            }
+
+            var listSlide = query.OrderBy(x => x.sp.Order).ThenBy(x => x.sl.Order).ToList();
+
+            // bỏ QR tên khoa, QR họ tên, note cho MC so với file mẫu import, thêm 2 cột link QR
+            var headers = new List<string>
+            {
+                "STT",
+                "Khoa",
+                "Loại Slide",
+                "MSSV",
+                "Họ và tên / Nội dung",
+                "Lớp",
+                "Ngày sinh",
+                "Cấp bằng",
+                "Tên ngành đào tạo",
+                "Xếp hạng",
+                "Thành tích",
+                "Email",
+                "Khoa Quản lý",
+                "Trưởng Khoa",
+                "Số quyết định tốt nghiệp",
+                "Ngày quyết định",
+                "Link QR",
+                "Link QR (không có thông tin)",
+            };
+
+            var rows = new List<List<string>>();
+            int stt = 1;
+            foreach (var item in listSlide)
+            {
+                rows.Add(new List<string>
+                {
+                    stt.ToString(),
+                    item.sp.Ten,
+                    item.sl.LoaiSlide.ToString(),
+                    item.sv.MaSoSinhVien,
+                    item.sv.HoVaTen,
+                    item.sv.Lop,
+                    item.sv.NgaySinh?.ToString("dd/MM/yyyy") ?? string.Empty,
+                    item.sv.CapBang,
+                    item.sv.TenNganhDaoTao,
+                    item.sv.XepHang,
+                    item.sv.ThanhTich,
+                    item.sv.Email,
+                    item.sv.KhoaQuanLy,
+                    item.sp.TruongKhoa,
+                    item.sv.SoQuyetDinhTotNghiep,
+                    item.sv.NgayQuyetDinh?.ToString("dd/MM/yyyy") ?? string.Empty,
+                    string.IsNullOrEmpty(item.sv.LinkQR) ? string.Empty : $"{_fileS3Config.BaseUrl}/{item.sv.LinkQR}",
+                    string.IsNullOrEmpty(item.sv.LinkQrOnly) ? string.Empty : $"{_fileS3Config.BaseUrl}/{item.sv.LinkQrOnly}",
+                });
+
+                stt++;
+            }
+
+            return _excelService.WriteExcelFile(headers, rows, "Sheet1");
         }
 
         public void ImportSlide(ImportExcelSlideDto dto)
@@ -696,7 +783,11 @@ namespace traobang.be.application.TraoBang.Implements
             };
 
             var qrcode = _qrCodeService.GenerateQrWithText(content, info);
-            string filename = $"{folder}/{sv.MaSoSinhVien}.jpg";
+            string filename = $"{folder}/{sv.MaSoSinhVien}.png";
+
+            // ảnh chỉ có mỗi mã QR, không kèm thông tin gì
+            var qrcodeOnly = _qrCodeService.GenQrCodeByText(content);
+            string filenameOnly = $"{folder}/{sv.MaSoSinhVien}_only.png";
 
             try
             {
@@ -704,6 +795,9 @@ namespace traobang.be.application.TraoBang.Implements
 
                 var upload = await _fileS3Service.WriteStreamFileAsync(filename, qrcode);
                 sv.LinkQR = $"{_fileS3Config.BucketName}/{filename}";
+
+                var uploadOnly = await _fileS3Service.WriteStreamFileAsync(filenameOnly, qrcodeOnly);
+                sv.LinkQrOnly = $"{_fileS3Config.BucketName}/{filenameOnly}";
             }
             catch (Exception ex)
             {

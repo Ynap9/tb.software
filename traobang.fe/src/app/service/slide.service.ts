@@ -40,6 +40,13 @@ export class SlideService {
         return this.http.get(`${this.api}/export/template-import-slide`, { responseType: 'blob' });
     }
 
+    exportSlideSinhVien(dataFilter?: any) {
+        return this.http.get(`${this.api}/export/slide-sinh-vien`, {
+            params: { ...dataFilter },
+            responseType: 'blob'
+        });
+    }
+
     uploadFile(body: any) {
         return this.http.post<IBaseResponse>(`${this.api}/import/slide`, body);
     }
