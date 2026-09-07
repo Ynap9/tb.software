@@ -45,7 +45,7 @@ namespace traobang.be.infrastructure.external.QrCode
             int qrQuietZone = pixelsPerModule * 4; // QRCoder chừa sẵn viền trắng 4 module quanh mã
             int padding = 5;
             int paddingLeft = 40; // lề trái cho khối text đỡ sát mép ảnh
-            float lineSpacing = 5;
+            float minLineSpacing = 5;
 
             var lines = textLines ?? new List<QrTextLine>();
 
@@ -53,7 +53,7 @@ namespace traobang.be.infrastructure.external.QrCode
             List<Font> fonts = new();
             List<float> lineHeights = new();
             float maxTextWidth = 0;
-            float totalTextHeight = 0;
+            float totalLineHeight = 0;
             foreach (var line in lines)
             {
                 Font font = SystemFonts.CreateFont("Arial", line.FontSize, FontStyle.Bold);
@@ -67,9 +67,15 @@ namespace traobang.be.infrastructure.external.QrCode
                 float lineHeight = line.FontSize * 1.2f;
                 lineHeights.Add(lineHeight);
 
-                // mỗi dòng chiếm lineHeight, cộng thêm lineSpacing để cách dòng tiếp theo
-                totalTextHeight += lineHeight + lineSpacing;
+                totalLineHeight += lineHeight;
             }
+
+            // giãn đều các dòng cho kín chiều cao phần đen của mã QR, cách dòng bằng nhau
+            float textAreaHeight = qrImage.Height - qrQuietZone * 2;
+            float lineSpacing = lines.Count > 1
+                ? Math.Max(minLineSpacing, (textAreaHeight - totalLineHeight) / (lines.Count - 1))
+                : minLineSpacing;
+            float totalTextHeight = totalLineHeight + lineSpacing * Math.Max(lines.Count - 1, 0);
 
             // khối bên trái là text, khối bên phải là mã QR
             int leftWidth = (int)(maxTextWidth + paddingLeft + padding);
