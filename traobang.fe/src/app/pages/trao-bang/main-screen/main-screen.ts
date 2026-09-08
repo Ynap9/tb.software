@@ -40,6 +40,7 @@ export class MainScreen extends BaseComponent {
         skipNegotiation: true,
         transport: signalR.HttpTransportType.WebSockets,
       })
+      .withAutomaticReconnect()
       .build();
 
     this.hubConnection.on(TraoBangHubConst.ReceiveSinhVienDangTrao, (...args) => {
@@ -58,6 +59,10 @@ export class MainScreen extends BaseComponent {
 
       this.getSvDangTrao();
       // this.initData();
+    });
+
+    this.hubConnection.onreconnected(() => {
+      this.getSvDangTrao();
     });
 
     this.hubConnection.start().then();
