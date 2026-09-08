@@ -1,30 +1,50 @@
 <div class="card h-full">
     <div class="flex flex-row justify-between items-center mb-4">
         <div class="font-semibold text-xl uppercase">Cấu hình giao diện</div>
-        <div class="flex gap-2 items-center">
-            <form [formGroup]="form">
-                <input pInputText formControlName="tenGiaoDien" id="tenGiaoDien" placeholder="Tên giao diện" type="text"
-                    class="w-full mt-7" />
-                <div style="min-height: 24px;">
-                    @if (form.get('tenGiaoDien')?.hasError('required') && (form.get('tenGiaoDien')?.touched ||
-                    submitted)) {
-                    <p-message severity="error" variant="simple" size="small">{{ getError('tenGiaoDien') }} </p-message>
-                    }
-                </div>
-            </form>
-            <p-button *ngIf="!this.idGiaoDien" label="Thêm mới" icon="pi pi-plus" size="small" (click)="saveTemplate()">
-            </p-button>
-            <p-button *ngIf="this.idGiaoDien" label="Cập nhật" icon="pi pi-save" size="small" (click)="saveTemplate()">
-            </p-button>
-            <p-button label="Quay về  " icon="pi pi-arrow-left" severity="contrast" size="small" (click)="back()">
-            </p-button>
-        </div>
     </div>
 
     <app-breadcrumb [home]="home" [items]="items" />
-    <div class="cnt">
-        <div class="cnt-body">
-            <div #editorEl class="editor"></div>
+
+    <form [formGroup]="form" (ngSubmit)="saveTemplate()" class="mt-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="tenGiaoDien" class="block mb-2">Tên giao diện <span class="text-red-500">*</span></label>
+                <input pInputText formControlName="tenGiaoDien" id="tenGiaoDien" placeholder="Tên giao diện" type="text" class="w-full" />
+                <div style="min-height: 24px;">
+                    @if (form.get('tenGiaoDien')?.hasError('required') && (form.get('tenGiaoDien')?.touched || submitted)) {
+                    <p-message severity="error" variant="simple" size="small">{{ getError('tenGiaoDien') }} </p-message>
+                    }
+                </div>
+            </div>
+            <div>
+                <label for="moTa" class="block mb-2">Mô tả</label>
+                <input pInputText formControlName="moTa" id="moTa" placeholder="Mô tả" type="text" class="w-full" />
+                <div style="min-height: 24px;"></div>
+            </div>
         </div>
-    </div>
+
+        <div class="mt-2">
+            <label for="html" class="block mb-2">HTML</label>
+            <textarea pTextarea formControlName="html" id="html" rows="18" class="w-full font-mono" spellcheck="false"></textarea>
+        </div>
+
+        <div class="mt-4">
+            <label for="css" class="block mb-2">CSS</label>
+            <textarea pTextarea formControlName="css" id="css" rows="14" class="w-full font-mono" spellcheck="false"></textarea>
+        </div>
+
+        <div class="mt-4">
+            <label for="js" class="block mb-2">JS</label>
+            <textarea pTextarea formControlName="js" id="js" rows="8" class="w-full font-mono" spellcheck="false"></textarea>
+        </div>
+
+        <div class="mt-4">
+            <label for="noiDung" class="block mb-2">Nội dung</label>
+            <textarea pTextarea formControlName="noiDung" id="noiDung" rows="4" class="w-full font-mono" spellcheck="false"></textarea>
+        </div>
+
+        <div class="mt-5 flex flex-row justify-end">
+            <p-button [label]="idGiaoDien ? 'Cập nhật' : 'Thêm mới'" icon="pi pi-save" type="submit" [loading]="loading" />
+        </div>
+    </form>
 </div>

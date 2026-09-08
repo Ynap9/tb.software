@@ -1,40 +1,5 @@
- .cnt {
-      display: flex;
-      flex-direction: column;
-      height: calc(100vh - 150px); // Adjust for header/breadcrumb
-    }
-    .cnt-nav {
-      padding: 10px;
-      background-color: #020420;
-      color: #ef6974;
-    }
-    .cnt-body {
-      flex-grow: 1;
-      position: relative;
-      overflow: hidden;
-    }
-    .editor {
-      height: 100%;
-      width: 100%;
-    }
-
-    // Ensure GrapeJS styling works properly
-    :host ::ng-deep {
-      .gjs-editor {
-        height: 100% !important;
-        width: 100% !important;
-      }
-
-      .gjs-cv-canvas {
-        height: 100% !important;
-      }
-
-      // Fix for Studio SDK panels
-      .gjs-pn-panels {
-        height: 100% !important;
-      }
-
-      .gjs-blocks-c {
-        overflow-y: auto !important;
-      }
-    }
+textarea {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    white-space: pre;
+    overflow-x: auto;
+}
