@@ -58,17 +58,17 @@ namespace traobang.be.infrastructure.external.QrCode
             List<float> widthsBelow = new();
             foreach (var line in linesAbove)
             {
-                var size = TextMeasurer.MeasureSize(line, new TextOptions(font));
-                widthsAbove.Add(size.Width);
-                if (size.Width > maxTextWidth)
-                    maxTextWidth = size.Width;
+                var lineWidth = string.IsNullOrEmpty(line) ? 0 : TextMeasurer.MeasureSize(line, new TextOptions(font)).Width;
+                widthsAbove.Add(lineWidth);
+                if (lineWidth > maxTextWidth)
+                    maxTextWidth = lineWidth;
             }
             foreach (var line in linesBelow)
             {
-                var size = TextMeasurer.MeasureSize(line, new TextOptions(font));
-                widthsBelow.Add(size.Width);
-                if (size.Width > maxTextWidth)
-                    maxTextWidth = size.Width;
+                var lineWidth = string.IsNullOrEmpty(line) ? 0 : TextMeasurer.MeasureSize(line, new TextOptions(font)).Width;
+                widthsBelow.Add(lineWidth);
+                if (lineWidth > maxTextWidth)
+                    maxTextWidth = lineWidth;
             }
 
             int width = (int)Math.Max(qrImage.Width, maxTextWidth + padding * 2);
@@ -81,8 +81,12 @@ namespace traobang.be.infrastructure.external.QrCode
                 float currentY = padding;
                 for (int i = 0; i < linesAbove.Length; i++)
                 {
-                    float textX = (width - widthsAbove[i]) / 2;
-                    ctx.DrawText(linesAbove[i], font, Color.Black, new PointF(textX, currentY));
+                    // dòng rỗng vẫn chiếm chỗ để ảnh không bị co lại, chỉ là không vẽ gì
+                    if (!string.IsNullOrEmpty(linesAbove[i]))
+                    {
+                        float textX = (width - widthsAbove[i]) / 2;
+                        ctx.DrawText(linesAbove[i], font, Color.Black, new PointF(textX, currentY));
+                    }
                     currentY += lineHeight + lineSpacing; // lineHeight advances, lineSpacing adds gap
                 }
 
@@ -93,8 +97,11 @@ namespace traobang.be.infrastructure.external.QrCode
                 currentY = aboveHeight + qrImage.Height + padding * 2;
                 for (int i = 0; i < linesBelow.Length; i++)
                 {
-                    float textX = (width - widthsBelow[i]) / 2;
-                    ctx.DrawText(linesBelow[i], font, Color.Black, new PointF(textX, currentY));
+                    if (!string.IsNullOrEmpty(linesBelow[i]))
+                    {
+                        float textX = (width - widthsBelow[i]) / 2;
+                        ctx.DrawText(linesBelow[i], font, Color.Black, new PointF(textX, currentY));
+                    }
                     currentY += lineHeight + lineSpacing; // lineHeight advances, lineSpacing adds gap
                 }
             });
