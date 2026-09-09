@@ -35,6 +35,7 @@ export class SubPlan extends BaseComponent {
     columns: IColumn[] = [
         { header: 'STT', cellViewType: CellViewTypes.INDEX, headerContainerStyle: 'width: 6rem' },
         { header: 'Tên khoa', field: 'ten', headerContainerStyle: 'min-width: 10rem' },
+        { header: 'QR tên khoa', field: 'qrTenKhoa', headerContainerStyle: 'min-width: 10rem' },
         { header: 'Trưởng Khoa', field: 'truongKhoa', headerContainerStyle: 'min-width: 10rem' },
         { header: 'Thứ tự', field: 'order', headerContainerStyle: 'width: 10rem' },
         { header: 'Hiển thị', field: 'isShow', headerContainerStyle: 'width: 10rem', cellViewType: CellViewTypes.CHECKBOX },

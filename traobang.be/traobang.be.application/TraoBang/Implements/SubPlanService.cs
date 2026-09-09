@@ -64,6 +64,7 @@ namespace traobang.be.application.TraoBang.Implements
                 Ten = dto.Ten,
                 MoTa = dto.MoTa,
                 TruongKhoa = dto.TruongKhoa,
+                QrTenKhoa = dto.QrTenKhoa ?? "",
                 MoBai = dto.MoBai ?? "",
                 KetBai = dto.KetBai ?? "",
                 Note = dto.Note,
@@ -130,6 +131,7 @@ namespace traobang.be.application.TraoBang.Implements
             subplan.Ten = dto.Ten;
             subplan.MoTa = dto.MoTa;
             subplan.TruongKhoa = dto.TruongKhoa;
+            subplan.QrTenKhoa = dto.QrTenKhoa ?? "";
             subplan.MoBai = dto.MoBai ?? "";
             subplan.KetBai = dto.KetBai ?? "";
             subplan.Note = dto.Note;
@@ -2278,6 +2280,7 @@ namespace traobang.be.application.TraoBang.Implements
             int indexSTT = col++;
             int indexTen = col++;
             int indexTruongKhoa = col++;
+            int indexQrTenKhoa = col++;
 
             if (data != null && data.Count > 0)
             {
@@ -2299,6 +2302,7 @@ namespace traobang.be.application.TraoBang.Implements
                     var stt = row[indexSTT];
                     var tenSubPlan = row[indexTen];
                     var tenTruongKhoa = row[indexTruongKhoa];
+                    var qrTenKhoa = row[indexQrTenKhoa];
 
                     if (string.IsNullOrEmpty(tenSubPlan))
                     {
@@ -2309,6 +2313,7 @@ namespace traobang.be.application.TraoBang.Implements
                     if (oldSubPlan != null)
                     {
                         oldSubPlan.TruongKhoa = tenTruongKhoa;
+                        oldSubPlan.QrTenKhoa = qrTenKhoa;
                         oldSubPlan.Order = rowIndex;
                     }
                     else
@@ -2318,6 +2323,7 @@ namespace traobang.be.application.TraoBang.Implements
                             IdPlan = dto.IdPlan,
                             Ten = tenSubPlan,
                             TruongKhoa = tenTruongKhoa,
+                            QrTenKhoa = qrTenKhoa,
                             Order = rowIndex,
                             CreatedBy = username,
                             IsShow = true,

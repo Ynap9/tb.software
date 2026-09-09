@@ -8,8 +8,9 @@ namespace traobang.be.application.TraoBang.Dtos
 {
     public class CreateSubPlanDto
     {
-        public string Ten { get; set; } = String.Empty; 
+        public string Ten { get; set; } = String.Empty;
         public string TruongKhoa { get; set; } = String.Empty;
+        public string? QrTenKhoa { get; set; } = String.Empty;
         public string? MoTa { get; set; } = String.Empty;
         public string? Note { get; set; } = String.Empty;
         public string? MoBai { get; set; } = String.Empty;

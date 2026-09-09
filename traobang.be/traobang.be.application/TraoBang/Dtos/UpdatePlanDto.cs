@@ -12,6 +12,6 @@ namespace traobang.be.application.TraoBang.Dtos
 
         [IntegerRange(AllowableValues = new int[] { TrangThaiPlan.KhoiTao, TrangThaiPlan.DaKetThuc, TrangThaiPlan.DangHoatDong })]
         public int TrangThai { get; set; }
-        //public int? IdGiaoDien { get; set; }
+        public int? IdGiaoDien { get; set; }
     }
 }

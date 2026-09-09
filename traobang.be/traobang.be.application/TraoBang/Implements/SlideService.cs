@@ -416,8 +416,6 @@ namespace traobang.be.application.TraoBang.Implements
             int indexSoQuyetDinhTotNghiep = col++;
             int indexNgayQuyetDinh = col++;
             int indexNoteChoMC = col++;
-            int indexQrTenKhoa = col++;
-            int indexQrHoTen = col++;
 
             if (data != null && data.Count > 0)
             {
@@ -480,8 +478,6 @@ namespace traobang.be.application.TraoBang.Implements
                         var soQuyetDinhTotNghiep = row[indexSoQuyetDinhTotNghiep];
                         var ngayQuyetDinh = row[indexNgayQuyetDinh];
                         var noteChoMC = row[indexNoteChoMC];
-                        var qrTenKhoa = row[indexQrTenKhoa];
-                        var qrHoTen = row[indexQrHoTen];
 
                         var subplan = _tbDbContext.SubPlans.FirstOrDefault(x => x.IdPlan == dto.IdPlan && x.Ten == tenSubPlan && !x.Deleted);
 
@@ -536,8 +532,7 @@ namespace traobang.be.application.TraoBang.Implements
                                 TenNganhDaoTao = tenNganhDaoTao,
                                 ThanhTich = thanhTich,
                                 XepHang = xepHang,
-                                QrHoTen = qrHoTen,
-                                QrTenKhoa = qrTenKhoa,
+                                QrHoTen = _getQrHoTen(capBang, hoTenNoiDung),
                             };
                         }
 
@@ -596,12 +591,12 @@ namespace traobang.be.application.TraoBang.Implements
                         && sl.LoaiSlide == LoaiSlides.SINH_VIEN
                         && sp.IdPlan == plan.Id
                         && !string.IsNullOrEmpty(sv.MaSoSinhVien)
-                    select sv
+                    select new { sv, sp }
                 ).ToList();
 
             foreach (var item in listSv)
             {
-                await _generateQrCommon(item, plan);
+                await _generateQrCommon(item.sv, item.sp);
             }
 
             _tbDbContext.SaveChanges();
@@ -620,11 +615,11 @@ namespace traobang.be.application.TraoBang.Implements
                         && sl.LoaiSlide == LoaiSlides.SINH_VIEN
                         && sl.Id == idSlide
                         && !string.IsNullOrEmpty(sv.MaSoSinhVien)
-                    select new { sv, p }
+                    select new { sv, sp }
                 ).FirstOrDefault()
                 ?? throw new UserFriendlyException(ErrorCodes.TraoBangErrorSinhVienNotFound);
 
-            await _generateQrCommon(svSlide.sv, svSlide.p);
+            await _generateQrCommon(svSlide.sv, svSlide.sp);
             _tbDbContext.SaveChanges();
         }
 
@@ -764,7 +759,41 @@ namespace traobang.be.application.TraoBang.Implements
             }
         }
 
-        private async Task _generateQrCommon(DanhSachSinhVienNhanBang sv, Plan plan)
+        /// <summary>
+        /// Họ tên in trên mã QR = cấp bằng viết tắt + ". " + họ tên
+        /// </summary>
+        private string _getQrHoTen(string capBang, string hoVaTen)
+        {
+            var capBangVietTat = string.Empty;
+
+            switch (capBang?.Trim().ToLower())
+            {
+                case "kiến trúc sư":
+                    capBangVietTat = "KTS";
+                    break;
+                case "kỹ sư":
+                    capBangVietTat = "KS";
+                    break;
+                case "cử nhân":
+                    capBangVietTat = "CN";
+                    break;
+                case "thạc sĩ":
+                    capBangVietTat = "ThS";
+                    break;
+                case "tiến sĩ":
+                    capBangVietTat = "TS";
+                    break;
+            }
+
+            if (string.IsNullOrEmpty(capBangVietTat))
+            {
+                return hoVaTen;
+            }
+
+            return $"{capBangVietTat}. {hoVaTen}";
+        }
+
+        private async Task _generateQrCommon(DanhSachSinhVienNhanBang sv, SubPlan sp)
         {
             string templateContent = _templateSettings.UrlSvInfo;
             string folder = "QrSinhVien";
@@ -772,7 +801,7 @@ namespace traobang.be.application.TraoBang.Implements
             var content = templateContent.Replace("[mssv]", sv.MaSoSinhVien);
 
             // khoa và lớp nằm trên mã QR, họ tên và mssv nằm dưới, tất cả căn giữa
-            string textAbove = $@"{sv.QrTenKhoa}
+            string textAbove = $@"{sp.QrTenKhoa}
 Lớp: {sv.Lop}";
 
             string textBelow = $@"{sv.QrHoTen}
@@ -802,7 +831,7 @@ MSSV: {sv.MaSoSinhVien}";
         }
 
         [Obsolete("Không dùng nữa, giữ lại để tham khảo mẫu ảnh QR có thêm tên đợt, ngành và STT cỡ chữ to")]
-        private async Task _generateQrCommon2(DanhSachSinhVienNhanBang sv, Plan plan)
+        private async Task _generateQrCommon2(DanhSachSinhVienNhanBang sv, Plan plan, SubPlan sp)
         {
             string templateContent = _templateSettings.UrlSvInfo;
             string folder = "QrSinhVien";
@@ -816,7 +845,7 @@ MSSV: {sv.MaSoSinhVien}";
                 new QrTextLine { Text = "Mã QR lên nhận bằng tốt nghiệp", FontSize = fontSize },
                 new QrTextLine { Text = $"(đợt {plan.Ten})", FontSize = fontSize },
                 new QrTextLine { Text = sv.QrHoTen.ToUpper(), FontSize = fontSize * 1.5f },
-                new QrTextLine { Text = $"Khoa: {sv.QrTenKhoa}", FontSize = fontSize },
+                new QrTextLine { Text = $"Khoa: {sp.QrTenKhoa}", FontSize = fontSize },
                 new QrTextLine { Text = $"Ngành: {sv.TenNganhDaoTao}", FontSize = fontSize },
                 new QrTextLine { Text = $"MSSV: {sv.MaSoSinhVien}", FontSize = fontSize },
                 new QrTextLine { Text = "STT: ", FontSize = fontSize * 2, FillRemaining = true },

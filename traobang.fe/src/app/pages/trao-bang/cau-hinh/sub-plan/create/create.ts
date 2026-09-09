@@ -29,6 +29,7 @@ export class Create extends BaseComponent {
         ten: new FormControl('', [Validators.required]),
         moTa: new FormControl(''),
         truongKhoa: new FormControl(''),
+        qrTenKhoa: new FormControl(''),
         note: new FormControl(''),
         moBai: new FormControl(''),
         ketBai: new FormControl(''),

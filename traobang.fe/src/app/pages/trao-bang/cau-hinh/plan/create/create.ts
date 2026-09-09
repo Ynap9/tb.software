@@ -31,7 +31,7 @@ export class Create extends BaseComponent {
         trangThai: new FormControl(this.listTrangThai[0].code),
         moTa: new FormControl(''),
         time: new FormControl(null),
-        idGiaoDien: new FormControl('')
+        idGiaoDien: new FormControl(null)
     });
 
     override ValidationMessages: Record<string, Record<string, string>> = {
@@ -51,7 +51,7 @@ export class Create extends BaseComponent {
                 ten: this._config.data.ten,
                 moTa: this._config.data.moTa,
                 trangThai: this._config.data.trangThai,
-                idGiaoDien: this._config.data.idGiaoDien ?? '',
+                idGiaoDien: this._config.data.idGiaoDien ?? null,
                 time: [new Date(this._config.data.thoiGianBatDau), new Date(this._config.data.thoiGianKetThuc)]
             });
         }
@@ -96,7 +96,7 @@ export class Create extends BaseComponent {
             ten: this.form.value['ten'],
             moTa: this.form.value['moTa'],
             trangThai: this.form.value['trangThai'],
-            idGiaoDien: this.form.value['idGiaoDien'],
+            idGiaoDien: this.form.value['idGiaoDien'] || undefined,
             thoiGianBatDau: from,
             thoiGianKetThuc: to
         };
@@ -125,7 +125,7 @@ export class Create extends BaseComponent {
             ten: this.form.value['ten'],
             moTa: this.form.value['moTa'],
             trangThai: this.form.value['trangThai'],
-            idGiaoDien: this.form.value['idGiaoDien'],
+            idGiaoDien: this.form.value['idGiaoDien'] || undefined,
             thoiGianBatDau: from,
             thoiGianKetThuc: to
         };

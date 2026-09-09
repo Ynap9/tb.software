@@ -91,7 +91,7 @@ namespace traobang.be.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("active-plan")]
-        [Permission(PermissionKeys.GiaoDienView)]
+        [AllowAnonymous]
         public ApiResponse FindByActivePlan()
         {
             try

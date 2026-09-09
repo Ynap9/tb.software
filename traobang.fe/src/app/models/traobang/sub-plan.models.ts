@@ -4,6 +4,8 @@ export interface IViewRowConfigSubPlan {
     id?: number;
     idPlan?: number;
     ten?: string;
+    truongKhoa?: string;
+    qrTenKhoa?: string;
     moTa?: string | null;
     note?: string | null;
     moBai?: string;
@@ -18,6 +20,8 @@ export interface IFindPagingConfigSubPlan extends IBaseRequestPaging {}
 export interface ICreateConfigSubPlan {
     idPlan: number;
     ten: string;
+    truongKhoa: string;
+    qrTenKhoa: string;
     moTa: string | null;
     note: string | null;
     moBai: string;

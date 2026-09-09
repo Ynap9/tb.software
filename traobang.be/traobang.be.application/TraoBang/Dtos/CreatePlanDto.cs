@@ -6,6 +6,6 @@
         public string MoTa { get; set; } = String.Empty;
         public DateTime? ThoiGianBatDau { get; set; }
         public DateTime? ThoiGianKetThuc { get; set; }
-        //public int? IdGiaoDien { get; set; }
+        public int? IdGiaoDien { get; set; }
     }
 }

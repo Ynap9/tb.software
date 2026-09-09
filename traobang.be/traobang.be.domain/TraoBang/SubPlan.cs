@@ -26,6 +26,11 @@ namespace traobang.be.domain.TraoBang
         public int IdPlan { get; set; }
         public string Ten { get; set; } = String.Empty;
         public string TruongKhoa { get; set; } = String.Empty;
+        /// <summary>
+        /// Tên khoa in trên mã QR của sinh viên thuộc khoa này
+        /// </summary>
+        [MaxLength(500)]
+        public string QrTenKhoa { get; set; } = String.Empty;
         public string? MoTa { get; set; } = String.Empty;
         public string? Note { get; set; } = String.Empty;
         public string MoBai { get; set; } = String.Empty;

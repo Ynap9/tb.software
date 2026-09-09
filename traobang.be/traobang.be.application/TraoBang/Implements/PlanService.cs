@@ -33,7 +33,7 @@ namespace traobang.be.application.TraoBang.Implements
 
             var vietnameNow = GetVietnamTime();
 
-            //var giaoDien = _tbDbContext.GiaoDiens.FirstOrDefault(x => !x.Deleted && x.Id == dto.IdGiaoDien);
+            var giaoDien = _tbDbContext.GiaoDiens.FirstOrDefault(x => !x.Deleted && x.Id == dto.IdGiaoDien);
 
             var plan = new domain.TraoBang.Plan
             {
@@ -44,8 +44,7 @@ namespace traobang.be.application.TraoBang.Implements
                 CreatedDate = vietnameNow,
                 TrangThai = TrangThaiPlan.KhoiTao,
                 Deleted = false,
-                //IdGiaoDien = giaoDien != null ? giaoDien.Id : null,
-                //GiaoDien = giaoDien
+                IdGiaoDien = giaoDien?.Id,
             };
 
             _tbDbContext.Plans.Add(plan);
@@ -74,15 +73,14 @@ namespace traobang.be.application.TraoBang.Implements
                     }
                 }
 
-                //var giaoDien = _tbDbContext.GiaoDiens.FirstOrDefault(x => !x.Deleted && x.Id == dto.IdGiaoDien);
+                var giaoDien = _tbDbContext.GiaoDiens.FirstOrDefault(x => !x.Deleted && x.Id == dto.IdGiaoDien);
 
                 plan.Ten = dto.Ten;
                 plan.MoTa = dto.MoTa;
                 plan.ThoiGianBatDau = dto.ThoiGianBatDau;
                 plan.ThoiGianKetThuc = dto.ThoiGianKetThuc;
                 plan.TrangThai = dto.TrangThai;
-                //plan.IdGiaoDien = giaoDien != null ? giaoDien.Id : null;
-                //plan.GiaoDien = giaoDien;
+                plan.IdGiaoDien = giaoDien?.Id;
 
                 _tbDbContext.Plans.Update(plan);
                 _tbDbContext.SaveChanges();
