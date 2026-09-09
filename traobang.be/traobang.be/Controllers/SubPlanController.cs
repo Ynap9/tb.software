@@ -252,6 +252,26 @@ namespace traobang.be.Controllers
             }
         }
 
+        /// <summary>
+        /// Check sinh viên đã có trong hàng đợi chưa. Trả về trạng thái của sinh viên trong hàng đợi, chưa có thì trả về null
+        /// </summary>
+        /// <param name="mssv"></param>
+        /// <returns></returns>
+        [Permission(PermissionKeys.PushSinhVienVaoHangDoi)]
+        [HttpGet("sinh-vien-nhan-bang/hang-doi/check")]
+        public ApiResponse CheckSinhVienTrongHangDoi([FromQuery] string mssv)
+        {
+            try
+            {
+                var data = _subPlanService.CheckSinhVienTrongHangDoi(mssv);
+                return new(data);
+            }
+            catch (Exception ex)
+            {
+                return OkException(ex);
+            }
+        }
+
         [Permission(PermissionKeys.PushSinhVienVaoHangDoi)]
         [HttpPost("sinh-vien-nhan-bang/hang-doi")]
         public async Task<ApiResponse> DiemDanhNhanBang([FromQuery] string mssv)

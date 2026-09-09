@@ -645,15 +645,29 @@ namespace traobang.be.application.TraoBang.Implements
                .FirstOrDefault(x => x.Id == query.sp.Id && x.TrangThai == TraoBangConstants.DangTraoBang && !x.Deleted)
                ?? throw new UserFriendlyException(ErrorCodes.TraoBangErrorSinhVienTraoBangKhongThuocKhoaDangTrao);
 
+            // sinh viên đã có trong hàng đợi thì xóa dòng cũ đi rồi đưa vào lại cuối hàng đợi
+            var listTienDoCu = _tbDbContext.TienDoTraoBangs
+                .Where(x => !x.Deleted && x.MaSoSinhVien.ToLower() == mssv.ToLower())
+                .ToList();
+
+            if (listTienDoCu.Count > 0)
+            {
+                var username = getCurrentName();
+                var vietnamNow = GetVietnamTime();
+
+                foreach (var tienDoCu in listTienDoCu)
+                {
+                    tienDoCu.Deleted = true;
+                    tienDoCu.DeletedBy = username;
+                    tienDoCu.DeletedDate = vietnamNow;
+                }
+
+                _tbDbContext.SaveChanges();
+            }
+
             var maxOrder = _tbDbContext.TienDoTraoBangs
                 .Where(x => x.IdSubPlan == query.sp.Id && !x.Deleted)
                 .Max(x => (int?)x.Order) ?? 0;
-
-            var mssvexisting = _tbDbContext.TienDoTraoBangs.Any(x => !x.Deleted && x.MaSoSinhVien.ToLower() == mssv.ToLower());
-            if (mssvexisting)
-            {
-                throw new UserFriendlyException(ErrorCodes.TraoBangErrorSinhVienDaTonTaiTrongHangDoi);
-            }
 
             var tienDoTraoBang = new TienDoTraoBang
             {
@@ -688,6 +702,18 @@ namespace traobang.be.application.TraoBang.Implements
                 IsShow = true
             };
         }
+        public int? CheckSinhVienTrongHangDoi(string mssv)
+        {
+            _logger.LogInformation($"{nameof(CheckSinhVienTrongHangDoi)}, mssv= {mssv} ");
+
+            var tienDo = _tbDbContext.TienDoTraoBangs.AsNoTracking()
+                .Where(x => !x.Deleted && x.MaSoSinhVien.ToLower() == mssv.ToLower())
+                .OrderByDescending(x => x.Id)
+                .FirstOrDefault();
+
+            return tienDo?.TrangThai;
+        }
+
         public async Task<DiemDanhNhanBangDto> DiemDanhNhanBangTruongHopDacBiet(string mssv)
         {
             _logger.LogInformation($"{nameof(DiemDanhNhanBangTruongHopDacBiet)}, mssv= {mssv} ");
@@ -711,15 +737,29 @@ namespace traobang.be.application.TraoBang.Implements
                .FirstOrDefault(x => x.Id == qr.sl.IdSubPlan && x.TrangThai == TrangThaiSubPlan.DangTraoBang && !x.Deleted)
                ?? throw new UserFriendlyException(ErrorCodes.TraoBangErrorSinhVienTraoBangKhongThuocKhoaDangTrao);
 
+            // sinh viên đã có trong hàng đợi thì xóa dòng cũ đi rồi đưa vào lại cuối hàng đợi
+            var listTienDoCu = _tbDbContext.TienDoTraoBangs
+                .Where(x => !x.Deleted && x.MaSoSinhVien.ToLower() == mssv.ToLower())
+                .ToList();
+
+            if (listTienDoCu.Count > 0)
+            {
+                var username = getCurrentName();
+                var vietnamNow = GetVietnamTime();
+
+                foreach (var tienDoCu in listTienDoCu)
+                {
+                    tienDoCu.Deleted = true;
+                    tienDoCu.DeletedBy = username;
+                    tienDoCu.DeletedDate = vietnamNow;
+                }
+
+                _tbDbContext.SaveChanges();
+            }
+
             var maxOrder = _tbDbContext.TienDoTraoBangs
                 .Where(x => x.IdSubPlan == slide.IdSubPlan && !x.Deleted)
                 .Max(x => (int?)x.Order) ?? 0;
-
-            var mssvexisting = _tbDbContext.TienDoTraoBangs.Any(x => !x.Deleted && x.MaSoSinhVien.ToLower() == mssv.ToLower());
-            if (mssvexisting)
-            {
-                throw new UserFriendlyException(ErrorCodes.TraoBangErrorSinhVienDaTonTaiTrongHangDoi);
-            }
 
             var tienDoTraoBang = new TienDoTraoBang
             {

@@ -22,6 +22,12 @@ namespace traobang.be.application.TraoBang.Interface
         public Task<ViewSinhVienNhanBangDto> NextSinhVienNhanBang(string mssv);
         public Task<ViewSinhVienNhanBangDto> PreviousSinhVienNhanBang(string mssv);
         public Task<DiemDanhNhanBangDto> DiemDanhNhanBang(string mssv);
+        /// <summary>
+        /// Trạng thái của sinh viên trong hàng đợi, chưa có trong hàng đợi thì trả về null
+        /// </summary>
+        /// <param name="mssv"></param>
+        /// <returns></returns>
+        public int? CheckSinhVienTrongHangDoi(string mssv);
         public Task<List<ViewTienDoNhanBangResponseDto>> GetTienDoNhanBang(ViewTienDoNhanBangRequestDto dto);
         public Task<GetInforSubPlanDto> GetInforSubPlan(int idSubPlan);
         public Task UpdateTrangThaiSubPlan(int id);
