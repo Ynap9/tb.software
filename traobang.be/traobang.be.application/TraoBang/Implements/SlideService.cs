@@ -771,18 +771,14 @@ namespace traobang.be.application.TraoBang.Implements
 
             var content = templateContent.Replace("[mssv]", sv.MaSoSinhVien);
 
-            // khối text bên trái, từ trên xuống, STT để trống điền tay
-            float fontSize = 64;
-            var info = new List<QrTextLine>
-            {
-                new QrTextLine { Text = sv.QrTenKhoa.ToUpper(), FontSize = fontSize },
-                new QrTextLine { Text = $"Lớp: {sv.Lop}", FontSize = fontSize },
-                new QrTextLine { Text = sv.QrHoTen, FontSize = fontSize },
-                new QrTextLine { Text = $"MSSV: {sv.MaSoSinhVien}", FontSize = fontSize },
-                new QrTextLine { Text = "STT: ", FontSize = fontSize },
-            };
+            // khoa và lớp nằm trên mã QR, họ tên và mssv nằm dưới, tất cả căn giữa
+            string textAbove = $@"{sv.QrTenKhoa}
+Lớp: {sv.Lop}";
 
-            var qrcode = _qrCodeService.GenerateQrWithText(content, info);
+            string textBelow = $@"{sv.QrHoTen}
+MSSV: {sv.MaSoSinhVien}";
+
+            var qrcode = _qrCodeService.GenerateQrWithText(content, textAbove, textBelow);
             string filename = $"{folder}/{sv.MaSoSinhVien}.png";
 
             // ảnh chỉ có mỗi mã QR, không kèm thông tin gì

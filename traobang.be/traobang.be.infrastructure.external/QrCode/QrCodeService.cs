@@ -33,6 +33,78 @@ namespace traobang.be.infrastructure.external.QrCode
             }
         }
 
+        public Stream GenerateQrWithText(string qrText, string textAbove, string textBelow)
+        {
+            using var qrGenerator = new QRCodeGenerator();
+            using var qrData = qrGenerator.CreateQrCode(qrText, QRCodeGenerator.ECCLevel.Q);
+            var qrCode = new PngByteQRCode(qrData);
+            byte[] qrBytes = qrCode.GetGraphic(20);
+            using Image<Rgba32> qrImage = Image.Load<Rgba32>(qrBytes);
+
+            int padding = 5;
+            float lineSpacing = 5;
+            float fontSize = 64;
+            Font font = SystemFonts.CreateFont("Arial", fontSize, FontStyle.Bold);
+            var linesAbove = string.IsNullOrEmpty(textAbove) ? Array.Empty<string>() : textAbove.Split('\n');
+            var linesBelow = string.IsNullOrEmpty(textBelow) ? Array.Empty<string>() : textBelow.Split('\n');
+
+            // Use font size as fixed line height — reliable across all lines
+            float lineHeight = fontSize * 1.2f;
+            float aboveHeight = linesAbove.Length > 0 ? linesAbove.Length * lineHeight + (linesAbove.Length - 1) * lineSpacing : 0;
+            float belowHeight = linesBelow.Length > 0 ? linesBelow.Length * lineHeight + (linesBelow.Length - 1) * lineSpacing : 0;
+
+            float maxTextWidth = 0;
+            List<float> widthsAbove = new();
+            List<float> widthsBelow = new();
+            foreach (var line in linesAbove)
+            {
+                var size = TextMeasurer.MeasureSize(line, new TextOptions(font));
+                widthsAbove.Add(size.Width);
+                if (size.Width > maxTextWidth)
+                    maxTextWidth = size.Width;
+            }
+            foreach (var line in linesBelow)
+            {
+                var size = TextMeasurer.MeasureSize(line, new TextOptions(font));
+                widthsBelow.Add(size.Width);
+                if (size.Width > maxTextWidth)
+                    maxTextWidth = size.Width;
+            }
+
+            int width = (int)Math.Max(qrImage.Width, maxTextWidth + padding * 2);
+            int height = (int)(aboveHeight + qrImage.Height + belowHeight + padding * 3);
+
+            var finalImage = new Image<Rgba32>(width, height, Color.White);
+            finalImage.Mutate(ctx =>
+            {
+                // khối text phía trên mã QR, mỗi dòng căn giữa
+                float currentY = padding;
+                for (int i = 0; i < linesAbove.Length; i++)
+                {
+                    float textX = (width - widthsAbove[i]) / 2;
+                    ctx.DrawText(linesAbove[i], font, Color.Black, new PointF(textX, currentY));
+                    currentY += lineHeight + lineSpacing; // lineHeight advances, lineSpacing adds gap
+                }
+
+                int qrX = (width - qrImage.Width) / 2;
+                ctx.DrawImage(qrImage, new Point(qrX, (int)(aboveHeight + padding)), 1f);
+
+                // khối text phía dưới mã QR, mỗi dòng căn giữa
+                currentY = aboveHeight + qrImage.Height + padding * 2;
+                for (int i = 0; i < linesBelow.Length; i++)
+                {
+                    float textX = (width - widthsBelow[i]) / 2;
+                    ctx.DrawText(linesBelow[i], font, Color.Black, new PointF(textX, currentY));
+                    currentY += lineHeight + lineSpacing; // lineHeight advances, lineSpacing adds gap
+                }
+            });
+
+            MemoryStream ms = new MemoryStream();
+            finalImage.SaveAsPng(ms);
+            ms.Position = 0;
+            return ms;
+        }
+
         public Stream GenerateQrWithText(string qrText, List<QrTextLine> textLines)
         {
             using var qrGenerator = new QRCodeGenerator();

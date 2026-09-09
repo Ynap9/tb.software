@@ -24,4 +24,5 @@ export interface IViewGuestSvNhanBang {
     isShow?: boolean;
     isShowPrev?: boolean;
     isShowNext?: boolean;
+    thoiGianBatDau?: string;
 }

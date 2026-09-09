@@ -2,7 +2,9 @@
     <!-- Title -->
     <h6  class="header-title text-base md:text-lg font-bold text-gray-800 mb-0 flex items-center justify-center gap-2">MÃ QR CHECKIN LÊN NHẬN
         BẰNG TỐT NGHIỆP</h6>
-    <p class="text-base md:text-lg font-bold mt-0 text-gray-800 flex items-center justify-center">(Ngày 14/03/2026)</p>
+    @if (originSv.thoiGianBatDau) {
+    <p class="text-base md:text-lg font-bold mt-0 text-gray-800 flex items-center justify-center">(Ngày {{ originSv.thoiGianBatDau | date: 'dd/MM/yyyy' }})</p>
+    }
 
     <!-- QR Placeholder -->
     <div class="w-[200px] mx-auto flex items-center justify-center text-gray-400 rounded-md -mb-4">

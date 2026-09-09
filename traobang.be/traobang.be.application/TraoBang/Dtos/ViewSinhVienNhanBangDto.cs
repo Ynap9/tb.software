@@ -28,6 +28,10 @@
         public string LinkQR { get; set; } = String.Empty;
         public string LinkQrOnly { get; set; } = String.Empty;
         public string QrHoTen { get; set; } = string.Empty;
+        /// <summary>
+        /// Thời gian bắt đầu của plan chứa sinh viên này
+        /// </summary>
+        public DateTime? ThoiGianBatDau { get; set; }
 
     }
 }

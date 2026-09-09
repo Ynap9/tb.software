@@ -470,6 +470,7 @@ namespace traobang.be.application.TraoBang.Implements
             result.Order = $"{sinhVienSlide.slide.Order}/{maxOrder}";
             result.IsShowNext = sinhVienSlide.slide.Order < maxOrder;
             result.IsShowPrev = sinhVienSlide.slide.Order > minOrder;
+            result.ThoiGianBatDau = activePlan.ThoiGianBatDau;
 
 
             var tienDo = _tbDbContext.TienDoTraoBangs.AsNoTracking().Where(x => !x.Deleted && x.IdSinhVienNhanBang == sinhVienSlide.sv.Id && x.LoaiSlide == LoaiSlides.SINH_VIEN)
