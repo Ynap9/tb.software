@@ -1098,6 +1098,27 @@ namespace traobang.be.application.TraoBang.Implements
                 #endregion
 
                 _tbDbContext.SaveChanges();
+
+                #region cho dong dau hang doi dang trao neu chua co dong nao dang trao
+                var dangTraoBang = _tbDbContext.TienDoTraoBangs
+                    .Any(x => !x.Deleted && x.IdSubPlan == nextSubPlan.Id && x.TrangThai == TraoBangConstants.DangTraoBang);
+
+                if (!dangTraoBang)
+                {
+                    var tienDoDauTien = _tbDbContext.TienDoTraoBangs
+                        .Where(x => !x.Deleted && x.IdSubPlan == nextSubPlan.Id)
+                        .OrderBy(x => x.Order)
+                        .FirstOrDefault();
+
+                    if (tienDoDauTien != null)
+                    {
+                        tienDoDauTien.TrangThai = TraoBangConstants.DangTraoBang;
+                        _tbDbContext.TienDoTraoBangs.Update(tienDoDauTien);
+                        _tbDbContext.SaveChanges();
+                    }
+                }
+                #endregion
+
                 tran.Commit();
             }
             await _traoBangService.NotifyChonKhoa();

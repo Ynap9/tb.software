@@ -8,6 +8,7 @@ import { StudentList } from './student-list/student-list';
 import { Footer } from './footer/footer';
 
 import { DialogMssv } from './dialog-mssv/dialog-mssv';
+import { DialogTest } from './dialog-test/dialog-test';
 
 import { SubPlanStatuses, TraoBangHubConst } from '@/shared/constants/sv-nhan-bang.constants';
 import * as signalR from '@microsoft/signalr';
@@ -42,6 +43,7 @@ export class ScanQrSv extends BaseComponent implements OnDestroy {
     listSlide: ISlideItem[] = [];
     removingFirstSlide = false;
     highlightLastStudent = false;
+    loadingTest = false;
 
     override ngOnInit(): void {
         this.initData();
@@ -283,8 +285,18 @@ export class ScanQrSv extends BaseComponent implements OnDestroy {
         this.getCurrentSubPlan()
     }
 
-    onModeTest() {
-        this._slideDragService.onModeTest(this.currentSubPlanInfo?.idPlan)
+    onOpenDialogTest() {
+        const ref = this._dialogService.open(DialogTest, { header: 'Chuẩn bị dữ liệu test', closable: true, modal: true, styleClass: 'w-[500px]', focusOnShow: false });
+        ref.onClose.subscribe((isCheckinFull) => {
+            if (typeof isCheckinFull === 'boolean') {
+                this.onModeTest(isCheckinFull);
+            }
+        });
+    }
+
+    onModeTest(isCheckinFull: boolean) {
+        this.loadingTest = true;
+        this._slideDragService.onModeTest(this.currentSubPlanInfo?.idPlan, isCheckinFull)
             .subscribe({
                 next: (res) => {
                     if (this.isResponseSucceed(res)) {
@@ -293,7 +305,7 @@ export class ScanQrSv extends BaseComponent implements OnDestroy {
                 }
             })
             .add(() => {
-                this.loading = false;
+                this.loadingTest = false;
             });
     }
 }

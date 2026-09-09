@@ -15,8 +15,9 @@
             <div class="w-full lg:w-2/6 bg-white rounded-xl shadow p-4">
                 <div class="flex flex-row justify-between mb-3">
                     <div class="flex gap-2">
-                        <button pButton label="QUÉT QR" class="p-button-sm p-button"></button>
-                        <button pButton label="Test" (click)="onModeTest()" class="p-button-sm p-button"></button>
+                        <!-- <button pButton label="QUÉT QR" class="p-button-sm p-button"></button> -->
+                        <button pButton label="Test" (click)="onOpenDialogTest()" [loading]="loadingTest"
+                            [disabled]="loadingTest" class="p-button-sm p-button"></button>
                         <button pButton label="NHẬP MSSV" class="p-button-sm p-button-outlined"
                             (click)="onOpenDialogMssv()"></button>
                         <button pButton label="Chuyển loại bằng" class="p-button-sm p-button-danger button-cut"
