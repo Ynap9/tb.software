@@ -1285,20 +1285,34 @@ namespace traobang.be.application.TraoBang.Implements
                 return null;
             }
 
-            var sinhVienDaTrao = await _tbDbContext.TienDoTraoBangs
-                .AsNoTracking()
-                .CountAsync(x => x.TrangThai == TraoBangConstants.DaTraoBang && x.LoaiSlide == LoaiSlides.SINH_VIEN && !x.Deleted);
+            var sinhVienDaTrao = (
+                    from td in _tbDbContext.TienDoTraoBangs.AsNoTracking()
+                    join sp in _tbDbContext.SubPlans.AsNoTracking() on td.IdSubPlan equals sp.Id
+                    where !td.Deleted && !sp.Deleted
+                        && td.TrangThai == TraoBangConstants.DaTraoBang && td.LoaiSlide == LoaiSlides.SINH_VIEN
+                        && sp.IdPlan == activePlan.Id
+                    select td.Id
+                ).Count();
 
             var tongSinhVienThamGiaTraoBang = (
-                                                from plan in _tbDbContext.Plans.AsNoTracking()
-                                                join sp in _tbDbContext.SubPlans.AsNoTracking() on plan.Id equals sp.IdPlan
-                                                join slide in _tbDbContext.Slides.AsNoTracking() on sp.Id equals slide.IdSubPlan
-                                                join sv in _tbDbContext.DanhSachSinhVienNhanBangs.AsNoTracking().Where(x => !x.Deleted) on slide.IdSinhVienNhanBang equals sv.Id
-                                                where slide.TrangThai == TraoBangConstants.ChuanBi && slide.IsShow
-                                                     && !plan.Deleted && !sp.Deleted && !slide.Deleted
-                                                     && sp.IsShow && plan.TrangThai == TrangThaiPlan.DangHoatDong
-                                                select sv.Id
-                                               ).Count();
+                    from sl in _tbDbContext.Slides.AsNoTracking()
+                    join sp in _tbDbContext.SubPlans.AsNoTracking() on sl.IdSubPlan equals sp.Id
+                    where !sl.Deleted && !sp.Deleted
+                        && sl.LoaiSlide == LoaiSlides.SINH_VIEN
+                        && sp.IdPlan == activePlan.Id
+                    select sl.Id
+                ).Count();
+
+            //var tongSinhVienThamGiaTraoBang = (
+            //                                    from plan in _tbDbContext.Plans.AsNoTracking()
+            //                                    join sp in _tbDbContext.SubPlans.AsNoTracking() on plan.Id equals sp.IdPlan
+            //                                    join slide in _tbDbContext.Slides.AsNoTracking() on sp.Id equals slide.IdSubPlan
+            //                                    join sv in _tbDbContext.DanhSachSinhVienNhanBangs.AsNoTracking().Where(x => !x.Deleted) on slide.IdSinhVienNhanBang equals sv.Id
+            //                                    where slide.TrangThai == TraoBangConstants.ChuanBi && slide.IsShow
+            //                                         && !plan.Deleted && !sp.Deleted && !slide.Deleted
+            //                                         && sp.IsShow && plan.TrangThai == TrangThaiPlan.DangHoatDong
+            //                                    select sv.Id
+            //                                   ).Count();
 
             var tienDo = tongSinhVienThamGiaTraoBang > 0 ? (double)sinhVienDaTrao / tongSinhVienThamGiaTraoBang * 100 : 0;
             return new GetTienDoTraoBangResponseDto
