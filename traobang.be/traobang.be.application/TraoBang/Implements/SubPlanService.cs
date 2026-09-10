@@ -553,6 +553,7 @@ namespace traobang.be.application.TraoBang.Implements
             result.Order = $"{nextSinhVienSlide.slide.Order}/{maxOrder}";
             result.IsShowNext = nextSinhVienSlide.slide.Order < maxOrder;
             result.IsShowPrev = nextSinhVienSlide.slide.Order > minOrder;
+            result.TrangThai = nextSinhVienSlide.slide.TrangThai;
 
             return result;
         }
@@ -618,6 +619,7 @@ namespace traobang.be.application.TraoBang.Implements
             result.Order = $"{prevSinhVienSlide.slide.Order}/{maxOrder}";
             result.IsShowNext = prevSinhVienSlide.slide.Order < maxOrder;
             result.IsShowPrev = prevSinhVienSlide.slide.Order > minOrder;
+            result.TrangThai = prevSinhVienSlide.slide.TrangThai;
 
             return result;
         }
