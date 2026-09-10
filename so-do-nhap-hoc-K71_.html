@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sơ đồ nhập học sinh viên K71 — HUCE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b132b;
+  --dot:#1c2a4a;
+  --panel:#0f172a;
+  --panel-2:#1e293b;
+  --panel-3:#334155;
+  --cyan:#22d3ee;
+  --cyan-dim:#0e7490;
+  --navy:#0e7490;
+  --navy-deep:#0b132b;
+  --route:#F2681F;
+  --route-soft:#FBD9C2;
+  --ink:#e2e8f0;
+  --muted:#94a3b8;
+  --line:#334155;
+  --paper:#0b132b;
+  --card:#0f172a;
+  --sheet:#ffffff;
+  --sheet-ink:#16202E;
+  --sheet-muted:#5C6B80;
+  --sheet-line:#C9D2DE;
+  --txt-2:#cbd5e1;
+  --accent-fill:rgba(8,145,178,.20);
+  --accent-fill-2:rgba(8,145,178,.28);
+  --shadow-1:0 14px 30px rgba(0,0,0,.35);
+  --shadow-2:0 18px 40px rgba(0,0,0,.45);
+  --shadow-sheet:0 15px 35px rgba(0,0,0,.6);
+  --danger-bd:#7f1d1d;
+  --danger-bg:rgba(190,18,60,.14);
+  --danger-tx:#fb7185;
+
+  --c-a:#B02525;
+  --c-b:#9FA8DA;
+  --c-c:#3E9E52;
+  --c-d:#B49BD8;
+  --c-e:#7CC79B;
+  --c-g:#F0A268;
+  --c-h:#8B9BE2;
+  --c-i:#C3DE9C;
+  --c-mn:#FBE28F;
+  --seat:#63BE8B;
+  --slab:#8D959E;
+}
+
+/* ---------- Chế độ sáng ---------- */
+:root[data-theme="light"]{
+  --bg:#EDF1F7;
+  --dot:#D3DCE9;
+  --panel:#FFFFFF;
+  --panel-2:#EEF3FA;
+  --panel-3:#CBD5E1;
+  --cyan:#0E7490;
+  --cyan-dim:#7CBFD2;
+  --ink:#16202E;
+  --txt-2:#374558;
+  --muted:#5C6B80;
+  --line:#C9D2DE;
+  --card:#FFFFFF;
+  --accent-fill:rgba(14,116,144,.10);
+  --accent-fill-2:rgba(14,116,144,.13);
+  --shadow-1:0 10px 24px rgba(15,35,70,.10);
+  --shadow-2:0 12px 28px rgba(15,35,70,.12);
+  --shadow-sheet:0 10px 26px rgba(15,35,70,.18);
+  --danger-bd:#E9A3A3;
+  --danger-bg:#FEF4F4;
+  --danger-tx:#B02525;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background-color:var(--bg);
+  background-image:radial-gradient(var(--dot) 1px, transparent 1px);
+  background-size:24px 24px;
+  color:var(--ink);
+  font-family:'Montserrat',system-ui,'Segoe UI',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding:0 16px;
+}
+.wrap{max-width:1400px;margin:0 auto;padding:0 0 26px}
+
+/* ---------- Header ---------- */
+header{
+  max-width:1400px;margin:18px auto 0;
+  background:var(--panel);color:var(--ink);
+  border:1px solid var(--panel-3);border-radius:12px;
+  padding:12px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  box-shadow:var(--shadow-2);
+}
+.crest{
+  height:42px;flex:none;display:grid;place-items:center;
+  background:var(--accent-fill-2);border:1px solid var(--cyan-dim);
+  color:var(--cyan);border-radius:9px;
+  width:42px;font-weight:700;letter-spacing:.5px;font-size:11px;
+}
+.crest img{display:none;height:38px;width:auto}
+.crest.has-img{
+  width:auto;background:transparent;border:0;padding:0;border-radius:0;box-shadow:none;
+}
+.crest.has-img img{display:block}
+.crest.has-img #cresttxt{display:none}
+header h1{
+  margin:0;font-size:clamp(15px,2.2vw,22px);font-weight:800;
+  letter-spacing:.4px;text-transform:uppercase;line-height:1.15;
+}
+header .sub{margin:2px 0 0;font-size:11.5px;color:var(--muted);font-weight:500}
+.hgrow{flex:1 1 260px}
+.themebtn{
+  font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;
+  color:var(--cyan);background:var(--accent-fill);
+  border:1px solid var(--cyan-dim);border-radius:999px;
+  padding:6px 13px;white-space:nowrap;
+  transition:background .15s ease,color .15s ease;
+}
+.themebtn:hover{background:var(--accent-fill-2)}
+.themebtn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.badge{
+  font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--cyan);
+  border:1px solid var(--cyan-dim);border-radius:999px;
+  padding:5px 12px;background:var(--accent-fill);white-space:nowrap;
+}
+
+/* ---------- Stat strip ---------- */
+.stats{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));
+  gap:7px;margin:10px 0 8px;
+}
+.stat{
+  background:var(--panel);border:1px solid var(--panel-3);border-radius:10px;
+  padding:6px 10px;
+}
+.stat b{display:block;font-family:'Share Tech Mono',monospace;font-size:17px;line-height:1.15}
+.stat span{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.stat.warn{border-color:var(--danger-bd);background:var(--danger-bg)}
+.stat.warn b{color:var(--danger-tx)}
+
+/* ---------- Thống kê nhập học ---------- */
+.nhwarn{display:inline;font-style:normal;color:var(--muted);font-size:11px}
+
+/* hero: vòng % nhập học + số liệu */
+.nhhero{display:flex;align-items:center;gap:26px;background:var(--panel);border:1px solid var(--panel-3);
+  border-radius:14px;padding:18px 24px;margin:6px 0 8px;box-shadow:var(--shadow-1)}
+@media(max-width:640px){.nhhero{flex-direction:column;align-items:stretch;gap:16px}}
+.nhgauge{width:132px;height:132px;position:relative;flex:none;margin:0 auto}
+.nhgauge svg{width:132px;height:132px;max-height:none}
+.nhgauge .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.nhgauge .c b{font-family:'Share Tech Mono',monospace;font-size:24px;color:var(--cyan);line-height:1;font-weight:700}
+.nhgauge .c span{font-size:8.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-top:5px}
+.herostats{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:15px 26px;min-width:0}
+.hs .l{font-size:9.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:600}
+.hs .v{font-family:'Share Tech Mono',monospace;font-size:19px;font-weight:700;color:var(--ink);margin-top:4px;line-height:1.1}
+.hs .v small{font-size:12px;color:var(--muted);font-weight:400}
+.hs.goal .v{color:var(--cyan)}
+.nhfee{font-size:11px;color:var(--muted);margin:0 2px 12px;line-height:1.55}
+.nhfee b{color:var(--txt-2);font-family:'Share Tech Mono',monospace}
+.nhksel{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.4px;color:var(--muted);
+  background:var(--panel-2);border:1px solid var(--panel-3);border-radius:8px;padding:6px 9px}
+.nhksel:disabled{opacity:.7;cursor:not-allowed}
+
+.nhtoolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:2px 0 10px}
+.nhseg{display:inline-flex;background:var(--panel-2);border:1px solid var(--panel-3);border-radius:10px;padding:3px}
+.nhseg button{appearance:none;border:0;background:transparent;color:var(--muted);
+  font-family:'Montserrat',sans-serif;font-weight:600;font-size:12.5px;padding:6px 15px;border-radius:8px;cursor:pointer;transition:.15s}
+.nhseg button[aria-pressed="true"]{background:var(--accent-fill-2);color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan-dim)}
+.nhseg button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.nhnote{font-size:11px;color:var(--muted)}
+.nhnote b{color:#e0912a;font-weight:700}
+.nhsearch{position:relative}
+.nhtools{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.nhimpbtn{cursor:pointer;font-family:'Montserrat',sans-serif;font-weight:600;font-size:12px;color:var(--ink);
+  background:var(--panel-2);border:1px solid var(--panel-3);border-radius:9px;padding:8px 12px;white-space:nowrap}
+.nhimpbtn:hover{border-color:var(--cyan-dim);color:var(--cyan)}
+.nhimpmsg{margin:2px 2px 12px;font-size:11.5px;color:var(--cyan)}
+.nhimpmsg.err{color:#e0912a}
+.nhsearch svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;stroke:var(--muted)}
+.nhsearch input{width:250px;max-width:48vw;padding:8px 12px 8px 32px;border-radius:9px;background:var(--panel-2);
+  border:1px solid var(--panel-3);color:var(--ink);font-family:'Montserrat',sans-serif;font-size:12.5px;outline:none}
+.nhsearch input:focus{border-color:var(--cyan-dim);box-shadow:0 0 0 3px var(--accent-fill-2)}
+.nhsearch input::placeholder{color:var(--muted)}
+@media(max-width:640px){.nhsearch{margin-left:0;width:100%}.nhsearch input{width:100%;max-width:none}}
+
+/* bảng gọn: hàng mảnh, đường kẻ mảnh, 1 thanh tiến độ dịu */
+.nhtablewrap{border:1px solid var(--panel-3);border-radius:12px;overflow:hidden;background:var(--panel)}
+.nhtable{width:100%;border-collapse:collapse;font-size:13px}
+.nhtable th{font-family:'Share Tech Mono',monospace;font-size:9.5px;letter-spacing:1px;text-transform:uppercase;
+  color:var(--muted);font-weight:400;text-align:left;padding:11px 16px;border-bottom:1px solid var(--panel-3);white-space:nowrap}
+.nhtable th.s{cursor:pointer;user-select:none}
+.nhtable th.s:hover{color:var(--txt-2)}
+.nhtable th .ar{display:inline-block;margin-left:5px;opacity:.3;font-size:9px}
+.nhtable th.on{color:var(--cyan)}
+.nhtable th.on .ar{opacity:1}
+.nhtable th.r,.nhtable td.r{text-align:right}
+.nhtable td{padding:11px 16px;border-bottom:1px solid var(--panel-2);vertical-align:middle}
+.nhtable tbody tr:last-child td{border-bottom:0}
+.nhtable tbody tr:hover{background:var(--accent-fill)}
+.nhu{display:flex;align-items:center;gap:10px;font-weight:600;color:var(--ink);font-size:13px}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.dot.g{background:#2fbd85}.dot.c{background:var(--cyan)}.dot.w{background:#e0912a}
+.nhu .sub{font-weight:400;color:var(--muted);font-size:10.5px;font-family:'Share Tech Mono',monospace}
+.prog{display:flex;align-items:center;gap:11px;min-width:190px}
+.prog .track{flex:1;height:7px;border-radius:999px;background:var(--panel-2);overflow:hidden}
+.prog .track>i{display:block;height:100%;border-radius:999px;background:var(--cyan);transition:width .7s cubic-bezier(.2,.7,.2,1)}
+.prog .track>i.w{background:#e0912a}.prog .track>i.g{background:#2fbd85}
+.prog .pv{font-family:'Share Tech Mono',monospace;font-weight:700;font-size:13px;width:50px;text-align:right}
+.pv.g{color:#2fbd85}.pv.c{color:var(--cyan)}.pv.w{color:#e0912a}
+.nhmono{font-family:'Share Tech Mono',monospace;color:var(--txt-2);white-space:nowrap}
+.grprow td{background:var(--panel-2);font-family:'Share Tech Mono',monospace;font-size:9.5px;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--cyan);padding:7px 16px}
+.nhempty td{padding:28px 16px;text-align:center;color:var(--muted);font-size:12.5px}
+.nhtable th.stth{text-align:right;width:38px}
+.nhtable td.stt{text-align:right;width:38px;color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:11px}
+@media(max-width:640px){.nhtable .hide-sm{display:none}.prog{min-width:120px}}
+
+/* ---------- Layout ---------- */
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:12px;align-items:start}
+@media (max-width:1000px){.grid{grid-template-columns:minmax(0,1fr)}}
+
+.mapcard{
+  position:relative;background:var(--sheet);border:1px solid #cbd5e1;
+  border-radius:12px;padding:6px;overflow:hidden;display:flex;justify-content:center;
+  box-shadow:var(--shadow-sheet);
+}
+svg{display:block;width:auto;max-width:100%;height:auto;max-height:calc(100vh - 84px);margin:0 auto}
+
+/* ---------- Station interaction ---------- */
+.station{cursor:pointer}
+.station .hit{fill:transparent}
+.station .body{transition:filter .18s ease, opacity .18s ease}
+.station .ring{
+  fill:none;stroke:var(--route);stroke-width:7;opacity:0;
+  transition:opacity .18s ease;
+}
+.station:hover .ring,.station.on .ring{opacity:1}
+.station:focus-visible{outline:none}
+.station:focus-visible .ring{opacity:1;stroke-dasharray:6 5}
+.mapcard.focusing .station:not(.on) .body{opacity:.32;filter:grayscale(.65)}
+.mapcard.focusing .scene-dim{opacity:.4;transition:opacity .18s ease}
+
+.tag circle{fill:#fff;stroke:var(--sheet-ink);stroke-width:2.2}
+.rm,.tag text{paint-order:stroke;stroke:#fff;stroke-width:4.5;stroke-linejoin:round}
+.tag text{font-weight:800;font-size:22px;fill:var(--sheet-ink);text-anchor:middle;dominant-baseline:central}
+.rm{font-weight:800;font-size:22px;fill:var(--sheet-ink);text-anchor:middle}
+.note{font-weight:700;font-size:12.5px;fill:var(--sheet-ink);text-anchor:middle}
+.floor{font-weight:800;font-size:21px;fill:var(--sheet-ink);text-anchor:middle;letter-spacing:1px}
+.wait{font-weight:800;font-size:15px;fill:#1D3B2A;text-anchor:middle;letter-spacing:.4px}
+
+/* route */
+#routeg,#labels,#routelbl{pointer-events:none}
+#gotokb{pointer-events:auto;cursor:pointer}
+#gotokb text{transition:fill .15s ease}
+#gotokb .kbhit{fill:transparent}
+#gotokb:hover .kbplate,#gotokb:focus-visible .kbplate{opacity:1}
+#gotokb:hover text,#gotokb:focus-visible text{fill:#0e7490}
+#gotokb .kbplate{
+  fill:#E6F6FA;stroke:#0e7490;stroke-width:1.5;opacity:0;
+  transition:opacity .15s ease;
+}
+#gotokb:focus-visible{outline:none}
+#gotokb .kbcue{font-size:11px;font-weight:700;fill:#0e7490;letter-spacing:.4px}
+.route{fill:none;stroke:var(--route);stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
+.route-glow{fill:none;stroke:var(--route-soft);stroke-width:15;stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+.route-dash{
+  fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round;
+  stroke-dasharray:2 20;opacity:.9;
+  animation:flow 3.2s linear infinite;
+}
+@keyframes flow{to{stroke-dashoffset:-220}}
+.pulse{opacity:0}
+.pulse.run{opacity:1}
+
+@media (prefers-reduced-motion:reduce){
+  .route-dash{animation:none;opacity:0}
+  *{transition:none!important}
+}
+
+
+
+
+/* ---------- Tabs ---------- */
+.tabs{
+  display:flex;gap:3px;margin:0 0 8px;width:fit-content;
+  background:var(--panel);border:1px solid var(--panel-3);border-radius:12px;padding:5px;
+  box-shadow:var(--shadow-1);
+}
+.tab{
+  border:0;background:transparent;font:inherit;font-weight:600;font-size:12.5px;
+  color:var(--muted);padding:8px 12px 8px 9px;border-radius:8px;cursor:pointer;
+  display:grid;grid-template-columns:16px 1fr;align-items:center;
+  column-gap:10px;justify-items:start;text-align:left;line-height:1.2;
+  white-space:nowrap;
+  transition:background .15s ease,color .15s ease;
+}
+.tab{border:1px solid transparent}
+.tab svg{
+  width:16px;height:16px;display:block;justify-self:center;fill:none;stroke:currentColor;
+  stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;opacity:.85;
+}
+.tab[aria-selected="true"] svg{opacity:1}
+.tab:hover{color:var(--ink);background:var(--panel-2)}
+.tab[aria-selected="true"]{
+  background:var(--accent-fill);color:var(--cyan);border-color:var(--cyan-dim);
+}
+.tab:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+/* ---------- Bố cục sidebar ---------- */
+.shell{display:flex;gap:12px;align-items:flex-start;padding-top:10px}
+.sidenav{width:188px;flex:none;position:sticky;top:10px}
+.content{flex:1;min-width:0}
+.sidenav .tabs{flex-direction:column;width:100%;margin:0 0 8px}
+.sidenav .tab{text-align:left;width:100%}
+.sidenav .stats{grid-template-columns:1fr;gap:6px;margin:0}
+.sidenav .stat{display:flex;align-items:baseline;gap:8px;padding:6px 10px}
+.sidenav .stat b{font-size:16px;color:var(--cyan)}
+.sidenav .stat span{font-size:9.5px;line-height:1.2}
+@media (max-width:900px){
+  .shell{flex-direction:column;gap:8px}
+  .sidenav{width:100%;position:static}
+  .sidenav .tabs{flex-direction:row;width:fit-content}
+  .sidenav .stats{grid-template-columns:repeat(auto-fit,minmax(112px,1fr))}
+}
+
+/* ---------- Danh sách cán bộ ---------- */
+.staffgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.scard{background:var(--panel);border:1px solid var(--panel-3);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow-1)}
+.scard .sh{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.scard .dot{
+  width:32px;height:32px;border-radius:50%;flex:none;display:grid;place-items:center;
+  font-weight:800;font-size:15px;color:#12203A;border:1.5px solid rgba(0,0,0,.28);
+}
+.scard h3{margin:0;font-size:14px;font-weight:700;line-height:1.3}
+.scard .room{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);font-weight:700}
+.scard ol{margin:0;padding-left:21px;font-size:13.2px;line-height:1.75;color:var(--ink)}
+.scard .unit{font-size:13.2px;line-height:1.55;color:var(--txt-2);margin:0}
+.scard .foot2{
+  margin-top:11px;padding-top:9px;border-top:1px dashed var(--panel-3);
+  display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);font-weight:600;
+}
+.scard .foot2 b{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--ink);margin-right:4px}
+.stafftotal{
+  margin-bottom:12px;font-size:12.5px;color:var(--muted);
+}
+.stafftotal b{color:var(--cyan)}
+.stafftotal b{color:var(--ink);font-family:'Share Tech Mono',monospace;font-size:15px}
+
+
+/* ---------- Bảng Khoa, Ban ---------- */
+.tblwrap{background:var(--panel);border:1px solid var(--panel-3);border-radius:14px;padding:6px 4px;overflow-x:auto;box-shadow:var(--shadow-1)}
+table.kb{border-collapse:collapse;width:100%;font-size:13.4px}
+table.kb th{
+  text-align:left;font-size:11px;letter-spacing:.9px;text-transform:uppercase;
+  color:var(--cyan);font-weight:400;font-family:'Share Tech Mono',monospace;
+  padding:12px 14px;border-bottom:1px solid var(--panel-2);
+  white-space:nowrap;
+}
+table.kb td{padding:11px 14px;border-bottom:1px solid var(--panel-2);vertical-align:middle;color:var(--ink)}
+table.kb tr:last-child td{border-bottom:0}
+table.kb tbody tr:hover{background:var(--panel-2)}
+table.kb .stt{font-family:'Share Tech Mono',monospace;color:var(--muted);width:44px}
+table.kb .unit{font-weight:600}
+table.kb .n{font-family:'Share Tech Mono',monospace;font-weight:700;text-align:right;width:78px}
+table.kb .loc{color:var(--txt-2)}
+table.kb .room2{
+  font-family:'Share Tech Mono',monospace;font-size:13.5px;
+  color:var(--ink);white-space:nowrap;
+}
+table.kb .bldg{
+  font-family:'Share Tech Mono',monospace;font-size:13.5px;
+  color:var(--cyan);white-space:nowrap;
+}
+table.kb .stt{letter-spacing:.5px}
+.bld{
+  display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;
+  background:var(--accent-fill);color:var(--cyan);border:1px solid var(--cyan-dim);margin-right:8px;font-family:'Share Tech Mono',monospace;
+}
+table.kb tfoot td{padding:12px 14px;font-weight:700;border-top:2px solid var(--panel-3);color:var(--ink)}
+
+
+/* ---------- Thống kê ---------- */
+.content .stats{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin:0 0 16px}
+.content .stat{padding:12px 14px}
+.content .stat b{font-size:26px;color:var(--cyan)}
+.content .stat span{font-size:10.5px}
+.tkh{
+  margin:0 0 9px;font-family:'Share Tech Mono',monospace;font-size:11.5px;
+  letter-spacing:1.6px;text-transform:uppercase;color:var(--cyan);font-weight:400;
+}
+table.kb td.tag2{font-weight:800;width:60px}
+table.kb .chip{
+  display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;
+  font-size:12.5px;font-weight:800;color:#12203A;border:1.5px solid rgba(0,0,0,.28);
+}
+
+
+/* ---------- Sơ đồ nhà A1 trong tab Khoa, Ban ---------- */
+.kbgrid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:12px;align-items:start}
+@media (max-width:1000px){.kbgrid{grid-template-columns:minmax(0,1fr)}}
+.kbsheet{
+  position:relative;
+  background:var(--sheet);border:1px solid #cbd5e1;border-radius:12px;padding:8px;
+  box-shadow:var(--shadow-sheet);display:flex;justify-content:center;
+}
+.kbtip{width:250px}
+.kbtip .noi{margin:0;font-size:12.6px;line-height:1.45;color:var(--txt-2)}
+.kbtip .noi b{color:var(--cyan);font-weight:700}
+.kbtip .noi.dc{background:#FEF3E2;border:1px solid #F4C77E;border-radius:8px;padding:7px 9px;color:#7C4A03}
+.kbtip .noi.dc b{color:#B45309}
+.kbtip .dclabel{display:block;margin-bottom:2px;font-weight:700;color:#B45309;
+  font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.6px;text-transform:uppercase}
+.kbsheet svg{width:100%;height:auto;max-height:none;display:block}
+.kbside{
+  background:var(--panel);border:1px solid var(--panel-3);border-radius:12px;
+  padding:12px;box-shadow:var(--shadow-1);position:sticky;top:10px;
+}
+.kbside h2{
+  margin:0 0 9px;padding-bottom:8px;border-bottom:1px solid var(--panel-2);
+  font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--cyan);font-weight:400;
+}
+.kbhead{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.kbhead h2{margin:0;padding:0;border:0;flex:1}
+.kbsel{
+  font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.6px;
+  color:var(--cyan);background:var(--panel-2);border:1px solid var(--panel-3);
+  border-radius:8px;padding:5px 8px;cursor:pointer;
+}
+.kbsel:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.kbgroup{margin-bottom:12px}
+.kbgroup h3{
+  margin:0 0 6px;padding-bottom:6px;border-bottom:1px solid var(--panel-2);
+  font-family:'Share Tech Mono',monospace;font-size:10.5px;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--cyan);font-weight:400;
+}
+.kblist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.kblist li{
+  display:grid;grid-template-columns:1fr auto;gap:6px;align-items:baseline;
+  padding:6px 8px;border-radius:8px;cursor:default;transition:background .15s ease;
+}
+.kblist li:hover,.kblist li.on{background:var(--panel-2)}
+.kblist .nm{font-size:12.4px;font-weight:600;color:var(--ink);line-height:1.3}
+.kblist .nm em{
+  display:block;font-style:normal;font-weight:400;font-size:11px;color:var(--muted);
+  font-family:'Share Tech Mono',monospace;letter-spacing:.4px;
+}
+.kblist .lp{
+  font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--cyan);font-weight:700;
+  white-space:nowrap;
+}
+/* các phòng trong bản vẽ */
+.rmcell{fill:#EDF1F6;stroke:#94a3b8;stroke-width:.8}
+.rmcell.hi{fill:#BFE7F2;stroke:#0e7490;stroke-width:1.6}
+.rmcell.on{fill:#F9C7A6;stroke:#C0530F;stroke-width:2}
+.rmcell.pin{fill:#F2681F;stroke:#8C3A0B;stroke-width:2.4}
+/* phòng có địa điểm nhập học đã điều chuyển đi nơi khác (106/107/318) */
+.rmcell.dc{fill:#FFE9C7;stroke:#D97706;stroke-width:1.6;stroke-dasharray:3.6 2.2}
+.rmcell.dc.on{fill:#FBD38D;stroke:#B45309}
+.rmcell.dc.pin{fill:#F59E0B;stroke:#92400E;stroke-dasharray:none}
+.dcmark{fill:#B45309;font-size:8.5px;font-weight:700;text-anchor:end;dominant-baseline:hanging;
+  font-family:'Share Tech Mono',monospace;paint-order:stroke;stroke:#fff;stroke-width:2.4px;pointer-events:none}
+.kblist li.pin{background:var(--accent-fill);box-shadow:inset 3px 0 0 var(--cyan)}
+.rmtxt{font-size:9px;fill:#475569;text-anchor:middle;dominant-baseline:central;
+  font-family:'Share Tech Mono',monospace}
+.rmtxt.hi{fill:#0B3D4C;font-weight:700;font-size:10px}
+.flab{font-size:13px;font-weight:800;fill:#12305F;letter-spacing:1px}
+.fsub{font-size:9.5px;fill:#64748b;font-family:'Share Tech Mono',monospace}
+.core{fill:#F8FAFC;stroke:#cbd5e1;stroke-width:.8}
+.coretxt{font-size:9.5px;fill:#94a3b8;text-anchor:middle;font-family:'Share Tech Mono',monospace}
+.void{fill:#fff;stroke:#334155;stroke-width:1.1}
+.voidwedge{fill:#8D959E;opacity:.85}
+.voidtxt{font-size:8px;fill:#334155;text-anchor:middle;letter-spacing:.6px;
+  font-family:'Share Tech Mono',monospace}
+.lane{fill:#FEF3E7;stroke:#E4A76B;stroke-width:1;stroke-dasharray:4 3}
+.lanearrow{stroke:#B5651D;stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.lanetxt{font-size:8.5px;fill:#B5651D;text-anchor:middle;letter-spacing:.8px;font-family:'Share Tech Mono',monospace}
+.stair{fill:#F1F5F9;stroke:#334155;stroke-width:1.1}
+.step{stroke:#64748b;stroke-width:.8}
+.steparrow{stroke:#0e7490;stroke-width:1.3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.lift{fill:#F1F5F9;stroke:#334155;stroke-width:1.1}
+.liftx{stroke:#94a3b8;stroke-width:.9}
+
+/* ---------- Tooltip ---------- */
+.tip{
+  position:absolute;pointer-events:none;z-index:20;width:288px;
+  background:var(--panel);border:1px solid var(--panel-3);border-radius:12px;
+  box-shadow:var(--shadow-2);
+  padding:13px 15px;opacity:0;transform:translateY(6px);
+  transition:opacity .14s ease,transform .14s ease;
+}
+.tip.show{opacity:1;transform:translateY(0)}
+.tip .th{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.tip .letter{
+  width:30px;height:30px;border-radius:50%;display:grid;place-items:center;
+  font-weight:800;font-size:15px;color:#fff;flex:none;
+}
+.tip h3{margin:0;font-size:14.5px;font-weight:700;line-height:1.25}
+.tip .room{font-family:'Share Tech Mono',monospace;font-size:11.5px;color:var(--muted);font-weight:700}
+.tip p{margin:0 0 10px;font-size:12.8px;line-height:1.45;color:var(--txt-2)}
+.kpis{display:flex;gap:7px;flex-wrap:wrap}
+.kpi{
+  border:1px solid var(--panel-3);border-radius:8px;padding:5px 9px;
+  font-size:11.5px;font-weight:600;color:var(--muted);background:var(--panel-2);
+}
+.kpi b{font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--ink);margin-right:5px}
+.kpi.zero{opacity:.5}
+.kpi.flag{border-color:var(--danger-bd);background:var(--danger-bg);color:var(--danger-tx)}
+.tip .who{margin-top:9px;font-size:11.8px;color:var(--muted);border-top:1px dashed var(--panel-3);padding-top:8px}
+
+/* ---------- Legend panel ---------- */
+.panel{
+  background:var(--panel);border:1px solid var(--panel-3);border-radius:12px;
+  padding:12px;position:sticky;top:10px;
+  box-shadow:var(--shadow-1);
+}
+.panel h2{
+  margin:0 0 10px;padding-bottom:9px;border-bottom:1px solid var(--panel-2);
+  font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--cyan);font-weight:400;
+}
+.leg{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
+.leg li{
+  display:flex;gap:9px;align-items:center;padding:5px 7px;border-radius:8px;
+  cursor:pointer;transition:background .15s ease;
+}
+.leg li:hover,.leg li.on{background:var(--panel-2)}
+.leg .dot{
+  width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;
+  font-weight:800;font-size:12.5px;color:#12203A;border:1.5px solid rgba(0,0,0,.28);
+}
+.leg .txt{font-size:12.6px;font-weight:600;line-height:1.25;color:var(--ink)}
+.leg .txt em{display:block;font-style:normal;font-weight:500;font-size:11.3px;color:var(--muted)}
+.leg .num{
+  margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:11.5px;
+  color:var(--muted);font-weight:700;white-space:nowrap;
+}
+.panel .foot{
+  margin-top:11px;padding-top:10px;border-top:1px solid var(--panel-2);
+  font-size:11.5px;color:var(--muted);line-height:1.5;
+}
+.panel .foot code{font-family:'Share Tech Mono',monospace;color:var(--ink)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="crest" id="crest">
+    <img id="crestimg" alt="Logo Trường Đại học Xây dựng Hà Nội"
+         src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/LOGO_DHXD.png/500px-LOGO_DHXD.png?utm_source=vi.wikipedia.org&utm_campaign=index&utm_content=thumbnail">
+    <span id="cresttxt">HUCE</span>
+  </div>
+  <div class="hgrow">
+    <h1>Sơ đồ nhập học sinh viên K71</h1>
+    <p class="sub">Trường Đại học Xây dựng Hà Nội · Tầng 2 nhà G3 và nhà H2 · 21–23/8/2026</p>
+  </div>
+  <button class="themebtn" id="themebtn" aria-label="Đổi chế độ sáng tối">☀ Chế độ sáng</button>
+</header>
+
+<div class="wrap shell">
+  <aside class="sidenav">
+  <div class="tabs" role="tablist" aria-label="Chế độ xem">
+    <button class="tab" id="t-map" role="tab" aria-selected="true" aria-controls="tab-map"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.6 4.4l4.3-2.1 4.2 2.1 4.3-2.1v9.3l-4.3 2.1-4.2-2.1-4.3 2.1z"/><path d="M5.9 2.3v9.3M10.1 4.4v9.3"/></svg>Sơ đồ nhập học</button>
+    <button class="tab" id="t-staff" role="tab" aria-selected="false" aria-controls="tab-staff"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.6 13.7c0-2.4 2-4 4.4-4s4.4 1.6 4.4 4"/><circle cx="6" cy="5.3" r="2.5"/><path d="M11 3.1a2.5 2.5 0 010 4.4"/><path d="M12.4 10.1c1.2.6 2 1.8 2 3.6"/></svg>Cán bộ phụ trách</button>
+    <button class="tab" id="t-kb" role="tab" aria-selected="false" aria-controls="tab-kb"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.3l6.4 3.1L8 8.5 1.6 5.4z"/><path d="M4.3 7v3.6C4.3 12 5.9 13 8 13s3.7-1 3.7-2.4V7"/></svg>Khoa, Ban</button>
+    <button class="tab" id="t-tk" role="tab" aria-selected="false" aria-controls="tab-tk"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.6 13.7h12.8"/><path d="M4 11.4V7.6M8 11.4V3.8M12 11.4V6.2"/></svg>Thống kê PC</button>
+    <button class="tab" id="t-nh" role="tab" aria-selected="false" aria-controls="tab-nh"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 8V2.2M8 8l4.1 2.4"/></svg>Thống kê nhập học</button>
+  </div>
+  </aside>
+  <main class="content">
+
+
+
+  <section id="tab-map" class="tabpanel" role="tabpanel" aria-labelledby="t-map">
+  <div class="grid">
+    <div class="mapcard" id="mapcard">
+      <svg id="map" viewBox="0 0 1240 1380" role="img" aria-label="Sơ đồ luồng nhập học sinh viên K71">
+        <defs>
+          <marker id="arw" viewBox="0 0 12 12" refX="10.5" refY="6" markerWidth="15" markerHeight="15"
+                  markerUnits="userSpaceOnUse" orient="auto">
+            <path d="M1 0.8 L11 6 L1 11.2 z" fill="var(--route)"/>
+          </marker>
+          <marker id="arwred" viewBox="0 0 12 12" refX="10.5" refY="6" markerWidth="15" markerHeight="15"
+                  markerUnits="userSpaceOnUse" orient="auto">
+            <path d="M1 0.8 L11 6 L1 11.2 z" fill="#C62828"/>
+          </marker>
+        </defs>
+
+        <!-- ================= NHÀ G3 ================= -->
+        <g class="scene-dim">
+          <rect x="70.0" y="40.0" width="542.1" height="875.6" fill="#fff" stroke="#111" stroke-width="3.5"/>
+          <line x1="70.0" y1="160.9" x2="612.1" y2="160.9" stroke="#111" stroke-width="2.5"/>
+          <line x1="612.1" y1="195.9" x2="612.1" y2="234.3" stroke="#fff" stroke-width="5"/>
+          <line x1="466.2" y1="915.6" x2="503.7" y2="915.6" stroke="#fff" stroke-width="5"/>
+          <text class="floor" x="341.1" y="1082">TẦNG 2 — G3</text>
+        </g>
+        <g id="seats" class="scene-dim"></g>
+        <g class="scene-dim">
+          <text class="wait" x="341.1" y="398.6">KHU VỰC CHỜ LÀM THỦ TỤC</text>
+          <text class="wait" x="341.1" y="444.4">TÂN SINH VIÊN</text>
+        </g>
+        <g class="scene-dim">
+          <rect x="241.0" y="926.5" width="58.4" height="25.0" fill="var(--c-a)"/>
+          <rect x="307.7" y="926.5" width="58.4" height="25.0" fill="var(--c-a)"/>
+          <rect x="374.4" y="926.5" width="58.4" height="25.0" fill="var(--c-a)"/>
+          <text class="note" x="336.9" y="979.9">NHẬN TÚI ĐỰNG HỒ SƠ SINH VIÊN</text>
+        </g>
+        <g class="scene-dim">
+          <path d="M61.7 1001.6 L100.9 1019.9 L61.7 1038.2 z" fill="#C62828"/>
+          <text x="20.0" y="984.9" font-size="15" font-weight="800" fill="#C62828">LỐI VÀO</text>
+        </g>
+
+        <!-- ================= NHÀ H2 ================= -->
+        <g class="scene-dim">
+          <path d="M759.7 177.6 L1108.3 177.6 L1108.3 786.4 L1229.3 786.4 L1229.3 1178.4 L1158.4 1178.4 L1158.4 1307.6 L703.9 1307.6 L703.9 786.4 L759.7 786.4 Z" fill="#fff" stroke="#111" stroke-width="3.5"/>
+          <line x1="759.7" y1="195.9" x2="759.7" y2="234.3" stroke="#fff" stroke-width="5"/>
+          <!-- giếng trời / buồng thang -->
+          <rect x="617.9" y="248.4" width="141.8" height="300.3" fill="#fff" stroke="#111" stroke-width="2"/><path d="M617.9 248.4 L759.7 248.4 L617.9 548.7 Z" fill="var(--slab)"/>
+          <rect x="858.1" y="577.9" width="204.4" height="208.5" fill="#fff" stroke="#111" stroke-width="2"/><path d="M858.1 577.9 L1062.5 577.9 L858.1 786.4 Z" fill="var(--slab)"/>
+          <rect x="858.1" y="857.3" width="204.4" height="262.7" fill="#fff" stroke="#111" stroke-width="2"/><path d="M858.1 857.3 L1062.5 857.3 L858.1 1120.0 Z" fill="var(--slab)"/>
+          <!-- khối kỹ thuật đặc -->
+          <rect x="1108.3" y="786.4" width="121.0" height="187.6" fill="var(--slab)"/>
+          <rect x="703.9" y="974.0" width="112.5" height="146.0" fill="var(--slab)"/>
+          <text class="floor" x="933.2" y="1353.5">NHÀ H2</text>
+        </g>
+
+        <!-- ================= BỘ PHẬN ================= -->
+        <g class="station" data-id="B" tabindex="0">
+          <rect class="body" x="140.9" y="81.7" width="75.1" height="25.0" rx="3" fill="var(--c-b)" stroke="#4A55A0" stroke-width="1.6"/>
+          <rect class="ring" x="130.9" y="73.3" width="95.1" height="43.4" rx="7"/>
+          <rect class="hit" x="130.9" y="45.8" width="95.1" height="70.9" />
+        </g>
+        <g class="station" data-id="C" tabindex="0">
+          <rect class="body" x="236.8" y="81.7" width="183.5" height="25.0" rx="3" fill="var(--c-c)" stroke="#25703A" stroke-width="1.6"/>
+          <line x1="299.4" y1="81.7" x2="299.4" y2="106.7" stroke="#25703A" stroke-width="1.6"/>
+          <line x1="357.7" y1="81.7" x2="357.7" y2="106.7" stroke="#25703A" stroke-width="1.6"/>
+          <rect class="ring" x="226.8" y="73.3" width="203.5" height="43.4" rx="7"/>
+          <rect class="hit" x="226.8" y="45.8" width="203.5" height="70.9" />
+        </g>
+        <g class="station" data-id="D" tabindex="0">
+          <rect class="body" x="449.5" y="81.7" width="75.0" height="25.0" rx="3" fill="var(--c-d)" stroke="#6B4FA0" stroke-width="1.6"/>
+          <rect class="ring" x="439.5" y="73.3" width="95.0" height="43.4" rx="7"/>
+          <rect class="hit" x="439.5" y="45.8" width="95.0" height="70.9" />
+        </g>
+        <g class="station" data-id="A" tabindex="0">
+          <g class="body">
+            <rect x="82.5" y="215.1" width="91.8" height="25.0" fill="var(--c-a)"/>
+            <rect x="220.1" y="215.1" width="241.9" height="25.0" fill="var(--c-a)"/>
+            <rect x="507.9" y="215.1" width="91.7" height="25.0" fill="var(--c-a)"/>
+            <rect x="82.5" y="261.0" width="91.8" height="16.6" fill="var(--c-a)"/>
+            <rect x="220.1" y="261.0" width="241.9" height="16.6" fill="var(--c-a)"/>
+            <rect x="507.9" y="261.0" width="91.7" height="16.6" fill="var(--c-a)"/>
+            <rect x="82.5" y="290.1" width="91.8" height="16.7" fill="var(--c-a)"/>
+            <rect x="220.1" y="290.1" width="241.9" height="16.7" fill="var(--c-a)"/>
+            <rect x="507.9" y="290.1" width="91.7" height="16.7" fill="var(--c-a)"/>
+          </g>
+          <rect class="ring" x="74.2" y="206.8" width="533.7" height="108.4" rx="9"/>
+          <rect class="hit" x="74.2" y="198.4" width="533.7" height="120.9" />
+        </g>
+        <g class="station" data-id="E26" tabindex="0">
+          <rect class="body" x="858.1" y="179.2" width="200.2" height="181.8" rx="2" fill="var(--c-e)" stroke="#3E8A5F" stroke-width="1.8"/>
+          <rect class="ring" x="853.1" y="174.2" width="210.2" height="191.8" rx="7"/>
+          <rect class="hit" x="853.1" y="174.2" width="210.2" height="191.8" />
+        </g>
+        <g class="station" data-id="E25" tabindex="0">
+          <rect class="body" x="858.1" y="361.0" width="200.2" height="185.2" rx="2" fill="var(--c-e)" stroke="#3E8A5F" stroke-width="1.8"/>
+          <rect class="ring" x="853.1" y="356.0" width="210.2" height="195.2" rx="7"/>
+          <rect class="hit" x="853.1" y="356.0" width="210.2" height="195.2" />
+        </g>
+        <g class="station" data-id="M" tabindex="0">
+          <rect class="body" x="703.9" y="786.4" width="112.5" height="187.6" rx="2" fill="var(--c-mn)" stroke="#C9A227" stroke-width="1.8"/>
+          <rect class="ring" x="700.5" y="781.4" width="59.2" height="197.6" rx="7"/>
+          <rect class="hit" x="700.5" y="781.4" width="59.2" height="197.6" />
+        </g>
+        <g class="station" data-id="N" tabindex="0">
+          <rect class="ring" x="759.7" y="781.4" width="60.1" height="197.6" rx="7"/>
+          <rect class="hit" x="759.7" y="781.4" width="60.1" height="197.6" />
+        </g>
+        <g class="station" data-id="G" tabindex="0">
+          <rect class="body" x="1108.3" y="974.0" width="121.0" height="204.4" rx="2" fill="var(--c-g)" stroke="#C06A2A" stroke-width="1.8"/>
+          <rect class="ring" x="1103.3" y="969.0" width="131.0" height="214.4" rx="7"/>
+          <rect class="hit" x="1103.3" y="969.0" width="131.0" height="214.4" />
+        </g>
+        <g class="station" data-id="I" tabindex="0">
+          <rect class="body" x="816.4" y="1186.7" width="171.0" height="120.9" rx="2" fill="var(--c-i)" stroke="#7FA34E" stroke-width="1.8"/>
+          <rect class="ring" x="811.4" y="1181.7" width="181.0" height="130.9" rx="7"/>
+          <rect class="hit" x="811.4" y="1181.7" width="181.0" height="130.9" />
+        </g>
+        <g class="station" data-id="H" tabindex="0">
+          <rect class="body" x="987.4" y="1186.7" width="171.0" height="120.9" rx="2" fill="var(--c-h)" stroke="#4A55A0" stroke-width="1.8"/>
+          <rect class="ring" x="982.4" y="1181.7" width="181.0" height="130.9" rx="7"/>
+          <rect class="hit" x="982.4" y="1181.7" width="181.0" height="130.9" />
+        </g>
+
+        <g id="routeg"></g>
+        <g id="routelbl">
+          <path d="M828.9 819.7 L856.5 819.7" stroke="#C62828" stroke-width="7" marker-end="url(#arwred)" fill="none"/>
+          <g id="gotokb" role="link" tabindex="0" aria-label="Mở danh sách Khoa, Ban nhận lớp">
+            <rect class="kbplate" x="861" y="792" width="205" height="80" rx="8"/>
+            <text x="868.1" y="813.1" font-size="15" font-weight="800" fill="#12305F">VỀ KHOA LÀM</text>
+            <text x="868.1" y="849.8" font-size="15" font-weight="800" fill="#12305F">THỦ TỤC NHẬN LỚP</text>
+            <text class="kbcue" x="868.1" y="887">▸ Xem danh sách Khoa, Ban</text>
+            <rect class="kbhit" x="861" y="792" width="205" height="105"/>
+          </g>
+        </g>
+        <g id="labels">
+          <g class="tag"><circle cx="178.4" cy="70.8" r="20"/><text x="178.4" y="70.8">B</text></g>
+          <g class="tag"><circle cx="328.6" cy="70.8" r="20"/><text x="328.6" y="70.8">C</text></g>
+          <g class="tag"><circle cx="487.0" cy="70.8" r="20"/><text x="487.0" y="70.8">D</text></g>
+          <g class="tag"><circle cx="341.1" cy="227.6" r="20"/><text x="341.1" y="227.6">A</text></g>
+          <g class="tag"><circle cx="970.7" cy="273.5" r="20"/><text x="970.7" y="273.5">E</text></g>
+          <g class="tag"><circle cx="970.7" cy="452.8" r="20"/><text x="970.7" y="452.8">E</text></g>
+          <g class="tag"><circle cx="728.9" cy="848.9" r="20"/><text x="728.9" y="848.9">M</text></g>
+          <g class="tag"><circle cx="789.8" cy="848.9" r="20"/><text x="789.8" y="848.9">N</text></g>
+          <g class="tag"><circle cx="1175.1" cy="1040.8" r="20"/><text x="1175.1" y="1040.8">G</text></g>
+          <g class="tag"><circle cx="901.5" cy="1236.7" r="20"/><text x="901.5" y="1236.7">I</text></g>
+          <g class="tag"><circle cx="1072.5" cy="1236.7" r="20"/><text x="1072.5" y="1236.7">H</text></g>
+          <text class="rm" x="920.7" y="352.7">26H2</text>
+          <text class="rm" x="920.7" y="529.5">25H2</text>
+          <text class="rm" x="758.1" y="961.5">24H2</text>
+          <text class="rm" x="1175.1" y="1165.8">23H2</text>
+          <text class="rm" x="901.5" y="1299.3">21H2</text>
+          <text class="rm" x="1072.5" y="1299.3">22H2</text>
+        </g>
+      </svg>
+
+      <div class="tip" id="tip" role="status" aria-live="polite"></div>
+    </div>
+
+    <aside class="panel">
+      <h2>Các bộ phận</h2>
+      <ul class="leg" id="leg"></ul>
+      <div class="foot">
+        Số máy tính và máy quét theo bảng thống kê nhu cầu của các bộ phận:
+        <code>35</code> máy tính, <code>43</code> máy quét.
+        Trong đó bộ phận A đã gồm 02 vị trí hỗ trợ nhập học trực tuyến
+        (2 người, 2 máy tính, 2 máy quét).
+      </div>
+    </aside>
+  </div>
+  </section>
+
+  <section id="tab-staff" class="tabpanel" role="tabpanel" aria-labelledby="t-staff" hidden>
+    <p class="stafftotal">Theo Bản phân công nhiệm vụ đón tiếp sinh viên K.71 nhập học,
+       ngày 21–23/8/2026. Tổng cộng <b id="staffcount">0</b> cán bộ được nêu tên.</p>
+    <div class="staffgrid" id="staffgrid"></div>
+  </section>
+
+  <section id="tab-kb" class="tabpanel" role="tabpanel" aria-labelledby="t-kb" hidden>
+    <p class="stafftotal">Địa điểm đón tiếp sinh viên K.71 tại các Khoa, Ban — bước cuối sau khi
+       rời bộ phận M, N. Dự kiến <b id="kbclass">0</b> lớp ở <b id="kbunit">0</b> đơn vị.</p>
+    <div class="kbgrid">
+      <div class="kbsheet"><div class="kbtip tip" id="kbtip"></div><svg id="a1svg" viewBox="0 0 660 730" aria-label="Sơ đồ vị trí các phòng đón tiếp trong nhà A1"></svg></div>
+      <aside class="kbside">
+        <div class="kbhead">
+          <h2>Danh mục</h2>
+          <select id="kbfilter" class="kbsel" aria-label="Lọc danh mục">
+            <option value="khoa">Khoa</option>
+            <option value="phong">Phòng</option>
+            <option value="bm">Bộ môn</option>
+            <option value="all">Tất cả</option>
+          </select>
+        </div>
+        <div id="kbbody2"></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="tab-tk" class="tabpanel" role="tabpanel" aria-labelledby="t-tk" hidden>
+    <div class="stats" id="tkstats"></div>
+    <h4 class="tkh">Cán bộ và thiết bị theo từng bộ phận</h4>
+    <p class="stafftotal" style="margin:-4px 0 10px">Cột <b>Người trực</b> tính theo quy ước
+       mỗi máy tính là một vị trí làm việc, tương ứng một người; bộ phận nào nêu tên nhiều hơn
+       số máy thì lấy theo số người đã nêu tên. Ô tô màu cyan là nơi số người trực lớn hơn
+       số cán bộ được nêu tên trong bản phân công.</p>
+    <div class="tblwrap">
+      <table class="kb">
+        <thead>
+          <tr>
+            <th>Bộ phận</th><th>Nhiệm vụ</th><th>Địa điểm</th>
+            <th style="text-align:right">Nêu tên</th>
+            <th style="text-align:right">Người trực</th>
+            <th style="text-align:right">Máy tính</th>
+            <th style="text-align:right">Máy quét</th>
+            <th style="text-align:right">Số Wifi</th>
+          </tr>
+        </thead>
+        <tbody id="tkbody"></tbody>
+        <tfoot id="tkfoot"></tfoot>
+      </table>
+    </div>
+  </section>
+
+  <section id="tab-nh" class="tabpanel" role="tabpanel" aria-labelledby="t-nh" hidden>
+    <p class="stafftotal">Thống kê nhập học sinh viên K.71 theo ngành.
+       <em class="nhwarn">Số trúng tuyển từ danh sách k71.xlsx (Hà Nội); tiền tạm tính theo Giấy báo trúng tuyển. Cột "đã nhập học" cập nhật khi sinh viên đến nhập học.</em></p>
+    <div class="nhhero" id="nhhero"></div>
+    <p class="nhfee" id="nhfee"></p>
+    <div class="nhtoolbar">
+      <div class="nhseg" id="nhseg" role="group" aria-label="Nhóm thống kê">
+        <button data-mode="khoa" aria-pressed="true">Theo Khoa</button>
+        <button data-mode="nganh" aria-pressed="false">Theo ngành</button>
+        <button data-mode="chuyen" aria-pressed="false">Theo chuyên ngành</button>
+      </div>
+      <div class="nhtools">
+        <button class="nhimpbtn" id="nhimp" type="button">⬆ Nhập dữ liệu (Excel/CSV)</button>
+        <input type="file" id="nhfile" accept=".xlsx,.xls,.csv" hidden>
+        <button class="nhimpbtn" id="nhrefresh" type="button" title="Đồng bộ từ hệ thống nhập học">↻ Làm mới</button>
+        <div class="nhsearch">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3-3"></path></svg>
+          <input id="nhq" type="text" placeholder="Tìm Khoa, ngành, chuyên ngành…" autocomplete="off">
+        </div>
+      </div>
+    </div>
+    <p class="nhimpmsg" id="nhimpmsg" hidden></p>
+    <div class="nhtablewrap">
+      <table class="nhtable">
+        <thead><tr id="nhhead">
+          <th class="stth">STT</th>
+          <th class="s" data-k="ten">Ngành<span class="ar">↕</span></th>
+          <th class="s" data-k="pct">Tỷ lệ nhập học<span class="ar">↕</span></th>
+          <th class="s r hide-sm" data-k="nh">Đã nhập học<span class="ar">↕</span></th>
+          <th class="s r" data-k="tt">Số trúng tuyển<span class="ar">↕</span></th>
+          <th class="s r" data-k="tien">Tiền tạm tính<span class="ar">↕</span></th>
+          <th class="s r" data-k="thu">Số tiền đã thu<span class="ar">↕</span></th>
+        </tr></thead>
+        <tbody id="nhbody"></tbody>
+      </table>
+    </div>
+  </section>
+  </main>
+</div>
+
+<script>
+/* Safari/WebKit không hỗ trợ gán innerHTML trên phần tử <svg>.
+   Helper này parse chuỗi SVG rồi chèn node -> chạy được mọi trình duyệt. */
+function setSvgHTML(el, markup){
+  while (el.firstChild) el.removeChild(el.firstChild);
+  try {
+    var doc = new DOMParser().parseFromString(
+      '<svg xmlns="http://www.w3.org/2000/svg">' + markup + '</svg>', 'image/svg+xml');
+    if (doc.getElementsByTagName('parsererror').length) throw new Error('svg parse');
+    var kids = Array.prototype.slice.call(doc.documentElement.childNodes);
+    for (var i = 0; i < kids.length; i++) el.appendChild(document.importNode(kids[i], true));
+  } catch (e) { el.innerHTML = markup; }
+}
+const DATA = {
+  A:{name:"Kiểm tra điều kiện nhập học", room:"Tầng 2 — Nhà G3", color:"#B02525",
+     desc:"Kiểm tra điều kiện nhập học; nhận Giấy chứng nhận kết quả thi tốt nghiệp THPT 2026 hoặc giấy tờ minh chứng nếu trúng tuyển theo phương thức khác. Bao gồm cả 02 vị trí hỗ trợ nhập học trực tuyến.",
+     pc:9, qr:9, who:"07 cán bộ + 02 vị trí hỗ trợ nhập học trực tuyến"},
+  B:{name:"Hồ sơ đối tượng ưu tiên", room:"Tầng 2 — Nhà G3", color:"#9FA8DA",
+     desc:"Nộp hồ sơ minh chứng được hưởng chính sách ưu tiên theo đối tượng trong tuyển sinh (nếu có).",
+     pc:1, qr:1, who:"01 cán bộ"},
+  C:{name:"Nộp học phí và các khoản thu", room:"Tầng 2 — Nhà G3", color:"#3E9E52",
+     desc:"Thu học phí và các khoản thu đầu khóa cho sinh viên chưa nộp trực tuyến.",
+     pc:2, qr:2, pos:3, who:"Phòng Kế hoạch — Tài chính"},
+  D:{name:"Tư vấn CTĐT hội nhập và quốc tế", room:"Tầng 2 — Nhà G3", color:"#B49BD8",
+     desc:"Tư vấn và nhận đăng ký các CTĐT hội nhập, quốc tế: XE, XF, KTE, CTĐT chuẩn đầu ra tiếng Anh. KDE tại P.116 nhà A1.",
+     pc:0, qr:0, who:"Các Khoa có CTĐT"},
+  E26:{name:"Thu hồ sơ sinh viên", room:"P.26 — Nhà H2", color:"#7CC79B",
+     desc:"Tiếp nhận và kiểm đếm hồ sơ sinh viên nhập học.",
+     pc:5, qr:5, who:"05 cán bộ"},
+  E25:{name:"Thu hồ sơ sinh viên", room:"P.25 — Nhà H2", color:"#7CC79B",
+     desc:"Tiếp nhận và kiểm đếm hồ sơ sinh viên nhập học.",
+     pc:5, qr:5, who:"05 cán bộ"},
+  G:{name:"Tạo lập dữ liệu nhận diện sinh viên", room:"P.23 — Nhà H2", color:"#F0A268",
+     desc:"Chụp ảnh và tạo dữ liệu nhận diện phục vụ làm thẻ sinh viên.",
+     pc:7, qr:7, cam:7, who:"07 bàn chụp ảnh"},
+  H:{name:"Sinh hoạt Đảng, Đoàn, Hội sinh viên", room:"P.22 — Nhà H2", color:"#8B9BE2",
+     desc:"Chuyển sinh hoạt Đảng, Đoàn và nộp Đoàn phí; đăng ký tham gia Hội sinh viên.",
+     pc:3, qr:3, who:"03 cán bộ"},
+  I:{name:"Hồ sơ nghĩa vụ quân sự", room:"P.21 — Nhà H2", color:"#C3DE9C",
+     desc:"Nộp hồ sơ di chuyển nghĩa vụ quân sự (đối với nam sinh viên).",
+     pc:3, qr:3, who:"03 cán bộ"},
+  M:{name:"Nhận áo đồng phục và dịch vụ hỗ trợ", room:"P.24 — Nhà H2", color:"#FBE28F",
+     desc:"Phát áo đồng phục (quà tặng của Nhà trường) và các dịch vụ hỗ trợ sinh viên.",
+     pc:0, qr:8, who:"Cán bộ Nhà trường và Công ty Phương Thảo",
+     flag:"8 máy quét nhưng chưa bố trí máy tính — cần xác nhận thiết bị đầu cuối"},
+  N:{name:"Đăng ký ở nội trú Ký túc xá", room:"P.24 — Nhà H2", color:"#FBE28F",
+     desc:"Đăng ký ở nội trú, hỗ trợ tìm thuê nhà trọ cho sinh viên có nguyện vọng.",
+     pc:0, qr:0, who:"Ban Quản lý KTX, P.CTCT&QLSV"}
+};
+const ORDER = ["A","B","C","D","E26","E25","G","H","I","M","N"];
+
+/* ---- ghế khu vực chờ: 3 khối, chừa 2 lối đi cho tuyến di chuyển ---- */
+(function seats(){
+  const g = document.getElementById('seats');
+  let html = '';
+  const blocks = [
+    {x0:82.5, step:30.6, w:26.6, cols:3},
+    {x0:220.1, step:34.6, w:30.6, cols:7},
+    {x0:507.9, step:30.6, w:26.6, cols:3}
+  ];
+  blocks.forEach(b=>{
+    for(let c=0;c<b.cols;c++){
+      for(let r=0;r<23;r++){
+        const x = b.x0 + c*b.step, y = 324 + r*25;
+        if (x > 207.6 && x < 474.5 && y > 365.2 && y < 465.3) continue; // chừa chỗ cho chữ
+        html += `<rect x="${x.toFixed(1)}" y="${y}" width="${b.w}" height="17" rx="1.5" fill="var(--seat)" opacity=".92"/>`;
+      }
+    }
+  });
+  g.innerHTML = html;
+})();
+
+/* ---- tuyến di chuyển: từng đoạn, mỗi đoạn một mũi tên chỉ hướng ---- */
+(function route(){
+  const SEG = [
+    "M100.9 1019.9 L484.9 1019.9 L484.9 285.5",
+    "M484.9 250.5 L217.6 250.5",
+    "M197.2 250.5 L197.2 117.5 L437.0 117.5",
+    "M451.1 117.5 L562.1 117.5 L562.1 215.1 L696.3 215.1",
+    "M708.0 215.1 L970.7 215.1 L970.7 237.6",
+    "M970.7 312.7 L970.7 412.7",
+    "M970.7 501.2 L1091.7 501.2 L1091.7 913.1",
+    "M1091.7 938.2 L1091.7 978.2 L1175.1 978.2 L1175.1 1001.6",
+    "M1175.1 1079.9 L1175.1 1153.3 L1072.5 1153.3 L1072.5 1193.4",
+    "M1048.3 1236.7 L931.5 1236.7",
+    "M879.0 1236.7 L837.3 1236.7 L837.3 886.5 L778.9 886.5",
+    "M758.1 886.5 L758.1 819.7 L819.8 819.7"
+  ];
+  const g = document.getElementById('routeg');
+  const NS = 'http://www.w3.org/2000/svg';
+
+  // các đoạn thẳng thành phần, để gắn mũi tên chỉ hướng trên từng chặng
+  function legs(d){
+    const pts = d.match(/-?\d+(\.\d+)?/g).map(Number);
+    const out = [];
+    for (let i = 2; i < pts.length; i += 2)
+      out.push([pts[i-2], pts[i-1], pts[i], pts[i+1]]);
+    return out;
+  }
+
+  [['route-glow',false],['route',true],['route-dash',false]].forEach(([cls,arrow])=>{
+    SEG.forEach(d=>{
+      const p = document.createElementNS(NS,'path');
+      p.setAttribute('d', d);
+      p.setAttribute('class', cls);
+      if (arrow) p.setAttribute('marker-end','url(#arw)');
+      g.appendChild(p);
+    });
+  });
+
+  // mũi tên giữa mỗi chặng dài, để chiều di chuyển luôn nhìn thấy được
+  SEG.forEach(d=>{
+    legs(d).forEach(([x1,y1,x2,y2])=>{
+      const len = Math.hypot(x2-x1, y2-y1);
+      if (len < 70) return;
+      const n = len > 240 ? 2 : 1;
+      for (let k = 1; k <= n; k++){
+        const t = k/(n+1);
+        const mx = x1 + (x2-x1)*t, my = y1 + (y2-y1)*t;
+        const ux = (x2-x1)/len, uy = (y2-y1)/len;
+        const p = document.createElementNS(NS,'path');
+        p.setAttribute('d', `M${(mx-ux*10).toFixed(1)} ${(my-uy*10).toFixed(1)} L${mx.toFixed(1)} ${my.toFixed(1)}`);
+        p.setAttribute('class','route');
+        p.setAttribute('marker-end','url(#arw)');
+        g.appendChild(p);
+      }
+    });
+  });
+})();
+
+/* ---- legend ---- */
+const leg = document.getElementById('leg');
+leg.innerHTML = ORDER.map(id=>{
+  const d = DATA[id];
+  const letter = id.replace(/\d+/,'');
+  return `<li data-id="${id}" tabindex="0">
+    <span class="dot" style="background:${d.color}">${letter}</span>
+    <span class="txt">${d.name}<em>${d.room}</em></span>
+    <span class="num">${d.pc} / ${d.qr}</span>
+  </li>`;
+}).join('');
+
+/* ---- tooltip ---- */
+const card = document.getElementById('mapcard');
+const tip  = document.getElementById('tip');
+
+function kpi(label, val, flag){
+  const cls = val ? (flag?'kpi flag':'kpi') : 'kpi zero';
+  return `<span class="${cls}"><b>${val}</b>${label}</span>`;
+}
+function render(id){
+  const d = DATA[id];
+  const letter = id.replace(/\d+/,'');
+  tip.innerHTML = `
+    <div class="th">
+      <span class="letter" style="background:${d.color};color:${letter==='A'?'#fff':'#12203A'}">${letter}</span>
+      <div><h3>${d.name}</h3><span class="room">${d.room}</span></div>
+    </div>
+    <p>${d.desc}</p>
+    <div class="kpis">
+      ${kpi('máy tính', d.pc)}
+      ${kpi('máy quét', d.qr, !!d.flag)}
+      ${d.pos?kpi('máy POS', d.pos):''}
+      ${d.cam?kpi('camera', d.cam):''}
+    </div>
+    ${d.flag?`<div class="who" style="color:#8E2020;font-weight:600">⚠ ${d.flag}</div>`:''}
+    <div class="who">${d.who}</div>`;
+}
+function place(e){
+  const r = card.getBoundingClientRect();
+  let x = e.clientX - r.left + 18, y = e.clientY - r.top + 16;
+  if (x + 300 > r.width)  x = e.clientX - r.left - 306;
+  if (y + tip.offsetHeight > r.height) y = r.height - tip.offsetHeight - 10;
+  if (y < 6) y = 6;
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+}
+function activate(id){
+  document.querySelectorAll('.station').forEach(s=>s.classList.toggle('on', s.dataset.id===id));
+  document.querySelectorAll('#leg li').forEach(l=>l.classList.toggle('on', l.dataset.id===id));
+  card.classList.add('focusing');
+  render(id); tip.classList.add('show');
+}
+function clear(){
+  document.querySelectorAll('.station,#leg li').forEach(s=>s.classList.remove('on'));
+  card.classList.remove('focusing');
+  tip.classList.remove('show');
+}
+
+document.querySelectorAll('.station').forEach(st=>{
+  const id = st.dataset.id;
+  st.addEventListener('mouseenter', e=>{ activate(id); place(e); });
+  st.addEventListener('mousemove', place);
+  st.addEventListener('mouseleave', clear);
+  st.addEventListener('focus', ()=>{
+    activate(id);
+    const b = st.getBoundingClientRect(), r = card.getBoundingClientRect();
+    place({clientX:b.left+b.width/2, clientY:b.top+b.height/2});
+  });
+  st.addEventListener('blur', clear);
+});
+
+document.querySelectorAll('#leg li').forEach(li=>{
+  const id = li.dataset.id;
+  const show = ()=>{
+    activate(id);
+    const st = document.querySelector(`.station[data-id="${id}"]`);
+    const b = st.getBoundingClientRect();
+    place({clientX:b.left+b.width/2, clientY:b.top+b.height/2});
+  };
+  li.addEventListener('mouseenter', show);
+  li.addEventListener('focus', show);
+  li.addEventListener('mouseleave', clear);
+  li.addEventListener('blur', clear);
+});
+
+/* ---- danh sách cán bộ phụ trách từng bộ phận ---- */
+const STAFF = {
+  A:   ["Nguyễn Phương Anh","Nguyễn Đăng Được","Phạm Thị Nhung","Trịnh Quyết Thắng",
+        "Nguyễn Thúy Hà","Lê Thị Thu Hằng","Trần Thị Mỹ Hạnh"],
+  B:   ["Phạm Thị Thúy Hường"],
+  C:   {unit:"Phòng Kế hoạch — Tài chính"},
+  D:   {unit:"Các Khoa có chương trình đào tạo hội nhập và quốc tế"},
+  E25: ["Trần Thủy Tiên","Trần Thị Sâm","Nguyễn Thị Hồng Khanh","Nguyễn Tuấn Anh","Trần Văn Hải"],
+  E26: ["Mai Thị Thúy","Phạm Minh Châu","Phan Thị Lê","Bùi Hương Liên","Nguyễn Vân Anh"],
+  G:   {names:["Nguyễn Đình Huy","Phạm Thanh Quỳnh"], unit:"Cùng 07 sinh viên cho 7 bàn chụp ảnh"},
+  H:   ["Lê Thị Hồng Hiếu","Quách Kim Thu","Nguyễn Hương Thảo"],
+  I:   ["Trần Văn Bằng","Nguyễn Bá Nghị","Lê Hồng Long"],
+  M:   {names:["Nguyễn Khánh Thư"], unit:"Phối hợp với Công ty Phương Thảo"},
+  N:   {unit:"Ban Quản lý Ký túc xá, Phòng CTCT & QLSV"}
+};
+
+(function staffTab(){
+  const wrap = document.getElementById('staffgrid');
+  let total = 0;
+  wrap.innerHTML = ORDER.map(id=>{
+    const d = DATA[id], raw = STAFF[id];
+    const names = Array.isArray(raw) ? raw : (raw.names || []);
+    const unit  = Array.isArray(raw) ? null : raw.unit;
+    total += names.length;
+    const letter = id.replace(/\d+/,'');
+    return `<div class="scard">
+      <div class="sh">
+        <span class="dot" style="background:${d.color}">${letter}</span>
+        <div><h3>${d.name}</h3><span class="room">${d.room}</span></div>
+      </div>
+      ${names.length ? `<ol>${names.map(n=>`<li>${n}</li>`).join('')}</ol>` : ''}
+      ${unit ? `<p class="unit">${unit}</p>` : ''}
+      <div class="foot2">
+        <span><b>${d.pc}</b>máy tính</span>
+        <span><b>${d.qr}</b>máy quét</span>
+        ${d.pos?`<span><b>${d.pos}</b>máy POS</span>`:''}
+        ${d.cam?`<span><b>${d.cam}</b>camera</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('staffcount').textContent = total;
+
+  const tabs = [...document.querySelectorAll('.tab')];
+  tabs.forEach(t=>{
+    t.addEventListener('click', ()=>{
+      tabs.forEach(o=>{
+        const on = o === t;
+        o.setAttribute('aria-selected', on);
+        document.getElementById(o.getAttribute('aria-controls')).hidden = !on;
+      });
+      clear();
+    });
+  });
+})();
+
+/* ---- địa điểm đón tiếp của các Khoa, Ban ---- */
+const KHOA = [
+  ["Khoa Kiến trúc & Quy hoạch",            16, "A1",      "P.116"],
+  ["Khoa Xây dựng Dân dụng & Công nghiệp",  17, "A1",      "P.106, P.107"],
+  ["Khoa Công nghệ thông tin",              14, "A1",      "P.410"],
+  ["Khoa Kinh tế và Quản lý xây dựng",      16, "A1",      "P.318"],
+  ["Khoa Kỹ thuật Môi trường",               5, "A1",      "P.316"],
+  ["Khoa Cơ khí",                           11, "A1",      "P.109"],
+  ["Khoa Cầu đường",                         7, "A1",      "P.113"],
+  ["Khoa Vật liệu xây dựng",                 4, "A1",      "P.315"],
+  ["Khoa Xây dựng Công trình thủy",          5, "A1",      "P.115"],
+  ["Khoa Xây dựng Công trình biển và Dầu khí",1,"A1",      "P.405"],
+  ["Ban QL & ĐT Kỹ sư Chất lượng cao",       2, "H1",      "P.304"],
+  ["Khoa Đào tạo Quốc tế",                   2, "Thí nghiệm","P.505"]
+];
+
+(function khoaTab(){
+  const tong = KHOA.reduce((a,k)=>a+k[1],0);
+  document.getElementById('kbclass').textContent = tong;
+  document.getElementById('kbunit').textContent = KHOA.length;
+
+  // bấm vào nhãn trên sơ đồ để mở tab này
+  const go = document.getElementById('gotokb');
+  const open = ()=> document.getElementById('t-kb').click();
+  go.addEventListener('click', open);
+  go.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); }});
+})();
+
+/* ---- tab thống kê: gom toàn bộ số liệu ---- */
+(function thongKe(){
+  // Quy ước: mỗi máy tính là một vị trí làm việc, tương ứng một người trực.
+  // Nếu bộ phận nêu tên nhiều hơn số máy thì lấy theo số người đã nêu tên.
+  const rows = ORDER.map(id=>{
+    const d = DATA[id], raw = STAFF[id];
+    const names = Array.isArray(raw) ? raw : (raw.names || []);
+    return {id, d, n:names.length, nguoi: Math.max(names.length, d.pc)};
+  });
+  const neuTen  = rows.reduce((a,r)=>a+r.n,0);
+  const truc    = rows.reduce((a,r)=>a+r.nguoi,0);
+  const pc      = rows.reduce((a,r)=>a+r.d.pc,0);
+  const qr      = rows.reduce((a,r)=>a+r.d.qr,0);
+  const lop     = KHOA.reduce((a,k)=>a+k[1],0);
+
+  // Số bộ phát Wifi theo bộ phận (E25=P.25, E26=P.26, G=P.23, H=P.22 — mỗi phòng 1)
+  const WIFI = { E25:1, E26:1, G:1, H:1 };
+  const wifi = rows.reduce((a,r)=>a+(WIFI[r.id]||0),0);
+
+  const cards = [
+    [ORDER.length, "Bộ phận đón tiếp"],
+    [truc,         "Người tham gia trực"],
+    [pc,           "Máy vi tính"],
+    [qr,           "Máy quét"],
+    [KHOA.length,  "Khoa, Ban nhận lớp"],
+    [lop,          "Lớp dự kiến"]
+  ];
+  document.getElementById('tkstats').innerHTML =
+    cards.map(([v,l])=>`<div class="stat"><b>${v}</b><span>${l}</span></div>`).join('');
+
+  document.getElementById('tkbody').innerHTML = rows.map(({id,d,n,nguoi})=>{
+    const letter = id.replace(/\d+/,'');
+    const bu = nguoi > n;
+    return `<tr>
+      <td class="tag2"><span class="chip" style="background:${d.color}">${letter}</span></td>
+      <td class="unit">${d.name}</td>
+      <td class="loc">${d.room}</td>
+      <td class="n">${n || '—'}</td>
+      <td class="n"${bu?' style="color:var(--cyan)"':''}>${nguoi || '—'}</td>
+      <td class="n">${d.pc || '—'}</td>
+      <td class="n">${d.qr || '—'}</td>
+      <td class="n">${WIFI[id] || '—'}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('tkfoot').innerHTML =
+    `<tr><td></td><td>TỔNG CỘNG</td>
+      <td class="loc"></td>
+      <td class="n">${neuTen}</td><td class="n">${truc}</td>
+      <td class="n">${pc}</td><td class="n">${qr}</td><td class="n">${wifi}</td></tr>`;
+})();
+
+/* ---- đổi chủ đề sáng / tối, mặc định tối ---- */
+(function theme(){
+  const root = document.documentElement, btn = document.getElementById('themebtn');
+  btn.addEventListener('click', ()=>{
+    const sang = root.getAttribute('data-theme') === 'light';
+    root.setAttribute('data-theme', sang ? 'dark' : 'light');
+    btn.textContent = sang ? '☀ Chế độ sáng' : '☾ Chế độ tối';
+  });
+})();
+
+/* ---- logo: gán thẳng đường link ảnh; nếu link lỗi thì hiện chữ HUCE ---- */
+(function logo(){
+  const box = document.getElementById('crest'), img = document.getElementById('crestimg');
+  img.addEventListener('load',  ()=> box.classList.add('has-img'));
+  img.addEventListener('error', ()=> box.classList.remove('has-img'));
+})();
+
+/* ---- sơ đồ cắt lớp nhà A1: vị trí các phòng đón tiếp ---- */
+const A1 = [
+  {t:"TẦNG 1", ghi:"dãy trước: 118 → 113   ·   dãy sau: 106 → 109",
+   left:["WC","P.101","P.102","P.103","P.104","CT"],
+   top:["P.118","P.116","TM","CT","P.115","P.113"],
+   right:["P.111","P.110"],
+   botL:["P.106","P.107","P.BV"], botR:["P.108","P.108B","P.109"],
+   loi:"sanh", xuyen:true, giua:"SẢNH"},
+  {t:"TẦNG 2", ghi:"dãy trước: 222 → 216   ·   dãy sau: 205 → 212",
+   left:["WC","P.201","P.203","P.204","CT"],
+   top:["P.222","P.221","P.220","TM","CT","P.219","P.218","P.217","P.216"],
+   right:["P.215"],
+   bot:["P.205","P.210","P.212"],
+   loi:"gieng", coreRooms:["P.223"]},
+  {t:"TẦNG 3", ghi:"dãy trước: 320 → 315   ·   dãy sau: 305 → 312",
+   left:["WC","P.301","P.303","P.304","CT"],
+   top:["P.320","P.318","TM","CT","P.317","P.316","P.315"],
+   right:["P.313"],
+   bot:["P.305","P.306","P.307","P.308","P.309","P.310","P.311","P.312"],
+   loi:"gieng", coreRooms:["P.KHO","P.322"]},
+  {t:"TẦNG 4", ghi:"dãy trước: 417 → 413   ·   dãy sau: 405 → 410",
+   left:["WC","P.401","P.403","P.404","CT"],
+   top:["P.417","P.416","P.415","TM","CT","P.414","P.414A","P.413"],
+   right:["P.412","P.411"],
+   bot:["P.405","P.406","P.407","P.408","P.409B","P.409","P.409A","P.410"],
+   loi:"gieng", coreRooms:["P.422","P.423"]},
+  {t:"TẦNG 5", ghi:"dãy trước: 517 → 514A   ·   dãy sau: 505 → 511A",
+   left:["WC","P.501","P.502","P.503","P.504","CT"],
+   top:["P.517","P.517A","P.516","TM","CT","P.515","P.515A","P.514","P.514A"],
+   right:["P.513","P.512"],
+   bot:["P.505","P.506","P.507","P.508","P.509","P.510","P.510A","P.511","P.511A"],
+   loi:"gieng", coreRooms:["P.522","P.523"]}
+];
+
+// nơi sinh viên nhập học, nếu khác phòng làm việc của khoa trong nhà A1
+const NOINHAPHOC = {
+  "P.106":"Phòng 12 - Nhà H3",
+  "P.107":"Phòng 12 - Nhà H3",
+  "P.318":"Tầng 2 Nhà Thư viện (Phòng đọc)"
+};
+
+// tên phòng đọc từ bản vẽ hoàn công 12/2017
+const TENPHONG = {
+"P.101":"Viện UAI","P.102":"P. Đoàn TN","P.103":"P. Tiếp công dân","P.104":"P. Thanh tra",
+"P.106":"K. Xây dựng","P.107":"Phòng làm việc","P.BV":"Phòng bảo vệ","P.108":"P. Văn thư",
+"P.108B":"Tổ Truyền thông","P.109":"K. Cơ khí","P.110":"Phòng làm việc","P.111":"P. Hợp tác quốc tế",
+"P.113":"K. Cầu đường","P.115":"K. XD Công trình thủy","P.116":"K. Kiến trúc & Quy hoạch",
+"P.118":"Văn phòng Công đoàn",
+"P.201":"P. Đào tạo","P.203":"Phòng làm việc","P.204":"K. Đào tạo Sau đại học","P.205":"P. Tài vụ",
+"P.210":"P. Tổ chức","P.212":"P. Hiệu phó","P.215":"P. Hiệu trưởng","P.216":"P. Xe",
+"P.217":"P. Hiệu phó","P.218":"P. Hiệu phó","P.219":"P. Hành chính - Tổng hợp","P.220":"Lễ tân",
+"P.221":"VP Đảng ủy","P.222":"Trưởng phòng Đào tạo","P.223":"Phòng họp",
+"P.301":"P. Công tác SV","P.303":"P. Công tác SV","P.304":"P. Tuyển sinh","P.305":"Phòng họp",
+"P.306":"P. Cựu cán bộ","P.307":"P. Công nghệ & QLXD","P.308":"P. QL dự án & Pháp luật",
+"P.309":"P. Khoa học & Công nghệ","P.310":"Phòng làm việc","P.311":"P. QL thiết bị",
+"P.312":"P. Công trình BTCT","P.313":"K. GD Quốc phòng","P.315":"K. Vật liệu xây dựng",
+"P.316":"K. Kỹ thuật Môi trường","P.317":"BM Kỹ thuật Môi trường","P.318":"K. Kinh tế & QLXD",
+"P.320":"BM Tiếng Anh","P.KHO":"Kho","P.322":"Phòng làm việc",
+"P.401":"BM Kiến trúc dân dụng","P.403":"BM Quy hoạch vùng & đô thị","P.404":"BM Kiến trúc xây dựng",
+"P.405":"K. XD Công trình biển & Dầu khí","P.406":"BM Vật liệu xây dựng","P.407":"BM XD cảng & đường thủy",
+"P.408":"BM Công nghệ phần mềm","P.409":"BM Toán ứng dụng","P.409A":"BM Kỹ thuật hệ thống & mạng",
+"P.409B":"BM Toán học","P.410":"K. Công nghệ thông tin","P.411":"BM Kiến trúc cảnh quan",
+"P.412":"BM Hình họa & Vẽ kỹ thuật","P.413":"K. Lý luận chính trị","P.414":"BM Điện kỹ thuật",
+"P.414A":"BM Vật lý","P.415":"BM Cơ giới hóa xây dựng","P.416":"BM Kinh tế & QL bất động sản",
+"P.417":"P. Quản lý đầu tư","P.422":"BM QH hạ tầng kỹ thuật đô thị","P.423":"BM Tin học xây dựng",
+"P.501":"BM Công nghệ & VLXD","P.502":"BM Địa chất công trình","P.503":"BM Cầu & Công trình ngầm",
+"P.504":"BM Kiến trúc môi trường","P.505":"Espace Francophone","P.506":"BM Tổ chức kế toán",
+"P.507":"BM Kinh tế nghiệp vụ","P.508":"BM Kinh tế xây dựng","P.509":"BM Lý thuyết lịch sử & Kiến trúc",
+"P.510":"BM Máy xây dựng","P.510A":"BM Cơ sở kỹ thuật cơ khí","P.511":"BM Tiếng Pháp",
+"P.511A":"Phòng làm việc","P.512":"BM Cơ sở nghệ thuật","P.513":"BM Hóa học",
+"P.514":"BM Cơ học kết cấu","P.514A":"BM Cơ học lý thuyết","P.515":"BM XD Thủy lợi - Thủy điện",
+"P.515A":"BM Thủy lực - Thủy văn","P.516":"BM Trắc địa","P.517":"BM Đường ô tô & Đường đô thị",
+"P.517A":"BM Cơ học đất - Nền móng","P.522":"BM CS kỹ thuật công trình biển",
+"P.523":"BM KT công trình biển & Đường ống bể chứa"
+};
+
+// phòng đón tiếp trong nhà A1 -> khoa/ban
+const DONTIEP = {
+  "P.106":"Khoa Xây dựng Dân dụng & Công nghiệp",
+  "P.107":"Khoa Xây dựng Dân dụng & Công nghiệp",
+  "P.318":"Khoa Kinh tế và Quản lý xây dựng",
+  "P.116":"Khoa Kiến trúc & Quy hoạch",
+  "P.115":"Khoa Xây dựng Công trình thủy",
+  "P.113":"Khoa Cầu đường",
+  "P.109":"Khoa Cơ khí",
+  "P.316":"Khoa Kỹ thuật Môi trường",
+  "P.315":"Khoa Vật liệu xây dựng",
+  "P.410":"Khoa Công nghệ thông tin",
+  "P.405":"Khoa Xây dựng Công trình biển và Dầu khí"
+};
+
+function veA1(loc){
+  const svg=document.getElementById('a1svg');
+  const X0=22, X1=638, LW=96, RW=84, PH=192, GAP=46;
+  const XL=X0+LW;                 // mép phải cột đầu hồi trái
+  const XR=X1-RW;                 // mép trái khối phải
+
+  const gieng=(x,y,w,h,nhan)=>
+    `<rect class="void" x="${x}" y="${y}" width="${w}" height="${h}"/>`+
+    `<path class="voidwedge" d="M${x} ${y} L${x+w} ${y} L${x} ${y+h} Z"/>`+
+    `<text class="voidtxt" x="${x+w/2}" y="${y+h-6}">${nhan}</text>`;
+
+  // cầu thang; huong = 'doc' (đi trước-sau) hoặc 'ngang' (đi trái-phải)
+  const thang=(x,y,w,h,huong)=>{
+    let g=`<rect class="stair" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+    const n=6;
+    if(huong==='ngang'){
+      const b=w/n;
+      for(let i=1;i<n;i++) g+=`<line class="step" x1="${x+i*b}" y1="${y}" x2="${x+i*b}" y2="${y+h}"/>`;
+      const my=y+h/2;
+      g+=`<path class="steparrow" d="M${x+w-4} ${my} L${x+5} ${my}"/>`;
+      g+=`<path class="steparrow" d="M${x+9.5} ${my-3.4} L${x+4.5} ${my} L${x+9.5} ${my+3.4}"/>`;
+    }else{
+      const b=h/n;
+      for(let i=1;i<n;i++) g+=`<line class="step" x1="${x}" y1="${y+i*b}" x2="${x+w}" y2="${y+i*b}"/>`;
+      const mx=x+w/2;
+      g+=`<path class="steparrow" d="M${mx} ${y+h-4} L${mx} ${y+5}"/>`;
+      g+=`<path class="steparrow" d="M${mx-3.4} ${y+9.5} L${mx} ${y+4.5} L${mx+3.4} ${y+9.5}"/>`;
+    }
+    return g;
+  };
+
+  const thangmay=(x,y,w,h)=>
+    `<rect class="lift" x="${x}" y="${y}" width="${w}" height="${h}"/>`+
+    `<path class="liftx" d="M${x+2} ${y+2} L${x+w-2} ${y+h-2} M${x+w-2} ${y+2} L${x+2} ${y+h-2}"/>`+
+    `<text class="rmtxt" x="${x+w/2}" y="${y+h+8}">TM</text>`;
+
+  let out='';
+  const ds = A1.filter(f=>coPhong(f,loc));
+  ds.forEach((f,fi)=>{
+    const y0 = 36 + fi*(PH+GAP);
+    const yTop=y0, hTop=44;
+    const yMid=y0+48, hMid=88;
+    const yBot=y0+140, hBot=52;
+
+    out += `<text class="flab" x="${X0}" y="${y0-14}">${f.t}</text>`
+         + `<text class="fsub" x="${X0+86}" y="${y0-14}">${f.ghi}</text>`;
+
+    const rong = t => t==='P.BV' ? 1/3 : 1;
+    const cell=(x,y,w,h,ten,huong)=>{
+      if(ten==='CT') return thang(x+2,y+2.5,w-4,h-5,huong||'doc');
+      if(ten==='TM') return thangmay(x+3,y+3,w-6,h-13);
+      const hi = !!DONTIEP[ten];
+      const dc = !!NOINHAPHOC[ten];
+      const id = ten==='WC' ? '' : ` data-room="${ten}"`;
+      return `<g${id}><rect class="rmcell${hi?' hi':''}${dc?' dc':''}" x="${x}" y="${y}" width="${w}" height="${h}" rx="1.5"/>`
+           + `<text class="rmtxt${hi?' hi':''}" x="${x+w/2}" y="${y+h/2}">${ten.replace('P.','')}</text>`
+           + (dc?`<text class="dcmark" x="${x+w-2.5}" y="${y+2.6}">↪</text>`:'')
+           + `</g>`;
+    };
+
+    // ----- lõi giữa -----
+    out += `<rect class="core" x="${XL}" y="${yMid}" width="${XR-XL}" height="${hMid}"/>`;
+    const cw=XR-XL, gy=yMid+12, gh=64;
+    if(f.loi==='sanh'){
+      out += `<text class="coretxt" x="${XL+cw*0.20}" y="${yMid+hMid/2+3}">${f.giua}</text>`;
+      out += `<text class="coretxt" x="${XL+cw*0.83}" y="${yMid+hMid/2+3}">SẢNH</text>`;
+    }else{
+      out += gieng(XL+cw*0.04, gy, cw*0.32, gh, "GIẾNG TRỜI");
+      out += gieng(XL+cw*0.73, gy, cw*0.23, gh, "GIẾNG TRỜI");
+      const rx=XL+cw*0.49, rw=cw*0.19, rh=(gh-3)/2;
+      f.coreRooms.forEach((t,i)=> out+=cell(rx, gy+i*(rh+3), rw, rh, t));
+    }
+
+    // ----- cột đầu hồi trái, chạy suốt chiều cao; cầu thang ở đáy, đi ngang -----
+    const HCT=38, ds=f.left.filter(t=>t!=='CT');
+    let sw=ds.reduce((a,t)=>a+rong(t),0), ly=yTop;
+    ds.forEach(t=>{ const h=(PH-HCT)*(rong(t)/sw); out+=cell(X0,ly,LW,h-1.5,t); ly+=h; });
+    out += cell(X0, yTop+PH-HCT, LW, HCT, 'CT', 'ngang');
+
+    // ----- dãy trước: cụm thang giữa khóa cứng 40–59% để thẳng trục mọi tầng -----
+    const WT=X1-XL, XM0=XL+WT*0.40, XM1=XL+WT*0.59;
+    const iTM=f.top.indexOf('TM');
+    const tr=f.top.slice(0,iTM), ph=f.top.slice(iTM+2);
+    sw=tr.reduce((a,t)=>a+rong(t),0); let cx=XL;
+    tr.forEach(t=>{ const w=(XM0-XL)*(rong(t)/sw); out+=cell(cx,yTop,w-1.5,hTop,t); cx+=w; });
+    const wc=(XM1-XM0)/2;
+    out += cell(XM0, yTop, wc-2, hTop, 'TM');
+    out += cell(XM0+wc, yTop, wc-2, hTop, 'CT', 'doc');
+    sw=ph.reduce((a,t)=>a+rong(t),0); cx=XM1;
+    ph.forEach(t=>{ const w=(X1-XM1)*(rong(t)/sw); out+=cell(cx,yTop,w-1.5,hTop,t); cx+=w; });
+
+    // ----- khối phải -----
+    const hR=hMid/f.right.length;
+    f.right.forEach((t,i)=> out+=cell(XR,yMid+i*hR,RW,hR-1.5,t));
+
+    // ----- dãy sau -----
+    const XB0=XL+WT*0.40, XB1=XL+WT*0.59;
+    if(f.xuyen){
+      // tầng 1: lối đi thẳng từ ngoài vào tận thang máy và thang bộ
+      const yA=yTop+hTop, yB=yBot+hBot;
+      out += `<rect class="lane" x="${XB0}" y="${yA}" width="${XB1-XB0}" height="${yB-yA}"/>`;
+      const mx=(XB0+XB1)/2;
+      out += `<path class="lanearrow" d="M${mx} ${yB-8} L${mx} ${yA+10}"/>`;
+      out += `<path class="lanearrow" d="M${mx-4.5} ${yA+16} L${mx} ${yA+9} L${mx+4.5} ${yA+16}"/>`;
+      out += `<text class="lanetxt" x="${mx}" y="${yB-14}">LỐI VÀO</text>`;
+      let bs=f.botL.reduce((a,t)=>a+rong(t),0), bx=XL;
+      f.botL.forEach(t=>{ const w=(XB0-XL)*(rong(t)/bs); out+=cell(bx,yBot,w-1.5,hBot,t); bx+=w; });
+      bs=f.botR.reduce((a,t)=>a+rong(t),0); bx=XB1;
+      f.botR.forEach(t=>{ const w=(X1-XB1)*(rong(t)/bs); out+=cell(bx,yBot,w-1.5,hBot,t); bx+=w; });
+    }else{
+      const bs=f.bot.reduce((a,t)=>a+rong(t),0); let bx=XL;
+      f.bot.forEach(t=>{ const w=(X1-XL)*(rong(t)/bs); out+=cell(bx,yBot,w-1.5,hBot,t); bx+=w; });
+    }
+  });
+
+  svg.setAttribute('viewBox', `0 0 660 ${36+Math.max(1,ds.length)*(PH+46)}`);
+  setSvgHTML(svg, out);
+  noiDanhSach();
+}
+
+// sắp theo số phòng tăng dần (số phòng đã hàm chứa số tầng), phòng không có số xếp cuối
+function khoaSx(t){
+  const m = String(t).match(/(\d+)([A-Za-z]*)$/);
+  return m ? [parseInt(m[1],10), m[2]||''] : [99999, String(t)];
+}
+const sxPhong = (a,b)=>{
+  const x=khoaSx(a), y=khoaSx(b);
+  return x[0]-y[0] || x[1].localeCompare(y[1]);
+};
+
+// phòng đón tiếp của khoa/ban hay phòng làm việc thường
+const laPhongKhoa = t => !!DONTIEP[t];
+const laBoMon = t => /^BM/.test(TENPHONG[t]||'');
+const dsPhong = f => [...f.left, ...f.top, ...(f.right||[]),
+                      ...(f.bot||[]), ...(f.botL||[]), ...(f.botR||[]), ...(f.coreRooms||[])]
+                     .filter(t=>t!=='CT' && t!=='TM' && t!=='WC');
+function locPhong(f, loc){
+  const ds = dsPhong(f).sort(sxPhong);
+  if(loc==='khoa')  return ds.filter(laPhongKhoa);
+  if(loc==='bm')    return ds.filter(laBoMon);
+  if(loc==='phong') return ds.filter(t=>!laPhongKhoa(t) && !laBoMon(t));
+  return ds;
+}
+function coPhong(f, loc){ return locPhong(f, loc).length > 0; }
+
+function veDanhSach(loc){
+  const box = document.getElementById('kbbody2');
+  let html = '';
+
+  if(loc==='khoa'){
+    const trongA1=[], ngoai=[];
+    KHOA.forEach(([ten,lop,nha,phong])=>{
+      (nha==='A1' ? trongA1 : ngoai).push({ten,lop,nha,phong});
+    });
+    trongA1.sort((a,b)=> sxPhong(a.phong,b.phong));
+    ngoai.sort((a,b)=> sxPhong(a.phong,b.phong));
+    const dong = o => `<li data-room="${o.nha==='A1'?o.phong:''}">
+        <span class="nm">${o.ten}<em>${o.phong}${o.nha==='A1'?'':' · nhà '+o.nha}</em></span>
+        <span class="lp">${o.lop} lớp</span></li>`;
+    html += `<div class="kbgroup"><h3>Khoa, Ban trong nhà A1</h3>
+             <ul class="kblist">${trongA1.map(dong).join('')}</ul></div>`;
+    html += `<div class="kbgroup"><h3>Khoa, Ban ngoài nhà A1</h3>
+             <ul class="kblist">${ngoai.map(dong).join('')}</ul></div>`;
+  }else{
+    const nhan = loc==='bm' ? 'bộ môn' : 'phòng';
+    A1.forEach(f=>{
+      const ds = locPhong(f, loc);
+      if(!ds.length) return;
+      const li = ds.map(t=>`<li data-room="${t}">
+          <span class="nm">${TENPHONG[t]||'Phòng làm việc'}<em>${t}</em></span></li>`).join('');
+      html += `<div class="kbgroup"><h3>${f.t} — ${ds.length} ${nhan}</h3>
+               <ul class="kblist">${li}</ul></div>`;
+    });
+  }
+
+  box.innerHTML = html;
+}
+
+function noiDanhSach(){
+  const svg=document.getElementById('a1svg');
+  const sheet=document.querySelector('.kbsheet'), tip=document.getElementById('kbtip');
+
+  // tra cứu khoa/ban theo số phòng
+  const theoPhong={};
+  KHOA.forEach(([ten,lop,nha,phong])=>{
+    if(nha!=='A1') return;
+    phong.split(',').map(x=>x.trim()).forEach(p=>theoPhong[p]={ten,lop});
+  });
+
+  const hienTip=(p,e)=>{
+    const k=theoPhong[p]; if(!k) return;
+    const dc = !!NOINHAPHOC[p];
+    tip.innerHTML = `<div class="th">
+        <span class="letter" style="background:var(--cyan);color:#062a33">K</span>
+        <div><h3>${k.ten}</h3><span class="room">${p} · ${k.lop} lớp</span></div>
+      </div>${dc?`
+      <p class="noi dc"><span class="dclabel">↪ Đã điều chuyển</span>SV nhập học tại: <b>${NOINHAPHOC[p]}</b></p>`:''}`;
+    const r=sheet.getBoundingClientRect();
+    let x=e.clientX-r.left+16, y=e.clientY-r.top+14;
+    if(x+262>r.width) x=e.clientX-r.left-266;
+    if(y+tip.offsetHeight>r.height) y=r.height-tip.offsetHeight-8;
+    tip.style.left=Math.max(6,x)+'px'; tip.style.top=Math.max(6,y)+'px';
+    tip.classList.add('show');
+  };
+  const anTip=()=>tip.classList.remove('show');
+
+  const tach = v => (v||'').split(',').map(x=>x.trim()).filter(Boolean);
+
+  const toSang=(ds,lop,bat)=>ds.forEach(p=>
+    svg.querySelectorAll(`[data-room="${p}"] rect`).forEach(r=>r.classList.toggle(lop,bat)));
+
+  const boGhim=()=>{
+    svg.querySelectorAll('.rmcell.pin').forEach(r=>r.classList.remove('pin'));
+    document.querySelectorAll('.kblist li.pin').forEach(l=>l.classList.remove('pin'));
+  };
+
+  const ghim=(li)=>{
+    const ds=tach(li.dataset.room); if(!ds.length) return;
+    const dangGhim = li.classList.contains('pin');
+    boGhim();
+    if(dangGhim) return;
+    li.classList.add('pin'); toSang(ds,'pin',true);
+    const o=svg.querySelector(`[data-room="${ds[0]}"] rect`);
+    if(o && o.scrollIntoView) try{ o.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){}
+  };
+
+  document.querySelectorAll('.kblist li[data-room]').forEach(li=>{
+    const ds=tach(li.dataset.room); if(!ds.length) return;
+    li.style.cursor='pointer';
+    li.addEventListener('mouseenter',()=>{
+      li.classList.add('on'); toSang(ds,'on',true);
+      const o=svg.querySelector(`[data-room="${ds[0]}"] rect`);
+      if(o){ const b=o.getBoundingClientRect();
+        hienTip(ds[0],{clientX:b.left+b.width/2, clientY:b.top+b.height}); }
+    });
+    li.addEventListener('mouseleave',()=>{li.classList.remove('on');toSang(ds,'on',false);anTip();});
+    li.addEventListener('click',()=>ghim(li));
+  });
+
+  svg.querySelectorAll('[data-room]').forEach(g=>{
+    const p=g.dataset.room;
+    const dsLi=()=>document.querySelectorAll(`.kblist li[data-room*="${p}"]`);
+    g.style.cursor='pointer';
+    g.addEventListener('mouseenter',e=>{
+      toSang([p],'on',true); dsLi().forEach(l=>l.classList.add('on')); hienTip(p,e);
+    });
+    g.addEventListener('mousemove',e=>hienTip(p,e));
+    g.addEventListener('mouseleave',()=>{
+      toSang([p],'on',false); dsLi().forEach(l=>l.classList.remove('on')); anTip();
+    });
+    g.addEventListener('click',e=>{ const l=dsLi()[0]; if(l) ghim(l); hienTip(p,e); });
+  });
+}
+
+(function khoiTao(){
+  const sel = document.getElementById('kbfilter');
+  const ve = ()=>{ veDanhSach(sel.value); veA1(sel.value); };
+  sel.addEventListener('change', ve);
+  ve();
+})();
+
+/* ---- Thống kê nhập học (số liệu minh hoạ, thay bằng số thực khi có) ---- */
+(function thongKeNhapHoc(){
+  const NGANH=[
+    {t:"Kỹ thuật xây dựng",tt:1035,ch:[{t:"Kỹ thuật xây dựng/ Xây dựng Dân dụng và Công nghiệp",tt:411,nh:0,thu:0,kh:"Khoa Xây dựng Dân dụng & Công nghiệp"},{t:"Kỹ thuật xây dựng",tt:303,nh:0,thu:0,kh:"Khoa Xây dựng Dân dụng & Công nghiệp"},{t:"Kỹ thuật xây dựng/ Tin học xây dựng",tt:160,nh:0,thu:0,kh:"Khoa Công nghệ thông tin"},{t:"Kỹ thuật xây dựng/ Hệ thống kỹ thuật trong công trình",tt:110,nh:0,thu:0,kh:"Khoa Kỹ thuật Môi trường"},{t:"Kỹ thuật xây dựng/ Kỹ thuật công trình biển",tt:51,nh:0,thu:0,kh:"Khoa Xây dựng Công trình biển và Dầu khí"}]},
+    {t:"Kinh tế xây dựng",tt:468,ch:[{t:"Kinh tế xây dựng",tt:468,nh:0,thu:0,kh:"Khoa Kinh tế và Quản lý xây dựng"}]},
+    {t:"Kỹ thuật cơ khí",tt:431,ch:[{t:"Kỹ thuật cơ khí/ Kỹ thuật ô tô",tt:113,nh:0,thu:0,kh:"Khoa Cơ khí"},{t:"Kỹ thuật cơ khí/ Máy xây dựng",tt:112,nh:0,thu:0,kh:"Khoa Cơ khí"},{t:"Kỹ thuật cơ khí",tt:104,nh:0,thu:0,kh:"Khoa Cơ khí"},{t:"Kỹ thuật cơ khí/ Kỹ thuật cơ điện",tt:102,nh:0,thu:0,kh:"Khoa Cơ khí"}]},
+    {t:"Công nghệ thông tin",tt:405,ch:[{t:"Công nghệ thông tin",tt:254,nh:0,thu:0,kh:"Khoa Công nghệ thông tin"},{t:"Công nghệ thông tin/ Công nghệ đa phương tiện",tt:99,nh:0,thu:0,kh:"Khoa Công nghệ thông tin"},{t:"Công nghệ thông tin/ An toàn thông tin",tt:52,nh:0,thu:0,kh:"Khoa Công nghệ thông tin"}]},
+    {t:"Quản lý xây dựng",tt:390,ch:[{t:"Quản lý xây dựng/ Quản lý hạ tầng, đất đai đô thị",tt:117,nh:0,thu:0,kh:"Khoa Kinh tế và Quản lý xây dựng"},{t:"Quản lý xây dựng/ Kinh tế và quản lý đô thị",tt:113,nh:0,thu:0,kh:"Khoa Kinh tế và Quản lý xây dựng"},{t:"Quản lý xây dựng/ Kinh tế và quản lý bất động sản",tt:106,nh:0,thu:0,kh:"Khoa Kinh tế và Quản lý xây dựng"},{t:"Quản lý xây dựng/ Kiểm toán đầu tư xây dựng",tt:54,nh:0,thu:0,kh:"Khoa Kinh tế và Quản lý xây dựng"}]},
+    {t:"Kiến trúc",tt:357,ch:[{t:"Kiến trúc",tt:306,nh:0,thu:0,kh:"Khoa Kiến trúc & Quy hoạch"},{t:"Kiến trúc/Kiến trúc công nghệ",tt:51,nh:0,thu:0,kh:"Khoa Kiến trúc & Quy hoạch"}]},
+    {t:"Logistics và Quản lý chuỗi cung ứng",tt:315,ch:[{t:"Logistics và Quản lý chuỗi cung ứng",tt:209,nh:0,thu:0,kh:"Khoa Xây dựng Công trình thủy"},{t:"Logistics và Quản lý chuỗi cung ứng/ Logistics đô thị",tt:54,nh:0,thu:0,kh:"Khoa Xây dựng Công trình thủy"},{t:"Logistics và Quản lý chuỗi cung ứng/ Logistics công nghiệp",tt:52,nh:0,thu:0,kh:"Khoa Xây dựng Công trình thủy"}]},
+    {t:"Kỹ thuật xây dựng công trình Giao thông",tt:214,ch:[{t:"Kỹ thuật xây dựng công trình Giao thông/ Xây dựng Cầu đường",tt:161,nh:0,thu:0,kh:"Khoa Cầu đường"},{t:"Kỹ thuật xây dựng công trình giao thông/ Đường sắt tốc độ cao và đường sắt đô thị",tt:53,nh:0,thu:0,kh:"Khoa Cầu đường"}]},
+    {t:"Kỹ thuật Cấp thoát nước",tt:112,ch:[{t:"Kỹ thuật Cấp thoát nước/ Kỹ thuật nước - Môi trường nước",tt:112,nh:0,thu:0,kh:"Khoa Kỹ thuật Môi trường"}]},
+    {t:"Công nghệ kỹ thuật vật liệu xây dựng",tt:111,ch:[{t:"Công nghệ kỹ thuật vật liệu xây dựng",tt:111,nh:0,thu:0,kh:"Khoa Vật liệu xây dựng"}]},
+    {t:"Quản lý dự án",tt:108,ch:[{t:"Quản lý dự án",tt:108,nh:0,thu:0,kh:"Khoa Kinh tế và Quản lý xây dựng"}]},
+    {t:"Khoa học máy tính",tt:106,ch:[{t:"Khoa học máy tính",tt:106,nh:0,thu:0,kh:"Khoa Công nghệ thông tin"}]},
+    {t:"Kiến trúc nội thất",tt:104,ch:[{t:"Kiến trúc nội thất",tt:104,nh:0,thu:0,kh:"Khoa Kiến trúc & Quy hoạch"}]},
+    {t:"Kỹ thuật xây dựng (Chương trình đào tạo Kỹ sư chất lượng cao - PFIEV)",tt:103,ch:[{t:"Kỹ thuật xây dựng (Chương trình đào tạo Kỹ sư chất lượng cao - PFIEV)",tt:103,nh:0,thu:0,kh:"Ban QL & ĐT Kỹ sư Chất lượng cao"}]},
+    {t:"CTĐT Nghệ thuật và thiết kế",tt:95,ch:[{t:"CTĐT Nghệ thuật và thiết kế",tt:95,nh:0,thu:0,kh:"Khoa Kiến trúc & Quy hoạch"}]},
+    {t:"Mỹ thuật đô thị",tt:63,ch:[{t:"Mỹ thuật đô thị",tt:63,nh:0,thu:0,kh:"Khoa Kiến trúc & Quy hoạch"}]},
+    {t:"Kỹ thuật Môi trường",tt:57,ch:[{t:"Kỹ thuật Môi trường",tt:57,nh:0,thu:0,kh:"Khoa Kỹ thuật Môi trường"}]},
+    {t:"Kỹ thuật xây dựng công trình thủy",tt:56,ch:[{t:"Kỹ thuật xây dựng công trình thủy",tt:56,nh:0,thu:0,kh:"Khoa Xây dựng Công trình thủy"}]},
+    {t:"Kỹ thuật cơ điện tử",tt:56,ch:[{t:"Kỹ thuật cơ điện tử",tt:56,nh:0,thu:0,kh:"Khoa Cơ khí"}]},
+    {t:"Kỹ thuật điện",tt:54,ch:[{t:"Kỹ thuật điện",tt:54,nh:0,thu:0,kh:"Khoa Cơ khí"}]},
+    {t:"Kỹ thuật vật liệu",tt:54,ch:[{t:"Kỹ thuật vật liệu",tt:54,nh:0,thu:0,kh:"Khoa Vật liệu xây dựng"}]},
+    {t:"Quy hoạch vùng và đô thị",tt:53,ch:[{t:"Quy hoạch vùng và đô thị",tt:53,nh:0,thu:0,kh:"Khoa Kiến trúc & Quy hoạch"}]},
+    {t:"Kiến trúc cảnh quan",tt:52,ch:[{t:"Kiến trúc cảnh quan",tt:52,nh:0,thu:0,kh:"Khoa Kiến trúc & Quy hoạch"}]},
+    {t:"Khoa học dữ liệu",tt:52,ch:[{t:"Khoa học dữ liệu",tt:52,nh:0,thu:0,kh:"Khoa Công nghệ thông tin"}]},
+    {t:"Công nghệ kỹ thuật xây dựng",tt:51,ch:[{t:"Công nghệ kỹ thuật xây dựng",tt:51,nh:0,thu:0,kh:"Khoa Vật liệu xây dựng"}]},
+    {t:"Kỹ thuật điều khiển và tự động hóa",tt:48,ch:[{t:"Kỹ thuật điều khiển và tự động hóa",tt:48,nh:0,thu:0,kh:"Khoa Cơ khí"}]},
+    {t:"Kỹ thuật xây dựng (Chương trình chuẩn đầu ra tiếng Anh, hợp tác với Đại học Mississippi - Hoa Kỳ)",tt:34,ch:[{t:"Kỹ thuật xây dựng (Chương trình chuẩn đầu ra tiếng Anh, hợp tác với Đại học Mississippi - Hoa Kỳ)",tt:34,nh:0,thu:0,kh:"Khoa Đào tạo Quốc tế"}]},
+    {t:"Khoa học Máy tính (Chương trình chuẩn đầu ra tiếng Anh, hợp tác với Đại học Mississippi - Hoa Kỳ)",tt:29,ch:[{t:"Khoa học Máy tính (Chương trình chuẩn đầu ra tiếng Anh, hợp tác với Đại học Mississippi - Hoa Kỳ)",tt:29,nh:0,thu:0,kh:"Khoa Đào tạo Quốc tế"}]},
+  ];
+  const FEE=12234000, GOAL=85;
+  /* ==== Kết nối hệ thống nhập học (điền địa chỉ API để tự lấy số & làm mới) ====
+     Ví dụ: 'http://192.168.100.24:3001/api/thong-ke-nhap-hoc'
+     Để trống '' nếu chưa có API (khi đó dùng nút Nhập Excel/CSV). */
+  const NHAPHOC_API='';
+  const AUTO_REFRESH_MS=60000;   // tự làm mới mỗi 60 giây
+  const nf=n=>n.toLocaleString('vi-VN');
+  const tien=n=>nf(n);
+  const p1=x=>x.toFixed(1).replace('.',',');
+  const cls=p=>p>=GOAL?'g':(p>=70?'c':'w');
+  const strip=s=>(s==null?'':String(s)).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase();
+  const norm=s=>strip(s).replace(/\s+/g,' ').trim();
+  const nhOf =d=> d.ch?d.ch.reduce((a,c)=>a+(c.nh||0),0):(d.nh||0);
+  const thuOf=d=> d.ch?d.ch.reduce((a,c)=>a+(c.thu||0),0):(d.thu||0);
+
+  function renderHero(){
+    const tot=NGANH.reduce((a,d)=>a+d.tt,0), totNh=NGANH.reduce((a,d)=>a+nhOf(d),0),
+          totThu=NGANH.reduce((a,d)=>a+thuOf(d),0), nch=NGANH.reduce((a,d)=>a+d.ch.length,0);
+    const pctT=tot?totNh/tot*100:0;
+    const nkhoa=new Set(); NGANH.forEach(d=>d.ch.forEach(c=>{ if(c.kh) nkhoa.add(c.kh); }));
+    const Rr=60,Cc=2*Math.PI*Rr,off=Cc*(1-Math.min(100,pctT)/100),gAng=GOAL/100*360;
+    document.getElementById('nhhero').innerHTML=`
+      <div class="nhgauge">
+        <svg viewBox="0 0 132 132">
+          <circle cx="66" cy="66" r="${Rr}" fill="none" stroke="var(--panel-2)" stroke-width="11"/>
+          <circle cx="66" cy="66" r="${Rr}" fill="none" stroke="var(--cyan)" stroke-width="11" stroke-linecap="round"
+            stroke-dasharray="${Cc.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 66 66)"/>
+          <line x1="66" y1="7" x2="66" y2="19" stroke="#e0912a" stroke-width="2.6" transform="rotate(${gAng.toFixed(1)} 66 66)"/>
+        </svg>
+        <div class="c"><b>${p1(pctT)}%</b><span>Đã nhập học</span></div>
+      </div>
+      <div class="herostats">
+        <div class="hs"><div class="l">Số trúng tuyển</div><div class="v">${nf(tot)}</div></div>
+        <div class="hs"><div class="l">Đã nhập học</div><div class="v">${nf(totNh)}</div></div>
+        <div class="hs goal"><div class="l">Số tiền đã thu</div><div class="v">${tien(totThu)} <small>₫</small></div></div>
+        <div class="hs"><div class="l">Tiền tạm tính (HK1)</div><div class="v">${tien(tot*FEE)} <small>₫</small></div></div>
+        <div class="hs"><div class="l">Khoa / ngành / chuyên ngành</div><div class="v">${nkhoa.size||12} <small>/ ${NGANH.length} / ${nch}</small></div></div>
+      </div>`;
+    document.getElementById('nhfee').innerHTML='<b>Tiền tạm tính</b> = Số trúng tuyển × 12.234.000 ₫/SV (Học phí HK1 10.450.000 + Lệ phí nhập học 800.000 + Thẻ SV 130.000 + BHYT 854.000). <b>Số tiền đã thu</b> là số thực thu do Tài vụ nhập — có thể thấp hơn tạm tính do sinh viên còn nợ hoặc thuộc diện chính sách được miễn/giảm.';
+  }
+
+  let mode='khoa', sortKey='tt', sortDir=-1, query='';
+  const hit=t=> !query || strip(t).includes(strip(query));
+  const empty='<tr class="nhempty"><td colspan="7">Không tìm thấy Khoa / ngành / chuyên ngành phù hợp.</td></tr>';
+  const bar=(pct,c)=>`<div class="prog"><span class="track"><i class="${c}" style="width:${Math.min(100,pct).toFixed(1)}%"></i></span><span class="pv ${c}">${p1(pct)}%</span></div>`;
+  const rowObj=(name,sub,tt,nh,thu)=>{const pct=tt?nh/tt*100:0;return {name,sub,tt,nh,thu,pct,tien:tt*FEE};};
+  const rowHTML=(o,stt)=>{const c=cls(o.pct);return `<tr>
+    <td class="stt">${stt}</td>
+    <td><div class="nhu">${o.name}${o.sub?` <span class="sub">${o.sub}</span>`:''}</div></td>
+    <td>${bar(o.pct,c)}</td>
+    <td class="r hide-sm"><span class="nhmono">${nf(o.nh)}</span></td>
+    <td class="r"><span class="nhmono">${nf(o.tt)}</span></td>
+    <td class="r"><span class="nhmono">${tien(o.tien)} ₫</span></td>
+    <td class="r"><span class="nhmono">${tien(o.thu)} ₫</span></td></tr>`;};
+  const sortRows=arr=>{const k=sortKey;arr.sort((a,b)=>{
+    if(k==='ten') return sortDir*a.name.localeCompare(b.name,'vi');
+    return sortDir*(((a[k]||0))-((b[k]||0)));});return arr;};
+  const render=()=>{
+    let html='';
+    if(mode==='khoa'){
+      const km={};
+      NGANH.forEach(d=>d.ch.forEach(c=>{const k=c.kh||'(chưa gán khoa)';
+        const o=km[k]||(km[k]={tt:0,nh:0,thu:0,n:0,txt:k}); o.tt+=c.tt;o.nh+=(c.nh||0);o.thu+=(c.thu||0);o.n++; o.txt+=' '+c.t+' '+d.t;}));
+      const arr=Object.keys(km).filter(k=>hit(km[k].txt)).map(k=>rowObj(k, km[k].n+' chuyên ngành', km[k].tt, km[k].nh, km[k].thu));
+      html=arr.length?sortRows(arr).map((o,i)=>rowHTML(o,i+1)).join(''):empty;
+    }else if(mode==='chuyen'){
+      let stt=0;
+      NGANH.forEach(d=>{
+        const rows=sortRows(d.ch.filter(c=>hit(c.t+' '+d.t+' '+c.kh)).map(c=>rowObj(c.t,'',c.tt,c.nh||0,c.thu||0)));
+        if(rows.length) html+=`<tr class="grprow"><td colspan="7">${d.t} · ${nf(d.tt)} trúng tuyển</td></tr>`+rows.map(o=>rowHTML(o,++stt)).join('');
+      });
+      if(!html) html=empty;
+    }else{
+      const arr=NGANH.filter(d=>hit(d.t+' '+d.ch.map(c=>c.t+' '+c.kh).join(' ')))
+        .map(d=>rowObj(d.t, d.ch.length>1?d.ch.length+' chuyên ngành':'', d.tt, nhOf(d), thuOf(d)));
+      html=arr.length?sortRows(arr).map((o,i)=>rowHTML(o,i+1)).join(''):empty;
+    }
+    document.getElementById('nhbody').innerHTML=html;
+    document.querySelectorAll('#nhhead th').forEach(th=>{
+      const on=th.dataset.k===sortKey; th.classList.toggle('on',on);
+      const ar=th.querySelector('.ar'); if(ar) ar.textContent= on?(sortDir<0?'↓':'↑'):'↕';
+    });
+  };
+  const update=()=>{ renderHero(); render(); };
+
+  /* ---------- Nhập dữ liệu từ Excel/CSV ---------- */
+  const toInt=v=>{ if(typeof v==='number') return Math.round(v); const s=String(v).replace(/[^0-9-]/g,''); return s&&s!=='-'?parseInt(s,10):0; };
+  const findCol=(H,keys)=>{ for(let i=0;i<H.length;i++){ const h=strip(H[i]); if(keys.some(k=>h.includes(k))) return i; } return -1; };
+  function applyAOA(aoa){
+    let hr=-1;
+    for(let i=0;i<Math.min(aoa.length,40);i++){ const row=(aoa[i]||[]); if(row.some(c=>strip(c).includes('chuyen nganh'))){ hr=i; break; } }
+    if(hr<0) return {err:'không thấy dòng tiêu đề có cột "Chuyên ngành"'};
+    const H=aoa[hr];
+    const iCN=findCol(H,['chuyen nganh']), iTT=findCol(H,['trung tuyen']),
+          iNH=findCol(H,['da nhap']), iTHU=findCol(H,['da thu']);
+    if(iCN<0) return {err:'thiếu cột "Chuyên ngành"'};
+    if(iNH<0 && iTHU<0) return {err:'file không đúng mẫu (thiếu cột "Đã nhập học"/"Số tiền đã thu")'};
+    const idx={}; NGANH.forEach(d=>d.ch.forEach(c=>{ idx[norm(c.t)]=c; }));
+    let n=0, miss=0;
+    for(let r=hr+1;r<aoa.length;r++){
+      const row=aoa[r]||[]; const cn=row[iCN];
+      if(cn==null||String(cn).trim()==='') continue;
+      const key=norm(cn); if(key==='tong cong') continue;
+      const c=idx[key]; if(!c){ miss++; continue; }
+      if(iTT>=0 && row[iTT]!=null && String(row[iTT]).trim()!=='') c.tt=toInt(row[iTT]);
+      if(iNH>=0) c.nh=toInt(row[iNH]);
+      if(iTHU>=0) c.thu=toInt(row[iTHU]);
+      n++;
+    }
+    NGANH.forEach(d=>{ d.tt=d.ch.reduce((a,c)=>a+(c.tt||0),0); });
+    return {n,miss};
+  }
+  function parseCSV(text){
+    const rows=[]; let i=0,f='',row=[],q=false;
+    text=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+    while(i<text.length){ const ch=text[i];
+      if(q){ if(ch==='"'){ if(text[i+1]==='"'){f+='"';i++;} else q=false; } else f+=ch; }
+      else { if(ch==='"') q=true; else if(ch===','){row.push(f);f='';} else if(ch==='\n'){row.push(f);rows.push(row);row=[];f='';} else f+=ch; }
+      i++; }
+    if(f.length||row.length){ row.push(f); rows.push(row); }
+    return rows;
+  }
+  const status=(m,err)=>{ const el=document.getElementById('nhimpmsg'); el.textContent=m; el.classList.toggle('err',!!err); el.hidden=false; };
+  function handleAOA(aoa,name){
+    const res=applyAOA(aoa);
+    if(res.err){ status('Không nhập được: '+res.err+'.', true); return; }
+    update();
+    status('✓ Đã cập nhật '+res.n+'/'+NGANH.reduce((a,d)=>a+d.ch.length,0)+' chuyên ngành từ "'+name+'"'+(res.miss?(' · '+res.miss+' dòng không khớp tên'):'')+'.');
+  }
+  function ensureXLSX(cb){ if(window.XLSX) return cb(); const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload=()=>cb(); s.onerror=()=>cb('err'); document.head.appendChild(s); }
+  function readFile(file){
+    const name=file.name, low=name.toLowerCase();
+    if(low.endsWith('.csv')){ const fr=new FileReader(); fr.onload=()=>handleAOA(parseCSV(fr.result),name); fr.onerror=()=>status('Không đọc được file.',true); fr.readAsText(file,'utf-8'); return; }
+    ensureXLSX(err=>{
+      if(err||!window.XLSX){ status('Không tải được thư viện đọc Excel (cần Internet). Hãy lưu file dưới dạng CSV rồi nhập lại.', true); return; }
+      const fr=new FileReader();
+      fr.onload=()=>{ try{
+        const wb=XLSX.read(new Uint8Array(fr.result),{type:'array'});
+        let aoa=null;
+        for(const sn of wb.SheetNames){ const a=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true});
+          if(a.some(r=>(r||[]).some(c=>strip(c).includes('chuyen nganh')))){ aoa=a; break; } }
+        if(!aoa) aoa=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:true});
+        handleAOA(aoa,name);
+      }catch(e){ status('Không đọc được file Excel: '+e.message, true); } };
+      fr.onerror=()=>status('Không đọc được file.',true);
+      fr.readAsArrayBuffer(file);
+    });
+  }
+  document.getElementById('nhimp').addEventListener('click',()=>document.getElementById('nhfile').click());
+  document.getElementById('nhfile').addEventListener('change',e=>{ const f=e.target.files[0]; if(f) readFile(f); e.target.value=''; });
+
+  /* ---------- Kết nối API hệ thống nhập học (tự làm mới) ---------- */
+  function applyRows(rows){
+    const pm={};
+    rows.forEach(r=>{
+      const cn=(r.ChuyenNganh!=null?r.ChuyenNganh:r.chuyenNganh||'').toString().trim();
+      const kh=(r.Khoa!=null?r.Khoa:r.khoa||'').toString().trim();
+      const parent=(r.Nganh!=null?r.Nganh:(r.nganh!=null?r.nganh:cn.split('/')[0])).toString().trim();
+      if(!cn && !parent) return;
+      const key=parent||cn;
+      const P=pm[key]||(pm[key]={t:key,ch:[]});
+      P.ch.push({t:cn||parent, tt:(+r.SoTrungTuyen||+r.soTrungTuyen||0), nh:(+r.DaNhapHoc||+r.daNhapHoc||0), thu:(+r.SoTienDaThu||+r.soTienDaThu||0), kh});
+    });
+    const arr=Object.values(pm).map(P=>({t:P.t, tt:P.ch.reduce((a,c)=>a+(c.tt||0),0), ch:P.ch}));
+    if(arr.length){ NGANH.splice(0,NGANH.length,...arr); return arr.reduce((a,d)=>a+d.ch.length,0); }
+    return 0;
+  }
+  function refreshFromAPI(manual){
+    if(!NHAPHOC_API){ if(manual) status('Chưa cấu hình địa chỉ API (biến NHAPHOC_API trong file).',true); return; }
+    if(manual) status('Đang tải dữ liệu từ hệ thống nhập học…');
+    fetch(NHAPHOC_API,{cache:'no-store'})
+      .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+      .then(d=>{
+        const rows=d.rows||d||[]; const n=applyRows(rows);
+        if(!n) throw new Error('không có dữ liệu');
+        update();
+        const t=new Date(d.capNhat||Date.now());
+        status('✓ Đã đồng bộ từ hệ thống nhập học · cập nhật lúc '+t.toLocaleTimeString('vi-VN'));
+      })
+      .catch(e=>status('Không kết nối được hệ thống ('+e.message+'). Bạn vẫn có thể dùng nút Nhập Excel/CSV.',true));
+  }
+  const _rb=document.getElementById('nhrefresh');
+  if(_rb) _rb.addEventListener('click',()=>refreshFromAPI(true));
+  if(NHAPHOC_API){ refreshFromAPI(false); setInterval(()=>refreshFromAPI(false), AUTO_REFRESH_MS); }
+
+  update();
+  document.querySelectorAll('#nhseg button').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('#nhseg button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+    mode=b.dataset.mode; render();
+  }));
+  document.querySelectorAll('#nhhead th.s').forEach(th=>th.addEventListener('click',()=>{
+    const k=th.dataset.k;
+    if(sortKey===k) sortDir=-sortDir; else {sortKey=k; sortDir=(k==='ten')?1:-1;}
+    render();
+  }));
+  document.getElementById('nhq').addEventListener('input',e=>{ query=e.target.value; render(); });
+})();
+</script>
+</body>
+</html>

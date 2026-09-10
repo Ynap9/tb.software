@@ -1,0 +1,91 @@
+<div class="stats">
+    @for (c of cards(); track c.l) {
+    <div class="stat">
+        <b>{{ nf(c.v) }}</b>
+        <span>{{ c.l }}</span>
+    </div>
+    }
+</div>
+
+<div class="dsk-toolbar">
+    <p class="stafftotal">Các khoa tham gia buổi lễ trao bằng, xếp theo thứ tự lên nhận bằng. Tổng cộng <b>{{ tongKhoa() }}</b> khoa với <b>{{ nf(tongSv()) }}</b> sinh viên.</p>
+
+    <div class="nhsearch">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m20 20-3-3"></path>
+        </svg>
+        <input type="text" placeholder="Tìm khoa, trưởng khoa…" autocomplete="off" [value]="query()" (input)="timKiem($any($event.target).value)" />
+    </div>
+</div>
+
+@if (dangTai()) {
+<p class="dsk-empty">Đang tải danh sách khoa…</p>
+} @else if (loi()) {
+<div class="dsk-loi">
+    <p>{{ loi() }}</p>
+    <button type="button" (click)="getDanhSachKhoa()">Thử lại</button>
+</div>
+} @else if (!the().length) {
+<p class="dsk-empty">Không tìm thấy khoa phù hợp.</p>
+}
+
+<div class="khoagrid">
+    @for (t of the(); track t.khoa.id) {
+    <a class="kcard" [class.dang-trao]="t.cls === 'c'" [routerLink]="['/thong-ke/khoa', t.khoa.id]" [attr.aria-label]="'Xem danh sách sinh viên của ' + t.khoa.ten">
+        <div class="kh">
+            <span class="dot" [style.background]="t.color">{{ t.khoa.order }}</span>
+            <div class="kh-ten">
+                <h3>{{ t.khoa.ten }}</h3>
+                <span class="room">{{ t.khoa.truongKhoa }}</span>
+            </div>
+            <span class="tt" [class.g]="t.cls === 'g'" [class.c]="t.cls === 'c'" [class.w]="t.cls === 'w'">{{ t.nhanTrangThai }}</span>
+        </div>
+
+        <div class="prog">
+            <span class="track">
+                <i [class.g]="t.cls === 'g'" [class.c]="t.cls === 'c'" [class.w]="t.cls === 'w'" [style.width.%]="t.pct > 100 ? 100 : t.pct"></i>
+            </span>
+            <span class="pv" [class.g]="t.cls === 'g'" [class.c]="t.cls === 'c'" [class.w]="t.cls === 'w'">{{ p1(t.pct) }}%</span>
+        </div>
+
+        @if (t.sinhViens.length) {
+        <ul class="svlist">
+            @for (sv of t.sinhViens; track sv.id) {
+            <li>
+                <span class="sv-ten">{{ sv.hoVaTen }}</span>
+                @if (sv.vangMat) {
+                <span class="sv-vang">Vắng mặt</span>
+                } @else {
+                <span class="sv-lop">{{ sv.lop }}</span>
+                }
+            </li>
+            }
+        </ul>
+        @if (t.soSinhVienConLai) {
+        <p class="svmore">+ {{ nf(t.soSinhVienConLai) }} sinh viên khác</p>
+        } }
+
+        <div class="foot2">
+            <span>
+                <b>{{ nf(t.khoa.soLuongThamGia ?? 0) }}</b>
+                sinh viên
+            </span>
+            <span>
+                <b>{{ nf(t.khoa.soLuongDaTrao ?? 0) }}</b>
+                đã trao
+            </span>
+            <span>
+                <b>{{ nf(t.khoa.soLuongConLai ?? 0) }}</b>
+                còn lại
+            </span>
+            @if (t.khoa.soLuongVangMat) {
+            <span>
+                <b>{{ t.khoa.soLuongVangMat }}</b>
+                vắng mặt
+            </span>
+            }
+        </div>
+    </a>
+    }
+</div>

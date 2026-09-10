@@ -1,0 +1,339 @@
+@use '../styles/shared';
+
+/* ---------- Bố cục: sơ đồ bên trái, khung chú giải bên phải ---------- */
+.grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 12px;
+    align-items: start;
+}
+@media (max-width: 1000px) {
+    .grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.mapcard {
+    position: relative;
+    background: var(--sheet);
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 6px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    box-shadow: var(--shadow-sheet);
+}
+
+svg {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: calc(100vh - 84px);
+    margin: 0 auto;
+}
+
+/* ---------- Tương tác với từng bộ phận ---------- */
+.station {
+    cursor: pointer;
+
+    .hit {
+        fill: transparent;
+    }
+    .body {
+        transition:
+            filter 0.18s ease,
+            opacity 0.18s ease;
+    }
+    .ring {
+        fill: none;
+        stroke: var(--route);
+        stroke-width: 7;
+        opacity: 0;
+        transition: opacity 0.18s ease;
+    }
+
+    &:hover .ring,
+    &.on .ring {
+        opacity: 1;
+    }
+    &:focus-visible {
+        outline: none;
+
+        .ring {
+            opacity: 1;
+            stroke-dasharray: 6 5;
+        }
+    }
+}
+
+.mapcard.focusing {
+    .station:not(.on) .body {
+        opacity: 0.32;
+        filter: grayscale(0.65);
+    }
+    .scene-dim {
+        opacity: 0.4;
+        transition: opacity 0.18s ease;
+    }
+}
+
+/* ---------- Nhãn trên bản vẽ ---------- */
+.tag circle {
+    fill: #fff;
+    stroke: var(--sheet-ink);
+    stroke-width: 2.2;
+}
+.rm,
+.tag text {
+    paint-order: stroke;
+    stroke: #fff;
+    stroke-width: 4.5;
+    stroke-linejoin: round;
+}
+.tag text {
+    font-weight: 800;
+    font-size: 22px;
+    fill: var(--sheet-ink);
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+.rm {
+    font-weight: 800;
+    font-size: 22px;
+    fill: var(--sheet-ink);
+    text-anchor: middle;
+}
+.note {
+    font-weight: 700;
+    font-size: 12.5px;
+    fill: var(--sheet-ink);
+    text-anchor: middle;
+}
+.floor {
+    font-weight: 800;
+    font-size: 21px;
+    fill: var(--sheet-ink);
+    text-anchor: middle;
+    letter-spacing: 1px;
+}
+.wait {
+    font-weight: 800;
+    font-size: 15px;
+    fill: #1d3b2a;
+    text-anchor: middle;
+    letter-spacing: 0.4px;
+}
+
+/* ---------- Tuyến di chuyển ---------- */
+#routeg,
+#labels,
+#routelbl {
+    pointer-events: none;
+}
+
+#gotokb {
+    pointer-events: auto;
+    cursor: pointer;
+
+    text {
+        transition: fill 0.15s ease;
+    }
+    .kbhit {
+        fill: transparent;
+    }
+    .kbplate {
+        fill: #e6f6fa;
+        stroke: #0e7490;
+        stroke-width: 1.5;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+    }
+    .kbcue {
+        font-size: 11px;
+        font-weight: 700;
+        fill: #0e7490;
+        letter-spacing: 0.4px;
+    }
+
+    &:hover .kbplate,
+    &:focus-visible .kbplate {
+        opacity: 1;
+    }
+    &:hover text,
+    &:focus-visible text {
+        fill: #0e7490;
+    }
+    &:focus-visible {
+        outline: none;
+    }
+}
+
+.route {
+    fill: none;
+    stroke: var(--route);
+    stroke-width: 7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.route-glow {
+    fill: none;
+    stroke: var(--route-soft);
+    stroke-width: 15;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.8;
+}
+.route-dash {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 3.2;
+    stroke-linecap: round;
+    stroke-dasharray: 2 20;
+    opacity: 0.9;
+    animation: flow 3.2s linear infinite;
+}
+
+@keyframes flow {
+    to {
+        stroke-dashoffset: -220;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .route-dash {
+        animation: none;
+        opacity: 0;
+    }
+}
+
+/* ---------- Tooltip: phần chỉ số thiết bị ---------- */
+.kpis {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+.kpi {
+    border: 1px solid var(--panel-3);
+    border-radius: 8px;
+    padding: 5px 9px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--panel-2);
+
+    b {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 15px;
+        color: var(--ink);
+        margin-right: 5px;
+    }
+
+    &.zero {
+        opacity: 0.5;
+    }
+    &.flag {
+        border-color: var(--danger-bd);
+        background: var(--danger-bg);
+        color: var(--danger-tx);
+    }
+}
+
+/* ---------- Khung chú giải ---------- */
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-3);
+    border-radius: 12px;
+    padding: 12px;
+    position: sticky;
+    top: 10px;
+    box-shadow: var(--shadow-1);
+
+    h2 {
+        margin: 0 0 10px;
+        padding-bottom: 9px;
+        border-bottom: 1px solid var(--panel-2);
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 11px;
+        letter-spacing: 1.6px;
+        text-transform: uppercase;
+        color: var(--cyan);
+        font-weight: 400;
+    }
+
+    .foot {
+        margin-top: 11px;
+        padding-top: 10px;
+        border-top: 1px solid var(--panel-2);
+        font-size: 11.5px;
+        color: var(--muted);
+        line-height: 1.5;
+
+        code {
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--ink);
+        }
+    }
+}
+
+.leg {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    li {
+        display: flex;
+        gap: 9px;
+        align-items: center;
+        padding: 5px 7px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.15s ease;
+
+        &:hover,
+        &.on {
+            background: var(--panel-2);
+        }
+    }
+
+    .dot {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        flex: none;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        font-size: 12.5px;
+        color: #12203a;
+        border: 1.5px solid rgba(0, 0, 0, 0.28);
+    }
+
+    .txt {
+        font-size: 12.6px;
+        font-weight: 600;
+        line-height: 1.25;
+        color: var(--ink);
+
+        em {
+            display: block;
+            font-style: normal;
+            font-weight: 500;
+            font-size: 11.3px;
+            color: var(--muted);
+        }
+    }
+
+    .num {
+        margin-left: auto;
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 11.5px;
+        color: var(--muted);
+        font-weight: 700;
+        white-space: nowrap;
+    }
+}

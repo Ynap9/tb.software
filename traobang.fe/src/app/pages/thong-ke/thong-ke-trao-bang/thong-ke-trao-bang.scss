@@ -1,0 +1,436 @@
+@use '../styles/shared';
+
+.nhwarn {
+    display: inline;
+    font-style: normal;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* ---------- Hero: vòng % nhập học + số liệu ---------- */
+.nhhero {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    background: var(--panel);
+    border: 1px solid var(--panel-3);
+    border-radius: 14px;
+    padding: 18px 24px;
+    margin: 6px 0 8px;
+    box-shadow: var(--shadow-1);
+}
+@media (max-width: 640px) {
+    .nhhero {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+}
+
+.nhgauge {
+    width: 132px;
+    height: 132px;
+    position: relative;
+    flex: none;
+    margin: 0 auto;
+
+    svg {
+        width: 132px;
+        height: 132px;
+        max-height: none;
+    }
+
+    .c {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        b {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 24px;
+            color: var(--cyan);
+            line-height: 1;
+            font-weight: 700;
+        }
+
+        span {
+            font-size: 8.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            color: var(--muted);
+            margin-top: 5px;
+        }
+    }
+}
+
+.herostats {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px 26px;
+    min-width: 0;
+}
+
+.hs {
+    .l {
+        font-size: 9.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: var(--muted);
+        font-weight: 600;
+    }
+
+    .v {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 19px;
+        font-weight: 700;
+        color: var(--ink);
+        margin-top: 4px;
+        line-height: 1.1;
+
+        small {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 400;
+        }
+    }
+
+    &.goal .v {
+        color: var(--cyan);
+    }
+}
+
+/* ---------- Thanh công cụ ---------- */
+.nhtoolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 2px 0 10px;
+}
+
+
+.nhtools {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+
+.nhsearch {
+    position: relative;
+
+    svg {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 14px;
+        height: 14px;
+        stroke: var(--muted);
+    }
+
+    input {
+        width: 250px;
+        max-width: 48vw;
+        padding: 8px 12px 8px 32px;
+        border-radius: 9px;
+        background: var(--panel-2);
+        border: 1px solid var(--panel-3);
+        color: var(--ink);
+        font-family: 'Montserrat', sans-serif;
+        font-size: 12.5px;
+        outline: none;
+
+        &:focus {
+            border-color: var(--cyan-dim);
+            box-shadow: 0 0 0 3px var(--accent-fill-2);
+        }
+
+        &::placeholder {
+            color: var(--muted);
+        }
+    }
+}
+@media (max-width: 640px) {
+    .nhsearch {
+        margin-left: 0;
+        width: 100%;
+
+        input {
+            width: 100%;
+            max-width: none;
+        }
+    }
+}
+
+/* dải tiến trình của khoa đang trao bằng */
+.dangtrao {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0 0 12px;
+    padding: 11px 16px;
+    background: var(--accent-fill);
+    border: 1px solid var(--cyan-dim);
+    border-radius: 12px;
+
+    .badge {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--cyan);
+        border: 1px solid var(--cyan-dim);
+        border-radius: 999px;
+        padding: 4px 10px;
+        white-space: nowrap;
+    }
+
+    .ten {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--ink);
+    }
+
+    .so {
+        margin-left: auto;
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 12.5px;
+        color: var(--cyan);
+        font-weight: 700;
+    }
+}
+
+/* gọi API thất bại: báo lỗi kèm nút thử lại */
+.tk-loi {
+    margin: 0 0 12px;
+    padding: 22px 16px;
+    text-align: center;
+    background: var(--danger-bg);
+    border: 1px solid var(--danger-bd);
+    border-radius: 12px;
+
+    p {
+        margin: 0 0 10px;
+        color: var(--danger-tx);
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+
+    button {
+        cursor: pointer;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        font-size: 12px;
+        color: var(--cyan);
+        background: var(--accent-fill);
+        border: 1px solid var(--cyan-dim);
+        border-radius: 999px;
+        padding: 6px 16px;
+
+        &:hover {
+            background: var(--accent-fill-2);
+        }
+    }
+}
+
+/* dòng của khoa đang trao bằng được làm nổi */
+tr.dang-trao {
+    background: var(--accent-fill);
+    box-shadow: inset 3px 0 0 var(--cyan);
+}
+
+/* ---------- Bảng: hàng mảnh, đường kẻ mảnh, một thanh tiến độ dịu ---------- */
+.nhtablewrap {
+    border: 1px solid var(--panel-3);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--panel);
+}
+
+.nhtable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+
+    th {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 9.5px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 400;
+        text-align: left;
+        padding: 11px 16px;
+        border-bottom: 1px solid var(--panel-3);
+        white-space: nowrap;
+
+        &.s {
+            cursor: pointer;
+            user-select: none;
+
+            &:hover {
+                color: var(--txt-2);
+            }
+        }
+
+        .ar {
+            display: inline-block;
+            margin-left: 5px;
+            opacity: 0.3;
+            font-size: 9px;
+        }
+
+        &.on {
+            color: var(--cyan);
+
+            .ar {
+                opacity: 1;
+            }
+        }
+
+        &.stth {
+            text-align: right;
+            width: 38px;
+        }
+    }
+
+    th.r,
+    td.r {
+        text-align: right;
+    }
+
+    td {
+        padding: 11px 16px;
+        border-bottom: 1px solid var(--panel-2);
+        vertical-align: middle;
+
+        &.stt {
+            text-align: right;
+            width: 38px;
+            color: var(--muted);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+        }
+    }
+
+    tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    tbody tr:hover {
+        background: var(--accent-fill);
+    }
+}
+
+.nhu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 13px;
+
+    .sub {
+        font-weight: 700;
+        color: var(--muted);
+        font-size: 9.5px;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        white-space: nowrap;
+
+        &.g {
+            color: #2fbd85;
+        }
+        &.c {
+            color: var(--cyan);
+        }
+    }
+}
+
+.prog {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 190px;
+
+    .track {
+        flex: 1;
+        height: 7px;
+        border-radius: 999px;
+        background: var(--panel-2);
+        overflow: hidden;
+
+        > i {
+            display: block;
+            height: 100%;
+            border-radius: 999px;
+            background: var(--cyan);
+            transition: width 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+
+            &.w {
+                background: #e0912a;
+            }
+            &.g {
+                background: #2fbd85;
+            }
+        }
+    }
+
+    .pv {
+        font-family: 'Share Tech Mono', monospace;
+        font-weight: 700;
+        font-size: 13px;
+        width: 50px;
+        text-align: right;
+
+        &.g {
+            color: #2fbd85;
+        }
+        &.c {
+            color: var(--cyan);
+        }
+        &.w {
+            color: #e0912a;
+        }
+    }
+}
+
+.nhmono {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--txt-2);
+    white-space: nowrap;
+}
+
+.grprow td {
+    background: var(--panel-2);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    padding: 7px 16px;
+}
+
+.nhempty td {
+    padding: 28px 16px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12.5px;
+}
+
+@media (max-width: 640px) {
+    .nhtable .hide-sm {
+        display: none;
+    }
+    .prog {
+        min-width: 120px;
+    }
+}
