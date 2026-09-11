@@ -11,8 +11,9 @@ export class ThongKeService {
     http = inject(HttpClient);
 
     /**
-     * Lấy toàn bộ khoa của plan đang active, mỗi khoa kèm danh sách sinh viên nhận bằng.
-     * soLuongSinhVien giới hạn số sinh viên trả về cho mỗi khoa, 0 là lấy hết.
+     * Lấy toàn bộ khoa của plan đang active, xếp theo thứ tự lên nhận bằng.
+     * soLuongSinhVien: 0 là không kèm sinh viên, số dương là lấy tối đa bấy nhiêu mỗi khoa,
+     * số âm là lấy hết. Các số đếm luôn tính trên toàn bộ khoa.
      */
     getAllKhoa(soLuongSinhVien = 0) {
         return this.http.get<IBaseResponseWithData<IThongKeKhoa[]>>(`${this.api}/khoa`, {
