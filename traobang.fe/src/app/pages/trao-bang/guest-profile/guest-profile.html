@@ -8,11 +8,11 @@
 
     <!-- QR Placeholder -->
     <div class="w-[200px] mx-auto flex items-center justify-center text-gray-400 rounded-md -mb-4">
-        <img [src]="urlFile + '/' + data.linkQR" class="w-full block rounded-md" />
+        <img [src]="urlFile + '/' + data.linkQrOnly" class="w-full block rounded-md" />
     </div>
 
     <!-- Download button -->
-    <div class="relative bg-white -mt-[49px]">
+    <div class="relative bg-white">
         <button pButton type="button" label="TẢI MÃ QR" icon="pi pi-download" severity="primary"
             class="px-6 py-2 rounded-lg font-medium mb-4 mt-8" (click)="downloadQr()"></button>
     </div>

@@ -801,8 +801,10 @@ namespace traobang.be.application.TraoBang.Implements
             var content = templateContent.Replace("[mssv]", sv.MaSoSinhVien);
 
             // khoa và lớp nằm trên mã QR, họ tên và mssv nằm dưới, tất cả căn giữa
-            string textAbove = $@"{sp.QrTenKhoa}
-Lớp: {sv.Lop}";
+            // khoa hoặc lớp để trống thì để dòng rỗng, vẫn giữ chỗ cho ảnh mọi sinh viên cao bằng nhau
+            string dongKhoa = string.IsNullOrWhiteSpace(sp.QrTenKhoa) ? "" : sp.QrTenKhoa;
+            string dongLop = string.IsNullOrWhiteSpace(sv.Lop) ? "" : $"Lớp: {sv.Lop}";
+            string textAbove = $"{dongKhoa}\n{dongLop}";
 
             string textBelow = $@"{sv.QrHoTen}
 MSSV: {sv.MaSoSinhVien}";

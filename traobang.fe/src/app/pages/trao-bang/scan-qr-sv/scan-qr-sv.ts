@@ -8,8 +8,9 @@ import { StudentList } from './student-list/student-list';
 import { Footer } from './footer/footer';
 
 import { DialogMssv } from './dialog-mssv/dialog-mssv';
+import { DialogTest } from './dialog-test/dialog-test';
 
-import { SubPlanStatuses, TraoBangHubConst } from '@/shared/constants/sv-nhan-bang.constants';
+import { SubPlanStatuses, SvNhanBangStatuses, TraoBangHubConst } from '@/shared/constants/sv-nhan-bang.constants';
 import * as signalR from '@microsoft/signalr';
 
 import { NgIcon } from '@ng-icons/core';
@@ -42,6 +43,7 @@ export class ScanQrSv extends BaseComponent implements OnDestroy {
     listSlide: ISlideItem[] = [];
     removingFirstSlide = false;
     highlightLastStudent = false;
+    loadingTest = false;
 
     override ngOnInit(): void {
         this.initData();
@@ -138,7 +140,53 @@ export class ScanQrSv extends BaseComponent implements OnDestroy {
         });
     }
 
+    // check sv đã trong hàng đợi chưa, có rồi thì hỏi lại trước khi đẩy vào tiếp
+    checkHangDoi(mssv: string, callback: () => void) {
+        this.loading = true;
+        this._svTraoBangService
+            .checkHangDoi(mssv)
+            .subscribe({
+                next: (res) => {
+                    if (!this.isResponseSucceed(res)) {
+                        return;
+                    }
+
+                    const trangThai = res.data;
+                    if (!trangThai) {
+                        callback();
+                        return;
+                    }
+
+                    this._confirmationService.confirm({
+                        header: 'Sinh viên đã trong hàng đợi',
+                        message: `SV này đang trong hàng đợi. Trạng thái: ${SvNhanBangStatuses.getName(trangThai)}`,
+                        closable: true,
+                        closeOnEscape: true,
+                        rejectButtonProps: {
+                            label: 'Hủy',
+                            severity: 'seconday',
+                            outlined: true
+                        },
+                        acceptButtonProps: {
+                            label: 'Ok',
+                            severity: 'primary'
+                        },
+                        accept: () => {
+                            callback();
+                        }
+                    });
+                }
+            })
+            .add(() => {
+                this.loading = false;
+            });
+    }
+
     pushHangDoi(mssv: string) {
+        this.checkHangDoi(mssv, () => this.pushHangDoiXacNhan(mssv));
+    }
+
+    pushHangDoiXacNhan(mssv: string) {
         this.loading = true;
         this._svTraoBangService
             .pushHangDoi(mssv)
@@ -157,6 +205,10 @@ export class ScanQrSv extends BaseComponent implements OnDestroy {
     }
 
     pushHangDoiDacBiet(mssv: string) {
+        this.checkHangDoi(mssv, () => this.pushHangDoiDacBietXacNhan(mssv));
+    }
+
+    pushHangDoiDacBietXacNhan(mssv: string) {
         this.loading = true;
         this._svTraoBangService
             .pushHangDoiTruongHopDacBiet(mssv)
@@ -283,8 +335,18 @@ export class ScanQrSv extends BaseComponent implements OnDestroy {
         this.getCurrentSubPlan()
     }
 
-    onModeTest() {
-        this._slideDragService.onModeTest(this.currentSubPlanInfo?.idPlan)
+    onOpenDialogTest() {
+        const ref = this._dialogService.open(DialogTest, { header: 'Chuẩn bị dữ liệu test', closable: true, modal: true, styleClass: 'w-[500px]', focusOnShow: false });
+        ref.onClose.subscribe((isCheckinFull) => {
+            if (typeof isCheckinFull === 'boolean') {
+                this.onModeTest(isCheckinFull);
+            }
+        });
+    }
+
+    onModeTest(isCheckinFull: boolean) {
+        this.loadingTest = true;
+        this._slideDragService.onModeTest(this.currentSubPlanInfo?.idPlan, isCheckinFull)
             .subscribe({
                 next: (res) => {
                     if (this.isResponseSucceed(res)) {
@@ -293,7 +355,7 @@ export class ScanQrSv extends BaseComponent implements OnDestroy {
                 }
             })
             .add(() => {
-                this.loading = false;
+                this.loadingTest = false;
             });
     }
 }

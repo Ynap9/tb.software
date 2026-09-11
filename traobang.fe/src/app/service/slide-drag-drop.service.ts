@@ -18,9 +18,10 @@ export class SlideDragDropService {
         return this.http.post<IBaseResponse>(`${this.api}/text/fast`, data);
     }
 
-    onModeTest(id: any) {
+    onModeTest(id: any, isCheckinFull: boolean) {
         const body = {
-            idPlan: id
+            idPlan: id,
+            isCheckinFull: isCheckinFull
         }
         return this.http.post<IBaseResponse>(`/api/core/trao-bang/prepare/demo`, body);
     }

@@ -24,7 +24,7 @@ namespace traobang.be.Controllers
 
         [Permission(PermissionKeys.DemoMode)]
         [HttpPost("demo")]
-        public ApiResponse CreateSlideTextFast(PrepareDataForDemoDto dto)
+        public ApiResponse PrepareForDemo(PrepareDataForDemoDto dto)
         {
             try
             {

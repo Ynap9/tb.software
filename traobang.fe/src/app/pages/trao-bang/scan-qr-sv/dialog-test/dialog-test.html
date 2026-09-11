@@ -1,0 +1,9 @@
+<div class="mb-3">
+    <p class="!mb-0">Chọn lượng dữ liệu muốn đưa sẵn vào hàng đợi để test.</p>
+    <p class="!mb-0 text-surface-500">Ít: mỗi khoa chỉ vài sinh viên đầu. Nhiều: checkin sẵn toàn bộ slide.</p>
+</div>
+<div class="mt-5 flex flex-row justify-end gap-2">
+    <p-button label="Test ít" icon="pi pi-minus-circle" severity="secondary" [outlined]="true"
+        (onClick)="onChon(false)" />
+    <p-button label="Test nhiều" icon="pi pi-plus-circle" (onClick)="onChon(true)" />
+</div>

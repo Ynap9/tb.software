@@ -553,6 +553,7 @@ namespace traobang.be.application.TraoBang.Implements
             result.Order = $"{nextSinhVienSlide.slide.Order}/{maxOrder}";
             result.IsShowNext = nextSinhVienSlide.slide.Order < maxOrder;
             result.IsShowPrev = nextSinhVienSlide.slide.Order > minOrder;
+            result.TrangThai = nextSinhVienSlide.slide.TrangThai;
 
             return result;
         }
@@ -618,6 +619,7 @@ namespace traobang.be.application.TraoBang.Implements
             result.Order = $"{prevSinhVienSlide.slide.Order}/{maxOrder}";
             result.IsShowNext = prevSinhVienSlide.slide.Order < maxOrder;
             result.IsShowPrev = prevSinhVienSlide.slide.Order > minOrder;
+            result.TrangThai = prevSinhVienSlide.slide.TrangThai;
 
             return result;
         }
@@ -645,15 +647,29 @@ namespace traobang.be.application.TraoBang.Implements
                .FirstOrDefault(x => x.Id == query.sp.Id && x.TrangThai == TraoBangConstants.DangTraoBang && !x.Deleted)
                ?? throw new UserFriendlyException(ErrorCodes.TraoBangErrorSinhVienTraoBangKhongThuocKhoaDangTrao);
 
+            // sinh viên đã có trong hàng đợi thì xóa dòng cũ đi rồi đưa vào lại cuối hàng đợi
+            var listTienDoCu = _tbDbContext.TienDoTraoBangs
+                .Where(x => !x.Deleted && x.MaSoSinhVien.ToLower() == mssv.ToLower())
+                .ToList();
+
+            if (listTienDoCu.Count > 0)
+            {
+                var username = getCurrentName();
+                var vietnamNow = GetVietnamTime();
+
+                foreach (var tienDoCu in listTienDoCu)
+                {
+                    tienDoCu.Deleted = true;
+                    tienDoCu.DeletedBy = username;
+                    tienDoCu.DeletedDate = vietnamNow;
+                }
+
+                _tbDbContext.SaveChanges();
+            }
+
             var maxOrder = _tbDbContext.TienDoTraoBangs
                 .Where(x => x.IdSubPlan == query.sp.Id && !x.Deleted)
                 .Max(x => (int?)x.Order) ?? 0;
-
-            var mssvexisting = _tbDbContext.TienDoTraoBangs.Any(x => !x.Deleted && x.MaSoSinhVien.ToLower() == mssv.ToLower());
-            if (mssvexisting)
-            {
-                throw new UserFriendlyException(ErrorCodes.TraoBangErrorSinhVienDaTonTaiTrongHangDoi);
-            }
 
             var tienDoTraoBang = new TienDoTraoBang
             {
@@ -688,6 +704,18 @@ namespace traobang.be.application.TraoBang.Implements
                 IsShow = true
             };
         }
+        public int? CheckSinhVienTrongHangDoi(string mssv)
+        {
+            _logger.LogInformation($"{nameof(CheckSinhVienTrongHangDoi)}, mssv= {mssv} ");
+
+            var tienDo = _tbDbContext.TienDoTraoBangs.AsNoTracking()
+                .Where(x => !x.Deleted && x.MaSoSinhVien.ToLower() == mssv.ToLower())
+                .OrderByDescending(x => x.Id)
+                .FirstOrDefault();
+
+            return tienDo?.TrangThai;
+        }
+
         public async Task<DiemDanhNhanBangDto> DiemDanhNhanBangTruongHopDacBiet(string mssv)
         {
             _logger.LogInformation($"{nameof(DiemDanhNhanBangTruongHopDacBiet)}, mssv= {mssv} ");
@@ -711,15 +739,29 @@ namespace traobang.be.application.TraoBang.Implements
                .FirstOrDefault(x => x.Id == qr.sl.IdSubPlan && x.TrangThai == TrangThaiSubPlan.DangTraoBang && !x.Deleted)
                ?? throw new UserFriendlyException(ErrorCodes.TraoBangErrorSinhVienTraoBangKhongThuocKhoaDangTrao);
 
+            // sinh viên đã có trong hàng đợi thì xóa dòng cũ đi rồi đưa vào lại cuối hàng đợi
+            var listTienDoCu = _tbDbContext.TienDoTraoBangs
+                .Where(x => !x.Deleted && x.MaSoSinhVien.ToLower() == mssv.ToLower())
+                .ToList();
+
+            if (listTienDoCu.Count > 0)
+            {
+                var username = getCurrentName();
+                var vietnamNow = GetVietnamTime();
+
+                foreach (var tienDoCu in listTienDoCu)
+                {
+                    tienDoCu.Deleted = true;
+                    tienDoCu.DeletedBy = username;
+                    tienDoCu.DeletedDate = vietnamNow;
+                }
+
+                _tbDbContext.SaveChanges();
+            }
+
             var maxOrder = _tbDbContext.TienDoTraoBangs
                 .Where(x => x.IdSubPlan == slide.IdSubPlan && !x.Deleted)
                 .Max(x => (int?)x.Order) ?? 0;
-
-            var mssvexisting = _tbDbContext.TienDoTraoBangs.Any(x => !x.Deleted && x.MaSoSinhVien.ToLower() == mssv.ToLower());
-            if (mssvexisting)
-            {
-                throw new UserFriendlyException(ErrorCodes.TraoBangErrorSinhVienDaTonTaiTrongHangDoi);
-            }
 
             var tienDoTraoBang = new TienDoTraoBang
             {
@@ -1098,6 +1140,27 @@ namespace traobang.be.application.TraoBang.Implements
                 #endregion
 
                 _tbDbContext.SaveChanges();
+
+                #region cho dong dau hang doi dang trao neu chua co dong nao dang trao
+                var dangTraoBang = _tbDbContext.TienDoTraoBangs
+                    .Any(x => !x.Deleted && x.IdSubPlan == nextSubPlan.Id && x.TrangThai == TraoBangConstants.DangTraoBang);
+
+                if (!dangTraoBang)
+                {
+                    var tienDoDauTien = _tbDbContext.TienDoTraoBangs
+                        .Where(x => !x.Deleted && x.IdSubPlan == nextSubPlan.Id)
+                        .OrderBy(x => x.Order)
+                        .FirstOrDefault();
+
+                    if (tienDoDauTien != null)
+                    {
+                        tienDoDauTien.TrangThai = TraoBangConstants.DangTraoBang;
+                        _tbDbContext.TienDoTraoBangs.Update(tienDoDauTien);
+                        _tbDbContext.SaveChanges();
+                    }
+                }
+                #endregion
+
                 tran.Commit();
             }
             await _traoBangService.NotifyChonKhoa();
@@ -1224,20 +1287,34 @@ namespace traobang.be.application.TraoBang.Implements
                 return null;
             }
 
-            var sinhVienDaTrao = await _tbDbContext.TienDoTraoBangs
-                .AsNoTracking()
-                .CountAsync(x => x.TrangThai == TraoBangConstants.DaTraoBang && x.LoaiSlide == LoaiSlides.SINH_VIEN && !x.Deleted);
+            var sinhVienDaTrao = (
+                    from td in _tbDbContext.TienDoTraoBangs.AsNoTracking()
+                    join sp in _tbDbContext.SubPlans.AsNoTracking() on td.IdSubPlan equals sp.Id
+                    where !td.Deleted && !sp.Deleted
+                        && td.TrangThai == TraoBangConstants.DaTraoBang && td.LoaiSlide == LoaiSlides.SINH_VIEN
+                        && sp.IdPlan == activePlan.Id
+                    select td.Id
+                ).Count();
 
             var tongSinhVienThamGiaTraoBang = (
-                                                from plan in _tbDbContext.Plans.AsNoTracking()
-                                                join sp in _tbDbContext.SubPlans.AsNoTracking() on plan.Id equals sp.IdPlan
-                                                join slide in _tbDbContext.Slides.AsNoTracking() on sp.Id equals slide.IdSubPlan
-                                                join sv in _tbDbContext.DanhSachSinhVienNhanBangs.AsNoTracking().Where(x => !x.Deleted) on slide.IdSinhVienNhanBang equals sv.Id
-                                                where slide.TrangThai == TraoBangConstants.ChuanBi && slide.IsShow
-                                                     && !plan.Deleted && !sp.Deleted && !slide.Deleted
-                                                     && sp.IsShow && plan.TrangThai == TrangThaiPlan.DangHoatDong
-                                                select sv.Id
-                                               ).Count();
+                    from sl in _tbDbContext.Slides.AsNoTracking()
+                    join sp in _tbDbContext.SubPlans.AsNoTracking() on sl.IdSubPlan equals sp.Id
+                    where !sl.Deleted && !sp.Deleted
+                        && sl.LoaiSlide == LoaiSlides.SINH_VIEN
+                        && sp.IdPlan == activePlan.Id
+                    select sl.Id
+                ).Count();
+
+            //var tongSinhVienThamGiaTraoBang = (
+            //                                    from plan in _tbDbContext.Plans.AsNoTracking()
+            //                                    join sp in _tbDbContext.SubPlans.AsNoTracking() on plan.Id equals sp.IdPlan
+            //                                    join slide in _tbDbContext.Slides.AsNoTracking() on sp.Id equals slide.IdSubPlan
+            //                                    join sv in _tbDbContext.DanhSachSinhVienNhanBangs.AsNoTracking().Where(x => !x.Deleted) on slide.IdSinhVienNhanBang equals sv.Id
+            //                                    where slide.TrangThai == TraoBangConstants.ChuanBi && slide.IsShow
+            //                                         && !plan.Deleted && !sp.Deleted && !slide.Deleted
+            //                                         && sp.IsShow && plan.TrangThai == TrangThaiPlan.DangHoatDong
+            //                                    select sv.Id
+            //                                   ).Count();
 
             var tienDo = tongSinhVienThamGiaTraoBang > 0 ? (double)sinhVienDaTrao / tongSinhVienThamGiaTraoBang * 100 : 0;
             return new GetTienDoTraoBangResponseDto

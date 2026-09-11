@@ -55,7 +55,8 @@ namespace traobang.be.application.TraoBang.Implements
 
                 foreach (var slide in slides)
                 {
-                    if (isLastSlideText)
+                    // checkin full thì lấy hết, không dừng ở slide text cuối
+                    if (isLastSlideText && !dto.IsCheckinFull)
                     {
                         continue;
                     }
@@ -93,7 +94,7 @@ namespace traobang.be.application.TraoBang.Implements
                             isLastSlideText = true;
                         }
                     }
-                    else if (slide.LoaiSlide == LoaiSlides.SINH_VIEN && countSvDemo <= countSvDemoMax)
+                    else if (slide.LoaiSlide == LoaiSlides.SINH_VIEN && (dto.IsCheckinFull || countSvDemo <= countSvDemoMax))
                     {
                         var sv = _tbDbContext.DanhSachSinhVienNhanBangs.FirstOrDefault(x => x.Id == slide.IdSinhVienNhanBang && !x.Deleted);
 

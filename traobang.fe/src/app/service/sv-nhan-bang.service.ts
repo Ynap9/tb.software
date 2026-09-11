@@ -51,6 +51,10 @@ export class TraoBangSvService {
         return this.http.delete<IBaseResponse>(`${this.api}/${id}`);
     }
 
+    checkHangDoi(mssv: string) {
+        return this.http.get<IBaseResponseWithData<number | null>>(`${this.api}/sinh-vien-nhan-bang/hang-doi/check?mssv=${mssv}`);
+    }
+
     pushHangDoi(mssv: string) {
         return this.http.post<IBaseResponseWithData<IViewScanQrTienDoSv>>(`${this.api}/sinh-vien-nhan-bang/hang-doi?mssv=${mssv}`, null);
     }
