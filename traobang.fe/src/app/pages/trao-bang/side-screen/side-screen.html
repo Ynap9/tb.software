@@ -9,8 +9,8 @@
 
     <p class="font-avo font-semibold text-lg tracking-wider text-white !mb-6">Đã trao: {{ data.tienDo }}</p>
     }
-    <p-divider />
-    <div class="mt-6">
+    <p-divider class="!mb-[1px]" />
+    <div class="mt-0">
         <p-table [value]="data.items || []" class="!rounded-lg text-lg overflow-hidden">
             <ng-template pTemplate="header">
                 <tr>
