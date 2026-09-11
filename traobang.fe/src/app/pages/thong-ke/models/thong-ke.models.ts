@@ -1,27 +1,7 @@
 /**
- * Model dùng chung cho nhóm màn thống kê trao bằng.
- * Toàn bộ dữ liệu hiện đang là dữ liệu tĩnh trong thư mục `data`, chưa gọi API.
+ * Hằng số trạng thái dùng chung cho nhóm màn thống kê trao bằng.
+ * Giá trị khớp với TrangThaiSubPlan / TraoBangConstants bên backend.
  */
-
-/** Một bộ phận đón tiếp trong sơ đồ */
-export interface IBoPhan {
-    id: string;
-    name: string;
-    room: string;
-    color: string;
-    desc: string;
-    /** số máy tính */
-    pc: number;
-    /** số máy quét */
-    qr: number;
-    /** số máy POS */
-    pos?: number;
-    /** số camera */
-    cam?: number;
-    who: string;
-    /** cảnh báo cần xác nhận thêm về thiết bị */
-    flag?: string;
-}
 
 /** Trạng thái của một khoa trong buổi lễ, khớp với TrangThaiSubPlan bên backend */
 export const TrangThaiKhoa = {

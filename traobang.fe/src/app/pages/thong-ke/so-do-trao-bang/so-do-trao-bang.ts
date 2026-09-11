@@ -1,15 +1,57 @@
-import { Component, ElementRef, ViewChild, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
-import { BO_PHAN, DS_BO_PHAN } from '../data/thong-ke.data';
-import { IBoPhan } from '../models/thong-ke.models';
+import { Component, ElementRef, ViewChild, signal } from '@angular/core';
+import { BUOC_NHAN_BANG, DAY_GHE_TANG_2, HANG_GHE, IBuocNhanBang, IPhongCho, KHU_VUC_NGOI, PHONG_CHO, TANG_3 } from '../data/so-do.data';
 
-/** Một ghế trong khu vực chờ làm thủ tục */
+/** Hai chế độ xem của màn sơ đồ */
+type CheDo = 'cho-ngoi' | 'buoc-di';
+
+/** Một ghế trên sơ đồ */
 interface IGhe {
     x: number;
     y: number;
     w: number;
     h: number;
+    mau: string;
 }
+
+/** Một khu vực chỗ ngồi đã tính sẵn toạ độ để vẽ */
+interface IKhuVucVe {
+    id: string;
+    ten: string;
+    mau: string;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    /** vị trí đặt tên khu vực */
+    tenX: number;
+    tenY: number;
+    hangDau: string;
+    hangCuoi: string;
+    soHang: number;
+    soGhe: number;
+    ghe: IGhe[];
+}
+
+/** Nhãn hàng ghế ở hai mép hội trường */
+interface INhanHang {
+    label: string;
+    y: number;
+}
+
+/** Một dòng trong bảng phòng chờ, gộp các khoa dùng chung một phòng */
+interface IDongPhongCho extends IPhongCho {
+    /** chỉ dòng đầu của nhóm mới in tên phòng */
+    hienPhong: boolean;
+    gopDong: number;
+}
+
+// ---------- kích thước sơ đồ chỗ ngồi ----------
+const T2 = { x: 60, y: 60, w: 520, h: 880 };
+const T3 = { x: 680, y: 60, w: 520, h: 880 };
+/** hàng ghế đầu tiên bắt đầu ngay dưới khu vực sân khấu */
+const HANG_Y0 = 214;
+const HANG_CAO = 30;
+const GHE_CAO = 15;
 
 @Component({
     selector: 'app-so-do-trao-bang',
@@ -21,92 +63,94 @@ export class SoDoTraoBang {
     @ViewChild('mapcard') mapcard?: ElementRef<HTMLElement>;
     @ViewChild('tip') tipEl?: ElementRef<HTMLElement>;
 
-    /** danh sách bộ phận hiển thị ở khung chú giải bên phải */
-    dsBoPhan: IBoPhan[] = DS_BO_PHAN;
+    readonly T2 = T2;
+    readonly T3 = T3;
 
-    /** mã bộ phận đang được trỏ tới, null nghĩa là không có gì đang chọn */
-    active = signal<string | null>(null);
+    cheDo = signal<CheDo>('cho-ngoi');
 
-    /** vị trí tooltip so với khung sơ đồ */
+    /** id khu vực đang trỏ tới ở sơ đồ chỗ ngồi */
+    khuVucOn = signal<string | null>(null);
+
+    /** số bước đang trỏ tới ở sơ đồ đường đi */
+    buocOn = signal<number | null>(null);
+
     tipLeft = signal(0);
     tipTop = signal(0);
 
-    /** ghế khu vực chờ: 3 khối, chừa 2 lối đi cho tuyến di chuyển */
-    ghe: IGhe[] = this.dungGhe();
+    // ---------- sơ đồ chỗ ngồi ----------
 
-    /** các chặng của tuyến di chuyển, theo đúng thứ tự sinh viên đi qua */
-    readonly SEG: string[] = [
-        'M100.9 1019.9 L484.9 1019.9 L484.9 285.5',
-        'M484.9 250.5 L217.6 250.5',
-        'M197.2 250.5 L197.2 117.5 L437.0 117.5',
-        'M451.1 117.5 L562.1 117.5 L562.1 215.1 L696.3 215.1',
-        'M708.0 215.1 L970.7 215.1 L970.7 237.6',
-        'M970.7 312.7 L970.7 412.7',
-        'M970.7 501.2 L1091.7 501.2 L1091.7 913.1',
-        'M1091.7 938.2 L1091.7 978.2 L1175.1 978.2 L1175.1 1001.6',
-        'M1175.1 1079.9 L1175.1 1153.3 L1072.5 1153.3 L1072.5 1193.4',
-        'M1048.3 1236.7 L931.5 1236.7',
-        'M879.0 1236.7 L837.3 1236.7 L837.3 886.5 L778.9 886.5',
-        'M758.1 886.5 L758.1 819.7 L819.8 819.7'
-    ];
+    khuVucs: IKhuVucVe[] = this.dungKhuVuc();
+    nhanHangTrai: INhanHang[] = this.dungNhanHang();
+    nhanHangPhai: INhanHang[] = this.dungNhanHang();
+    gheTang3: IGhe[] = this.dungGheTang3();
+
+    /** khung xanh của khu vực phụ huynh tầng 3 */
+    bangTang3 = { x: T3.x + 10, y: 572, w: T3.w - 20, h: 330 };
+
+    /** mảng khối bê tông chéo ở tầng 3, vẽ theo bản in */
+    wedgeTang3 = `M ${T3.x + 470} 230 L ${T3.x + 470} 560 L ${T3.x + 80} 560 Z`;
+
+    phongCho: IDongPhongCho[] = this.dungPhongCho();
+
+    // ---------- sơ đồ các bước lên nhận bằng ----------
+
+    buocs: IBuocNhanBang[] = BUOC_NHAN_BANG;
+
+    /** toàn bộ chặng đường đi, gộp từ bốn bước */
+    tatCaSeg: string[] = BUOC_NHAN_BANG.flatMap((b) => b.seg);
 
     /** mũi tên phụ đặt giữa mỗi chặng dài, để chiều di chuyển luôn nhìn thấy được */
     muiTenGiua: string[] = this.dungMuiTenGiua();
 
-    private router = inject(Router);
+    /** các đường kẻ mô tả bậc lên sân khấu */
+    bacSanKhau: number[] = [560, 575, 590, 605, 620];
 
-    /** thông tin bộ phận đang trỏ tới, dùng cho tooltip */
-    get boPhanDangXem(): IBoPhan | null {
-        const id = this.active();
-        return id ? { id, ...BO_PHAN[id] } : null;
+    /** chỉ số ghế của các dãy trong sơ đồ đường đi */
+    ghe4 = [0, 1, 2, 3];
+    ghe11 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    ghe17 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+
+    /** thông tin khu vực đang trỏ tới, dùng cho tooltip */
+    get khuVucDangXem(): IKhuVucVe | null {
+        const id = this.khuVucOn();
+        return id ? (this.khuVucs.find((x) => x.id === id) ?? null) : null;
     }
 
-    /** bỏ phần số ở mã bộ phận: E25 -> E */
-    chuCai(id: string): string {
-        return id.replace(/\d+/, '');
+    /** thông tin bước đang trỏ tới, dùng cho tooltip */
+    get buocDangXem(): IBuocNhanBang | null {
+        const so = this.buocOn();
+        return so ? (this.buocs.find((x) => x.so === so) ?? null) : null;
+    }
+
+    doiCheDo(v: CheDo) {
+        this.cheDo.set(v);
+        this.clear();
     }
 
     // ---------- tương tác ----------
 
-    /** trỏ vào một bộ phận trên sơ đồ hoặc trong khung chú giải */
-    activate(id: string, e: MouseEvent) {
-        this.active.set(id);
+    hoverKhuVuc(id: string, e: MouseEvent) {
+        this.buocOn.set(null);
+        this.khuVucOn.set(id);
         this.datViTri(e.clientX, e.clientY);
     }
 
-    /** di chuột trong vùng một bộ phận: tooltip bám theo con trỏ */
+    hoverBuoc(so: number, e: MouseEvent) {
+        this.khuVucOn.set(null);
+        this.buocOn.set(so);
+        this.datViTri(e.clientX, e.clientY);
+    }
+
+    /** di chuột trong vùng đang trỏ: tooltip bám theo con trỏ */
     place(e: MouseEvent) {
-        if (this.active()) {
+        if (this.khuVucOn() || this.buocOn()) {
             this.datViTri(e.clientX, e.clientY);
         }
     }
 
-    /** tab bằng bàn phím tới một bộ phận: tooltip đặt ở giữa hình */
-    focusPhanTu(id: string, el: EventTarget | null) {
-        this.active.set(id);
-        const box = (el as Element | null)?.getBoundingClientRect();
-        if (box) {
-            this.datViTri(box.left + box.width / 2, box.top + box.height / 2);
-        }
-    }
-
-    /** trỏ vào một dòng trong khung chú giải: tooltip đặt trên hình tương ứng */
-    hoverChuGiai(id: string) {
-        this.active.set(id);
-        const st = this.mapcard?.nativeElement.querySelector(`.station[data-id="${id}"]`);
-        if (st) {
-            const b = st.getBoundingClientRect();
-            this.datViTri(b.left + b.width / 2, b.top + b.height / 2);
-        }
-    }
-
     clear() {
-        this.active.set(null);
-    }
-
-    /** bấm vào nhãn trên sơ đồ để mở danh sách các khoa */
-    moDanhSachKhoa() {
-        this.router.navigate(['/thong-ke/khoa']);
+        this.khuVucOn.set(null);
+        this.buocOn.set(null);
     }
 
     /** giữ tooltip nằm gọn trong khung sơ đồ */
@@ -137,28 +181,95 @@ export class SoDoTraoBang {
 
     // ---------- dựng hình ----------
 
-    private dungGhe(): IGhe[] {
-        const blocks = [
-            { x0: 82.5, step: 30.6, w: 26.6, cols: 3 },
-            { x0: 220.1, step: 34.6, w: 30.6, cols: 7 },
-            { x0: 507.9, step: 30.6, w: 26.6, cols: 3 }
-        ];
+    /**
+     * Ba dãy ghế trong một hàng, chừa hai lối đi ở giữa.
+     * Trả về toạ độ x của từng ghế.
+     */
+    private toaDoGhe(x0: number, rong: number, day: number[], loiDi: number): number[] {
+        const tongGhe = day.reduce((a, n) => a + n, 0);
+        const buoc = (rong - loiDi * (day.length - 1)) / tongGhe;
 
-        const ds: IGhe[] = [];
-        blocks.forEach((b) => {
-            for (let c = 0; c < b.cols; c++) {
-                for (let r = 0; r < 23; r++) {
-                    const x = b.x0 + c * b.step;
-                    const y = 324 + r * 25;
-                    // chừa chỗ cho dòng chữ "KHU VỰC CHỜ LÀM THỦ TỤC"
-                    if (x > 207.6 && x < 474.5 && y > 365.2 && y < 465.3) {
-                        continue;
-                    }
-                    ds.push({ x: +x.toFixed(1), y, w: b.w, h: 17 });
-                }
+        const xs: number[] = [];
+        let x = x0;
+        day.forEach((soGhe, i) => {
+            for (let g = 0; g < soGhe; g++) {
+                xs.push(x + g * buoc);
             }
+            x += soGhe * buoc + (i < day.length - 1 ? loiDi : 0);
         });
-        return ds;
+        return xs;
+    }
+
+    private dungKhuVuc(): IKhuVucVe[] {
+        const x0 = T2.x + 12;
+        const rong = T2.w - 24;
+        const xs = this.toaDoGhe(x0, rong, DAY_GHE_TANG_2, 26);
+        const rongGhe = ((rong - 26 * 2) / DAY_GHE_TANG_2.reduce((a, n) => a + n, 0)) * 0.78;
+
+        return KHU_VUC_NGOI.map((kv) => {
+            const soHang = kv.den - kv.tu + 1;
+            const y = HANG_Y0 + kv.tu * HANG_CAO - 5;
+            const h = soHang * HANG_CAO;
+
+            const ghe: IGhe[] = [];
+            for (let i = kv.tu; i <= kv.den; i++) {
+                const gy = HANG_Y0 + i * HANG_CAO;
+                xs.forEach((gx) => ghe.push({ x: gx, y: gy, w: rongGhe, h: GHE_CAO, mau: kv.mauGhe }));
+            }
+
+            return {
+                id: kv.id,
+                ten: kv.ten,
+                mau: kv.mau,
+                x: T2.x + 4,
+                y,
+                w: T2.w - 8,
+                h,
+                tenX: T2.x + T2.w / 2,
+                tenY: y + h / 2 + 4,
+                hangDau: HANG_GHE[kv.tu],
+                hangCuoi: HANG_GHE[kv.den],
+                soHang,
+                soGhe: ghe.length,
+                ghe
+            };
+        });
+    }
+
+    private dungNhanHang(): INhanHang[] {
+        return HANG_GHE.map((label, i) => ({ label, y: HANG_Y0 + i * HANG_CAO + GHE_CAO / 2 + 4 }));
+    }
+
+    /** hàng x cố định của cột nhãn hàng ghế */
+    nhanTraiX = T2.x - 15;
+    nhanPhaiX = T2.x + T2.w + 15;
+
+    private dungGheTang3(): IGhe[] {
+        const x0 = T3.x + 20;
+        const rong = T3.w - 40;
+        const xs = this.toaDoGhe(x0, rong, TANG_3.day, 22);
+        const rongGhe = ((rong - 22 * 2) / TANG_3.day.reduce((a, n) => a + n, 0)) * 0.78;
+
+        const ghe: IGhe[] = [];
+        for (let i = 0; i < TANG_3.soHang; i++) {
+            const gy = 592 + i * 44;
+            xs.forEach((gx) => ghe.push({ x: gx, y: gy, w: rongGhe, h: 18, mau: TANG_3.mauGhe }));
+        }
+        return ghe;
+    }
+
+    private dungPhongCho(): IDongPhongCho[] {
+        return PHONG_CHO.map((p, i) => {
+            const dauNhom = i === 0 || PHONG_CHO[i - 1].phong !== p.phong;
+
+            // các khoa dùng chung một phòng thì gộp ô, chỉ dòng đầu in tên phòng
+            let gop = 0;
+            for (let j = i; dauNhom && j < PHONG_CHO.length && PHONG_CHO[j].phong === p.phong; j++) {
+                gop++;
+            }
+
+            return { ...p, hienPhong: dauNhom, gopDong: gop };
+        });
     }
 
     /** tách một chặng thành các đoạn thẳng thành phần */
@@ -173,20 +284,20 @@ export class SoDoTraoBang {
 
     private dungMuiTenGiua(): string[] {
         const out: string[] = [];
-        this.SEG.forEach((d) => {
+        this.tatCaSeg.forEach((d) => {
             this.cacDoan(d).forEach(([x1, y1, x2, y2]) => {
                 const len = Math.hypot(x2 - x1, y2 - y1);
-                if (len < 70) {
+                if (len < 90) {
                     return;
                 }
-                const n = len > 240 ? 2 : 1;
+                const n = len > 320 ? 2 : 1;
                 for (let k = 1; k <= n; k++) {
                     const t = k / (n + 1);
                     const mx = x1 + (x2 - x1) * t;
                     const my = y1 + (y2 - y1) * t;
                     const ux = (x2 - x1) / len;
                     const uy = (y2 - y1) / len;
-                    out.push(`M${(mx - ux * 10).toFixed(1)} ${(my - uy * 10).toFixed(1)} L${mx.toFixed(1)} ${my.toFixed(1)}`);
+                    out.push(`M${(mx - ux * 12).toFixed(1)} ${(my - uy * 12).toFixed(1)} L${mx.toFixed(1)} ${my.toFixed(1)}`);
                 }
             });
         });

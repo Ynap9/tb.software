@@ -1,9 +1,47 @@
 @use '../styles/shared';
 
+/* ---------- Chọn chế độ xem ---------- */
+.sd-toolbar {
+    margin: 0 0 10px;
+}
+
+.nhseg {
+    display: inline-flex;
+    background: var(--panel-2);
+    border: 1px solid var(--panel-3);
+    border-radius: 10px;
+    padding: 3px;
+
+    button {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        font-size: 12.5px;
+        padding: 6px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.15s;
+
+        &[aria-pressed='true'] {
+            background: var(--accent-fill-2);
+            color: var(--cyan);
+            box-shadow: inset 0 0 0 1px var(--cyan-dim);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--cyan);
+            outline-offset: 2px;
+        }
+    }
+}
+
 /* ---------- Bố cục: sơ đồ bên trái, khung chú giải bên phải ---------- */
 .grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 300px;
+    grid-template-columns: minmax(0, 1fr) 320px;
     gap: 12px;
     align-items: start;
 }
@@ -18,7 +56,7 @@
     background: var(--sheet);
     border: 1px solid #cbd5e1;
     border-radius: 12px;
-    padding: 6px;
+    padding: 10px;
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -27,177 +65,134 @@
 
 svg {
     display: block;
-    width: auto;
-    max-width: 100%;
+    width: 100%;
     height: auto;
-    max-height: calc(100vh - 84px);
+    max-height: calc(100vh - 130px);
     margin: 0 auto;
 }
 
-/* ---------- Tương tác với từng bộ phận ---------- */
-.station {
+/* ---------- Chữ trên bản vẽ ---------- */
+.floor {
+    font-weight: 800;
+    font-size: 22px;
+    fill: var(--sheet-ink);
+    text-anchor: middle;
+    letter-spacing: 1px;
+}
+.sk {
+    font-weight: 800;
+    font-size: 13px;
+    fill: #64748b;
+    text-anchor: middle;
+    letter-spacing: 3px;
+}
+.rowlb {
+    font-size: 13px;
+    font-weight: 700;
+    fill: var(--sheet-ink);
+    text-anchor: middle;
+    font-family: 'Share Tech Mono', monospace;
+}
+.zonelb {
+    font-weight: 800;
+    font-size: 14px;
+    fill: #12203a;
+    text-anchor: middle;
+    paint-order: stroke;
+    stroke: #fff;
+    stroke-width: 4;
+    stroke-linejoin: round;
+    pointer-events: none;
+}
+
+/* ---------- Khu vực chỗ ngồi ---------- */
+.khuvuc {
     cursor: pointer;
 
     .hit {
         fill: transparent;
     }
-    .body {
+
+    .band {
         transition:
             filter 0.18s ease,
             opacity 0.18s ease;
     }
-    .ring {
-        fill: none;
-        stroke: var(--route);
-        stroke-width: 7;
-        opacity: 0;
-        transition: opacity 0.18s ease;
+
+    .ghe {
+        stroke: #2f6b34;
+        stroke-width: 0.5;
     }
 
-    &:hover .ring,
-    &.on .ring {
-        opacity: 1;
-    }
-    &:focus-visible {
-        outline: none;
-
-        .ring {
-            opacity: 1;
-            stroke-dasharray: 6 5;
-        }
+    &:hover .band,
+    &.on .band {
+        filter: brightness(1.08) saturate(1.25);
     }
 }
 
+/* trỏ vào một khu vực thì các phần còn lại mờ đi */
 .mapcard.focusing {
-    .station:not(.on) .body {
-        opacity: 0.32;
-        filter: grayscale(0.65);
+    .khuvuc:not(.on) .band,
+    .khuvuc:not(.on) .ghe {
+        opacity: 0.4;
     }
     .scene-dim {
-        opacity: 0.4;
+        opacity: 0.45;
         transition: opacity 0.18s ease;
     }
 }
 
-/* ---------- Nhãn trên bản vẽ ---------- */
-.tag circle {
-    fill: #fff;
-    stroke: var(--sheet-ink);
-    stroke-width: 2.2;
+/* ---------- Sơ đồ các bước: sân khấu và ghế ---------- */
+.bac {
+    stroke: #64748b;
+    stroke-width: 1.4;
 }
-.rm,
-.tag text {
-    paint-order: stroke;
-    stroke: #fff;
-    stroke-width: 4.5;
-    stroke-linejoin: round;
-}
-.tag text {
-    font-weight: 800;
-    font-size: 22px;
-    fill: var(--sheet-ink);
-    text-anchor: middle;
-    dominant-baseline: central;
-}
-.rm {
-    font-weight: 800;
-    font-size: 22px;
-    fill: var(--sheet-ink);
-    text-anchor: middle;
-}
-.note {
-    font-weight: 700;
-    font-size: 12.5px;
-    fill: var(--sheet-ink);
-    text-anchor: middle;
-}
-.floor {
-    font-weight: 800;
-    font-size: 21px;
-    fill: var(--sheet-ink);
-    text-anchor: middle;
-    letter-spacing: 1px;
-}
-.wait {
-    font-weight: 800;
-    font-size: 15px;
-    fill: #1d3b2a;
-    text-anchor: middle;
-    letter-spacing: 0.4px;
+.ghe-doan rect {
+    stroke: #7f1d1d;
+    stroke-width: 0.6;
 }
 
-/* ---------- Tuyến di chuyển ---------- */
-#routeg,
-#labels,
-#routelbl {
+/* ---------- Tuyến đường đi ---------- */
+.tuyen {
     pointer-events: none;
-}
-
-#gotokb {
-    pointer-events: auto;
-    cursor: pointer;
-
-    text {
-        transition: fill 0.15s ease;
-    }
-    .kbhit {
-        fill: transparent;
-    }
-    .kbplate {
-        fill: #e6f6fa;
-        stroke: #0e7490;
-        stroke-width: 1.5;
-        opacity: 0;
-        transition: opacity 0.15s ease;
-    }
-    .kbcue {
-        font-size: 11px;
-        font-weight: 700;
-        fill: #0e7490;
-        letter-spacing: 0.4px;
-    }
-
-    &:hover .kbplate,
-    &:focus-visible .kbplate {
-        opacity: 1;
-    }
-    &:hover text,
-    &:focus-visible text {
-        fill: #0e7490;
-    }
-    &:focus-visible {
-        outline: none;
-    }
 }
 
 .route {
     fill: none;
-    stroke: var(--route);
-    stroke-width: 7;
+    stroke: #e53935;
+    stroke-width: 11;
     stroke-linecap: round;
     stroke-linejoin: round;
+    transition: opacity 0.18s ease;
+
+    /* bước khác đang được trỏ tới thì chặng này mờ đi */
+    &.mo {
+        opacity: 0.22;
+    }
 }
+
 .route-glow {
     fill: none;
-    stroke: var(--route-soft);
-    stroke-width: 15;
+    stroke: #fbd9c2;
+    stroke-width: 22;
     stroke-linecap: round;
     stroke-linejoin: round;
-    opacity: 0.8;
+    opacity: 0.85;
 }
+
 .route-dash {
     fill: none;
     stroke: #fff;
-    stroke-width: 3.2;
+    stroke-width: 4;
     stroke-linecap: round;
-    stroke-dasharray: 2 20;
-    opacity: 0.9;
-    animation: flow 3.2s linear infinite;
+    stroke-dasharray: 3 26;
+    opacity: 0.95;
+    animation: chay 3s linear infinite;
 }
 
-@keyframes flow {
+@keyframes chay {
     to {
-        stroke-dashoffset: -220;
+        stroke-dashoffset: -290;
     }
 }
 
@@ -208,39 +203,46 @@ svg {
     }
 }
 
-/* ---------- Tooltip: phần chỉ số thiết bị ---------- */
-.kpis {
-    display: flex;
-    gap: 7px;
-    flex-wrap: wrap;
+/* ---------- Khung chú thích từng bước ---------- */
+.buoc {
+    cursor: pointer;
+
+    .hit {
+        fill: transparent;
+    }
+
+    .plate {
+        fill: #fff;
+        stroke: #1e3a8a;
+        stroke-width: 2;
+        transition:
+            stroke 0.15s ease,
+            filter 0.15s ease;
+    }
+
+    .bt {
+        font-size: 20px;
+        font-weight: 800;
+        fill: #1e3a8a;
+        text-anchor: middle;
+    }
+
+    .bd {
+        font-size: 16px;
+        font-weight: 700;
+        fill: #1e3a8a;
+        text-anchor: middle;
+    }
+
+    &:hover .plate,
+    &.on .plate {
+        stroke: #e53935;
+        stroke-width: 3;
+        filter: drop-shadow(0 4px 10px rgba(229, 57, 53, 0.35));
+    }
 }
-.kpi {
-    border: 1px solid var(--panel-3);
-    border-radius: 8px;
-    padding: 5px 9px;
-    font-size: 11.5px;
-    font-weight: 600;
-    color: var(--muted);
-    background: var(--panel-2);
 
-    b {
-        font-family: 'Share Tech Mono', monospace;
-        font-size: 15px;
-        color: var(--ink);
-        margin-right: 5px;
-    }
-
-    &.zero {
-        opacity: 0.5;
-    }
-    &.flag {
-        border-color: var(--danger-bd);
-        background: var(--danger-bg);
-        color: var(--danger-tx);
-    }
-}
-
-/* ---------- Khung chú giải ---------- */
+/* ---------- Khung chú giải bên phải ---------- */
 .panel {
     background: var(--panel);
     border: 1px solid var(--panel-3);
@@ -260,6 +262,10 @@ svg {
         text-transform: uppercase;
         color: var(--cyan);
         font-weight: 400;
+
+        &.mt {
+            margin-top: 14px;
+        }
     }
 
     .foot {
@@ -269,11 +275,6 @@ svg {
         font-size: 11.5px;
         color: var(--muted);
         line-height: 1.5;
-
-        code {
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--ink);
-        }
     }
 }
 
@@ -301,20 +302,15 @@ svg {
     }
 
     .dot {
-        width: 26px;
-        height: 26px;
-        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        border-radius: 5px;
         flex: none;
-        display: grid;
-        place-items: center;
-        font-weight: 800;
-        font-size: 12.5px;
-        color: #12203a;
         border: 1.5px solid rgba(0, 0, 0, 0.28);
     }
 
     .txt {
-        font-size: 12.6px;
+        font-size: 12.2px;
         font-weight: 600;
         line-height: 1.25;
         color: var(--ink);
@@ -323,17 +319,115 @@ svg {
             display: block;
             font-style: normal;
             font-weight: 500;
-            font-size: 11.3px;
+            font-size: 11px;
             color: var(--muted);
+            font-family: 'Share Tech Mono', monospace;
         }
     }
 
     .num {
         margin-left: auto;
         font-family: 'Share Tech Mono', monospace;
-        font-size: 11.5px;
-        color: var(--muted);
+        font-size: 12px;
+        color: var(--cyan);
         font-weight: 700;
         white-space: nowrap;
+    }
+}
+
+/* ---------- Danh sách bốn bước ---------- */
+.buoclist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    li {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 8px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.15s ease;
+
+        &:hover,
+        &.on {
+            background: var(--panel-2);
+        }
+    }
+
+    .so {
+        flex: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: #e53935;
+        color: #fff;
+        font-weight: 800;
+        font-size: 13px;
+    }
+
+    .txt {
+        font-size: 12.4px;
+        font-weight: 600;
+        line-height: 1.4;
+        color: var(--ink);
+    }
+}
+
+/* ---------- Bảng phòng chờ ---------- */
+table.pc {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+
+    td {
+        padding: 7px 8px;
+        border-bottom: 1px solid var(--panel-2);
+        color: var(--ink);
+        line-height: 1.35;
+    }
+
+    tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .ph {
+        font-family: 'Share Tech Mono', monospace;
+        font-weight: 700;
+        color: var(--cyan);
+        white-space: nowrap;
+        text-align: center;
+        border-left: 1px solid var(--panel-2);
+        width: 96px;
+    }
+}
+
+/* ---------- Tooltip: phần chỉ số ---------- */
+.kpis {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.kpi {
+    border: 1px solid var(--panel-3);
+    border-radius: 8px;
+    padding: 5px 9px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--panel-2);
+
+    b {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 15px;
+        color: var(--ink);
+        margin-right: 5px;
     }
 }
