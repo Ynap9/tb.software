@@ -1251,7 +1251,13 @@ namespace traobang.be.application.TraoBang.Implements
                 .CountAsync(x => x.IdSubPlan == idSubPlan && !x.Deleted && x.TrangThai == TraoBangConstants.DaTraoBang && x.LoaiSlide == LoaiSlides.SINH_VIEN);
 
             // Lấy slide text ko ở trong hàng đợi, ko lấy slide đầu và cuối
-            var listSlideTrongHangDoi = _tbDbContext.TienDoTraoBangs.Where(x => !x.Deleted && x.LoaiSlide == LoaiSlides.TEXT).Select(x => x.IdSlide).ToList();
+            var listSlideTrongHangDoi = (from td in _tbDbContext.TienDoTraoBangs
+                                         join sl in _tbDbContext.Slides on td.IdSlide equals sl.Id
+                                         where !td.Deleted && !sl.Deleted
+                                             && sl.LoaiSlide == LoaiSlides.TEXT
+                                             && sl.IdSubPlan == idSubPlan
+                                         select td.IdSlide).ToList();
+
             var slideDau = _tbDbContext.Slides.AsNoTracking()
                                     .Where(x => !x.Deleted && x.IdSubPlan == idSubPlan && x.LoaiSlide == LoaiSlides.TEXT)
                                     .OrderBy(x => x.Order).FirstOrDefault()?.Id;
