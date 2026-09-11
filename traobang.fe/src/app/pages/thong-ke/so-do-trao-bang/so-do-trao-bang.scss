@@ -1,41 +1,10 @@
 @use '../styles/shared';
 
-/* ---------- Chọn chế độ xem ---------- */
-.sd-toolbar {
-    margin: 0 0 10px;
-}
-
-.nhseg {
-    display: inline-flex;
-    background: var(--panel-2);
-    border: 1px solid var(--panel-3);
-    border-radius: 10px;
-    padding: 3px;
-
-    button {
-        appearance: none;
-        border: 0;
-        background: transparent;
-        color: var(--muted);
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 600;
-        font-size: 12.5px;
-        padding: 6px 15px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: 0.15s;
-
-        &[aria-pressed='true'] {
-            background: var(--accent-fill-2);
-            color: var(--cyan);
-            box-shadow: inset 0 0 0 1px var(--cyan-dim);
-        }
-
-        &:focus-visible {
-            outline: 2px solid var(--cyan);
-            outline-offset: 2px;
-        }
-    }
+.sd-note {
+    display: inline;
+    font-style: normal;
+    color: var(--muted);
+    font-size: 11px;
 }
 
 /* ---------- Bố cục: sơ đồ bên trái, khung chú giải bên phải ---------- */
@@ -85,6 +54,14 @@ svg {
     fill: #64748b;
     text-anchor: middle;
     letter-spacing: 3px;
+}
+.buclb {
+    font-size: 12px;
+    font-weight: 800;
+    fill: #fff;
+    text-anchor: middle;
+    letter-spacing: 1px;
+    pointer-events: none;
 }
 .rowlb {
     font-size: 13px;
@@ -142,14 +119,10 @@ svg {
     }
 }
 
-/* ---------- Sơ đồ các bước: sân khấu và ghế ---------- */
+/* ---------- Bậc bước lên sân khấu ---------- */
 .bac {
     stroke: #64748b;
     stroke-width: 1.4;
-}
-.ghe-doan rect {
-    stroke: #7f1d1d;
-    stroke-width: 0.6;
 }
 
 /* ---------- Tuyến đường đi ---------- */
@@ -203,7 +176,7 @@ svg {
     }
 }
 
-/* ---------- Khung chú thích từng bước ---------- */
+/* ---------- Huy hiệu số bước trên tuyến ---------- */
 .buoc {
     cursor: pointer;
 
@@ -211,34 +184,78 @@ svg {
         fill: transparent;
     }
 
-    .plate {
-        fill: #fff;
-        stroke: #1e3a8a;
-        stroke-width: 2;
-        transition:
-            stroke 0.15s ease,
-            filter 0.15s ease;
-    }
-
-    .bt {
-        font-size: 20px;
-        font-weight: 800;
-        fill: #1e3a8a;
-        text-anchor: middle;
-    }
-
-    .bd {
-        font-size: 16px;
-        font-weight: 700;
-        fill: #1e3a8a;
-        text-anchor: middle;
-    }
-
-    &:hover .plate,
-    &.on .plate {
+    /* vòng trắng chạy quanh huy hiệu, nhấp nháy để dẫn mắt theo luồng */
+    .vong {
+        fill: none;
         stroke: #e53935;
         stroke-width: 3;
-        filter: drop-shadow(0 4px 10px rgba(229, 57, 53, 0.35));
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: nhipdap 2.4s ease-out infinite;
+    }
+
+    .tron {
+        fill: #e53935;
+        stroke: #fff;
+        stroke-width: 3.5;
+        transition: filter 0.15s ease;
+    }
+
+    .bso {
+        font-size: 22px;
+        font-weight: 800;
+        fill: #fff;
+        text-anchor: middle;
+        pointer-events: none;
+    }
+
+    .bnhan {
+        font-size: 17px;
+        font-weight: 800;
+        fill: #1e3a8a;
+        paint-order: stroke;
+        stroke: #fff;
+        stroke-width: 5;
+        stroke-linejoin: round;
+        pointer-events: none;
+    }
+
+    &:hover .tron,
+    &.on .tron {
+        filter: drop-shadow(0 0 10px rgba(229, 57, 53, 0.85));
+    }
+}
+
+/* huy hiệu bước lần lượt nhấp nháy theo đúng thứ tự đi */
+.buoc:nth-of-type(1) .vong {
+    animation-delay: 0s;
+}
+.buoc:nth-of-type(2) .vong {
+    animation-delay: 0.6s;
+}
+.buoc:nth-of-type(3) .vong {
+    animation-delay: 1.2s;
+}
+.buoc:nth-of-type(4) .vong {
+    animation-delay: 1.8s;
+}
+
+@keyframes nhipdap {
+    0% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+    60%,
+    100% {
+        transform: scale(1.9);
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .buoc .vong {
+        animation: none;
+        opacity: 0;
     }
 }
 

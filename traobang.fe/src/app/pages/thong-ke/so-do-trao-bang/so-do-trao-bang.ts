@@ -1,8 +1,5 @@
 import { Component, ElementRef, ViewChild, signal } from '@angular/core';
-import { BUOC_NHAN_BANG, DAY_GHE_TANG_2, HANG_GHE, IBuocNhanBang, IPhongCho, KHU_VUC_NGOI, PHONG_CHO, TANG_3 } from '../data/so-do.data';
-
-/** Hai chế độ xem của màn sơ đồ */
-type CheDo = 'cho-ngoi' | 'buoc-di';
+import { BUOC_NHAN_BANG, DAY_GHE, HANG_GHE, IBuocNhanBang, IPhongCho, KHU_VUC_NGOI, PHONG_CHO } from '../data/so-do.data';
 
 /** Một ghế trên sơ đồ */
 interface IGhe {
@@ -22,8 +19,6 @@ interface IKhuVucVe {
     y: number;
     w: number;
     h: number;
-    /** vị trí đặt tên khu vực */
-    tenX: number;
     tenY: number;
     hangDau: string;
     hangCuoi: string;
@@ -45,13 +40,20 @@ interface IDongPhongCho extends IPhongCho {
     gopDong: number;
 }
 
-// ---------- kích thước sơ đồ chỗ ngồi ----------
-const T2 = { x: 60, y: 60, w: 520, h: 880 };
-const T3 = { x: 680, y: 60, w: 520, h: 880 };
-/** hàng ghế đầu tiên bắt đầu ngay dưới khu vực sân khấu */
-const HANG_Y0 = 214;
-const HANG_CAO = 30;
+// ---------- kích thước mặt bằng hội trường ----------
+/** tường hội trường */
+const HALL = { x: 120, y: 100, w: 880, h: 880 };
+/** sảnh phía sau hội trường */
+const SANH = { y: 980, h: 110 };
+/** hai hàng ghế đại biểu, ngay dưới bậc thềm sân khấu */
+const DAI_BIEU_Y0 = 397;
+const DAI_BIEU_CAO = 35;
+/** các hàng ghế sinh viên, bắt đầu từ hàng B */
+const HANG_Y0 = 480;
+const HANG_CAO = 34;
 const GHE_CAO = 15;
+/** bề rộng lối đi giữa ba dãy ghế */
+const LOI_DI = 44;
 
 @Component({
     selector: 'app-so-do-trao-bang',
@@ -63,36 +65,33 @@ export class SoDoTraoBang {
     @ViewChild('mapcard') mapcard?: ElementRef<HTMLElement>;
     @ViewChild('tip') tipEl?: ElementRef<HTMLElement>;
 
-    readonly T2 = T2;
-    readonly T3 = T3;
+    readonly HALL = HALL;
+    readonly SANH = SANH;
 
-    cheDo = signal<CheDo>('cho-ngoi');
-
-    /** id khu vực đang trỏ tới ở sơ đồ chỗ ngồi */
+    /** id khu vực đang trỏ tới */
     khuVucOn = signal<string | null>(null);
 
-    /** số bước đang trỏ tới ở sơ đồ đường đi */
+    /** số bước đang trỏ tới */
     buocOn = signal<number | null>(null);
 
     tipLeft = signal(0);
     tipTop = signal(0);
 
-    // ---------- sơ đồ chỗ ngồi ----------
+    // ---------- khu vực chỗ ngồi ----------
 
     khuVucs: IKhuVucVe[] = this.dungKhuVuc();
-    nhanHangTrai: INhanHang[] = this.dungNhanHang();
-    nhanHangPhai: INhanHang[] = this.dungNhanHang();
-    gheTang3: IGhe[] = this.dungGheTang3();
+    nhanHang: INhanHang[] = this.dungNhanHang();
 
-    /** khung xanh của khu vực phụ huynh tầng 3 */
-    bangTang3 = { x: T3.x + 10, y: 572, w: T3.w - 20, h: 330 };
+    /** cột nhãn hàng ghế ở hai mép */
+    nhanTraiX = HALL.x - 16;
+    nhanPhaiX = HALL.x + HALL.w + 16;
 
-    /** mảng khối bê tông chéo ở tầng 3, vẽ theo bản in */
-    wedgeTang3 = `M ${T3.x + 470} 230 L ${T3.x + 470} 560 L ${T3.x + 80} 560 Z`;
+    /** tâm hội trường, dùng để căn giữa các nhãn */
+    giuaX = HALL.x + HALL.w / 2;
 
     phongCho: IDongPhongCho[] = this.dungPhongCho();
 
-    // ---------- sơ đồ các bước lên nhận bằng ----------
+    // ---------- luồng các bước lên nhận bằng ----------
 
     buocs: IBuocNhanBang[] = BUOC_NHAN_BANG;
 
@@ -102,13 +101,8 @@ export class SoDoTraoBang {
     /** mũi tên phụ đặt giữa mỗi chặng dài, để chiều di chuyển luôn nhìn thấy được */
     muiTenGiua: string[] = this.dungMuiTenGiua();
 
-    /** các đường kẻ mô tả bậc lên sân khấu */
-    bacSanKhau: number[] = [560, 575, 590, 605, 620];
-
-    /** chỉ số ghế của các dãy trong sơ đồ đường đi */
-    ghe4 = [0, 1, 2, 3];
-    ghe11 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    ghe17 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    /** các đường kẻ mô tả bậc thềm bước lên sân khấu */
+    bacSanKhau: number[] = [345, 357, 369, 381];
 
     /** thông tin khu vực đang trỏ tới, dùng cho tooltip */
     get khuVucDangXem(): IKhuVucVe | null {
@@ -120,11 +114,6 @@ export class SoDoTraoBang {
     get buocDangXem(): IBuocNhanBang | null {
         const so = this.buocOn();
         return so ? (this.buocs.find((x) => x.so === so) ?? null) : null;
-    }
-
-    doiCheDo(v: CheDo) {
-        this.cheDo.set(v);
-        this.clear();
     }
 
     // ---------- tương tác ----------
@@ -181,39 +170,45 @@ export class SoDoTraoBang {
 
     // ---------- dựng hình ----------
 
+    /** toạ độ y của hàng ghế thứ i: hai hàng đầu là ghế đại biểu, còn lại là ghế sinh viên */
+    private yHang(i: number): number {
+        return i < 2 ? DAI_BIEU_Y0 + i * DAI_BIEU_CAO : HANG_Y0 + (i - 2) * HANG_CAO;
+    }
+
     /**
      * Ba dãy ghế trong một hàng, chừa hai lối đi ở giữa.
      * Trả về toạ độ x của từng ghế.
      */
-    private toaDoGhe(x0: number, rong: number, day: number[], loiDi: number): number[] {
-        const tongGhe = day.reduce((a, n) => a + n, 0);
-        const buoc = (rong - loiDi * (day.length - 1)) / tongGhe;
+    private toaDoGhe(): number[] {
+        const x0 = HALL.x + 12;
+        const rong = HALL.w - 24;
+        const tongGhe = DAY_GHE.reduce((a, n) => a + n, 0);
+        const buoc = (rong - LOI_DI * (DAY_GHE.length - 1)) / tongGhe;
 
         const xs: number[] = [];
         let x = x0;
-        day.forEach((soGhe, i) => {
+        DAY_GHE.forEach((soGhe, i) => {
             for (let g = 0; g < soGhe; g++) {
                 xs.push(x + g * buoc);
             }
-            x += soGhe * buoc + (i < day.length - 1 ? loiDi : 0);
+            x += soGhe * buoc + (i < DAY_GHE.length - 1 ? LOI_DI : 0);
         });
         return xs;
     }
 
     private dungKhuVuc(): IKhuVucVe[] {
-        const x0 = T2.x + 12;
-        const rong = T2.w - 24;
-        const xs = this.toaDoGhe(x0, rong, DAY_GHE_TANG_2, 26);
-        const rongGhe = ((rong - 26 * 2) / DAY_GHE_TANG_2.reduce((a, n) => a + n, 0)) * 0.78;
+        const xs = this.toaDoGhe();
+        const tongGhe = DAY_GHE.reduce((a, n) => a + n, 0);
+        const rongGhe = ((HALL.w - 24 - LOI_DI * 2) / tongGhe) * 0.78;
 
         return KHU_VUC_NGOI.map((kv) => {
             const soHang = kv.den - kv.tu + 1;
-            const y = HANG_Y0 + kv.tu * HANG_CAO - 5;
-            const h = soHang * HANG_CAO;
+            const y = this.yHang(kv.tu) - 6;
+            const h = this.yHang(kv.den) + GHE_CAO + 6 - y;
 
             const ghe: IGhe[] = [];
             for (let i = kv.tu; i <= kv.den; i++) {
-                const gy = HANG_Y0 + i * HANG_CAO;
+                const gy = this.yHang(i);
                 xs.forEach((gx) => ghe.push({ x: gx, y: gy, w: rongGhe, h: GHE_CAO, mau: kv.mauGhe }));
             }
 
@@ -221,12 +216,11 @@ export class SoDoTraoBang {
                 id: kv.id,
                 ten: kv.ten,
                 mau: kv.mau,
-                x: T2.x + 4,
+                x: HALL.x + 4,
                 y,
-                w: T2.w - 8,
+                w: HALL.w - 8,
                 h,
-                tenX: T2.x + T2.w / 2,
-                tenY: y + h / 2 + 4,
+                tenY: y + h / 2 + 5,
                 hangDau: HANG_GHE[kv.tu],
                 hangCuoi: HANG_GHE[kv.den],
                 soHang,
@@ -237,25 +231,7 @@ export class SoDoTraoBang {
     }
 
     private dungNhanHang(): INhanHang[] {
-        return HANG_GHE.map((label, i) => ({ label, y: HANG_Y0 + i * HANG_CAO + GHE_CAO / 2 + 4 }));
-    }
-
-    /** hàng x cố định của cột nhãn hàng ghế */
-    nhanTraiX = T2.x - 15;
-    nhanPhaiX = T2.x + T2.w + 15;
-
-    private dungGheTang3(): IGhe[] {
-        const x0 = T3.x + 20;
-        const rong = T3.w - 40;
-        const xs = this.toaDoGhe(x0, rong, TANG_3.day, 22);
-        const rongGhe = ((rong - 22 * 2) / TANG_3.day.reduce((a, n) => a + n, 0)) * 0.78;
-
-        const ghe: IGhe[] = [];
-        for (let i = 0; i < TANG_3.soHang; i++) {
-            const gy = 592 + i * 44;
-            xs.forEach((gx) => ghe.push({ x: gx, y: gy, w: rongGhe, h: 18, mau: TANG_3.mauGhe }));
-        }
-        return ghe;
+        return HANG_GHE.map((label, i) => ({ label, y: this.yHang(i) + GHE_CAO / 2 + 4 }));
     }
 
     private dungPhongCho(): IDongPhongCho[] {
@@ -287,10 +263,10 @@ export class SoDoTraoBang {
         this.tatCaSeg.forEach((d) => {
             this.cacDoan(d).forEach(([x1, y1, x2, y2]) => {
                 const len = Math.hypot(x2 - x1, y2 - y1);
-                if (len < 90) {
+                if (len < 120) {
                     return;
                 }
-                const n = len > 320 ? 2 : 1;
+                const n = len > 360 ? 2 : 1;
                 for (let k = 1; k <= n; k++) {
                     const t = k / (n + 1);
                     const mx = x1 + (x2 - x1) * t;

@@ -1,138 +1,65 @@
-<div class="sd-toolbar">
-    <div class="nhseg" role="group" aria-label="Chế độ xem sơ đồ">
-        <button type="button" [attr.aria-pressed]="cheDo() === 'cho-ngoi'" (click)="doiCheDo('cho-ngoi')">Sơ đồ chỗ ngồi</button>
-        <button type="button" [attr.aria-pressed]="cheDo() === 'buoc-di'" (click)="doiCheDo('buoc-di')">Các bước lên nhận bằng</button>
-    </div>
-</div>
+<p class="stafftotal">
+    Mặt bằng hội trường tầng 2 nhà G3 — nơi diễn ra lễ trao bằng.
+    <em class="sd-note">Các khối màu là khu vực chỗ ngồi của từng Khoa, tuyến đỏ là luồng bốn bước sinh viên lên nhận bằng.</em>
+</p>
 
 <div class="grid">
     <div class="mapcard" #mapcard [class.focusing]="khuVucOn() || buocOn()" (mousemove)="place($event)" (mouseleave)="clear()">
-        <!-- ============ SƠ ĐỒ VỊ TRÍ CHỖ NGỒI ============ -->
-        @if (cheDo() === 'cho-ngoi') {
-        <svg viewBox="0 0 1240 1090" role="img" aria-label="Sơ đồ vị trí chỗ ngồi lễ trao bằng">
-            <!-- ---------- TẦNG 2 ---------- -->
-            <g class="scene-dim">
-                <!-- sảnh phía sau hội trường -->
-                <rect [attr.x]="T2.x" [attr.y]="T2.y + T2.h" [attr.width]="T2.w" height="130" fill="#A8E6A3" stroke="#111" stroke-width="2" />
-                <text class="floor" [attr.x]="T2.x + T2.w / 2" [attr.y]="T2.y + T2.h + 78">TẦNG 2 - G3</text>
-
-                <!-- tường hội trường -->
-                <rect [attr.x]="T2.x" [attr.y]="T2.y" [attr.width]="T2.w" [attr.height]="T2.h" fill="#fff" stroke="#111" stroke-width="4" />
-
-                <!-- sân khấu -->
-                <rect [attr.x]="T2.x + 30" [attr.y]="T2.y + 8" [attr.width]="T2.w - 60" height="46" fill="#fff" stroke="#111" stroke-width="1.6" />
-                <rect [attr.x]="T2.x + 40" [attr.y]="T2.y + 16" [attr.width]="T2.w - 80" height="30" fill="#fff" stroke="#111" stroke-width="1.2" />
-                <rect [attr.x]="T2.x + T2.w / 2 - 16" [attr.y]="T2.y - 26" width="32" height="16" fill="#C62828" />
-                <text class="sk" [attr.x]="T2.x + T2.w / 2" [attr.y]="T2.y + 78">SÂN KHẤU</text>
-            </g>
-
-            <!-- nhãn hàng ghế hai bên -->
-            <g class="scene-dim">
-                @for (n of nhanHangTrai; track $index) {
-                <text class="rowlb" [attr.x]="nhanTraiX" [attr.y]="n.y">{{ n.label }}</text>
-                } @for (n of nhanHangPhai; track $index) {
-                <text class="rowlb" [attr.x]="nhanPhaiX" [attr.y]="n.y">{{ n.label }}</text>
-                }
-            </g>
-
-            <!-- các khu vực chỗ ngồi -->
-            @for (kv of khuVucs; track kv.id) {
-            <g class="khuvuc" [class.on]="khuVucOn() === kv.id" (mouseenter)="hoverKhuVuc(kv.id, $event)">
-                <rect class="band" [attr.x]="kv.x" [attr.y]="kv.y" [attr.width]="kv.w" [attr.height]="kv.h" [attr.fill]="kv.mau" />
-                @for (g of kv.ghe; track $index) {
-                <rect class="ghe" [attr.x]="g.x" [attr.y]="g.y" [attr.width]="g.w" [attr.height]="g.h" [attr.fill]="g.mau" rx="1.5" />
-                }
-                <text class="zonelb" [attr.x]="kv.tenX" [attr.y]="kv.tenY">{{ kv.ten }}</text>
-                <rect class="hit" [attr.x]="kv.x" [attr.y]="kv.y" [attr.width]="kv.w" [attr.height]="kv.h" />
-            </g>
-            }
-
-            <!-- ---------- TẦNG 3 ---------- -->
-            <g class="scene-dim">
-                <rect [attr.x]="T3.x" [attr.y]="T3.y + T3.h" [attr.width]="T3.w" height="130" fill="#A8E6A3" stroke="#111" stroke-width="2" />
-                <text class="floor" [attr.x]="T3.x + T3.w / 2" [attr.y]="T3.y + T3.h + 78">TẦNG 3 - G3</text>
-
-                <rect [attr.x]="T3.x" [attr.y]="T3.y" [attr.width]="T3.w" [attr.height]="T3.h" fill="#fff" stroke="#111" stroke-width="4" />
-
-                <!-- lỗ thông tầng nhìn xuống sân khấu -->
-                <rect [attr.x]="T3.x + 30" [attr.y]="T3.y + 8" [attr.width]="T3.w - 60" height="46" fill="#fff" stroke="#111" stroke-width="1.6" />
-                <rect [attr.x]="T3.x + 40" [attr.y]="T3.y + 16" [attr.width]="T3.w - 80" height="30" fill="#fff" stroke="#111" stroke-width="1.2" />
-
-                <!-- khối bê tông dốc -->
-                <path [attr.d]="wedgeTang3" fill="#8D959E" />
-            </g>
-
-            <g class="khuvuc" [class.on]="khuVucOn() === 'PHU_HUYNH'" (mouseenter)="hoverKhuVuc('PHU_HUYNH', $event)">
-                <rect class="band" [attr.x]="bangTang3.x" [attr.y]="bangTang3.y" [attr.width]="bangTang3.w" [attr.height]="bangTang3.h" fill="#4FC3F7" />
-                @for (g of gheTang3; track $index) {
-                <rect class="ghe" [attr.x]="g.x" [attr.y]="g.y" [attr.width]="g.w" [attr.height]="g.h" fill="#4CAF50" rx="1.5" />
-                }
-                <text class="zonelb" [attr.x]="T3.x + T3.w / 2" [attr.y]="bangTang3.y + bangTang3.h / 2 + 4">PHỤ HUYNH, NGƯỜI THÂN</text>
-                <rect class="hit" [attr.x]="bangTang3.x" [attr.y]="bangTang3.y" [attr.width]="bangTang3.w" [attr.height]="bangTang3.h" />
-            </g>
-        </svg>
-        }
-
-        <!-- ============ CÁC BƯỚC LÊN NHẬN BẰNG ============ -->
-        @if (cheDo() === 'buoc-di') {
-        <svg viewBox="0 0 1400 900" role="img" aria-label="Hướng dẫn các bước lên nhận bằng">
+        <svg viewBox="0 0 1120 1120" role="img" aria-label="Sơ đồ hội trường và luồng các bước lên nhận bằng">
             <defs>
                 <marker id="mtb" viewBox="0 0 12 12" refX="10.5" refY="6" markerWidth="13" markerHeight="13" markerUnits="userSpaceOnUse" orient="auto">
                     <path d="M1 0.8 L11 6 L1 11.2 z" fill="#E53935" />
                 </marker>
             </defs>
 
+            <!-- ========== KHUNG PHÒNG ========== -->
             <g class="scene-dim">
+                <!-- sảnh phía sau hội trường -->
+                <rect [attr.x]="HALL.x" [attr.y]="SANH.y" [attr.width]="HALL.w" [attr.height]="SANH.h" fill="#A8E6A3" stroke="#111" stroke-width="2" />
+                <text class="floor" [attr.x]="giuaX" [attr.y]="SANH.y + 72">TẦNG 2 - G3</text>
+
                 <!-- tường hội trường -->
-                <rect x="60" y="40" width="1180" height="820" fill="#fff" stroke="#111" stroke-width="5" />
+                <rect [attr.x]="HALL.x" [attr.y]="HALL.y" [attr.width]="HALL.w" [attr.height]="HALL.h" fill="#fff" stroke="#111" stroke-width="5" />
 
-                <!-- bục nhận bằng và bàn phụ trên sân khấu -->
-                <rect x="520" y="230" width="250" height="66" fill="#E53935" />
-                <rect x="880" y="310" width="120" height="72" fill="#E53935" />
+                <!-- sân khấu -->
+                <rect x="170" y="140" width="780" height="195" fill="#fff" stroke="#111" stroke-width="2" />
+                <text class="sk" x="240" y="306">SÂN KHẤU</text>
 
-                <!-- mép sân khấu và bậc bước lên -->
-                <rect x="190" y="552" width="120" height="12" fill="#111" />
+                <!-- mép sân khấu và các bậc bước lên -->
+                <rect x="170" y="337" width="100" height="10" fill="#111" />
                 @for (y of bacSanKhau; track $index) {
-                <line class="bac" x1="200" [attr.y1]="y" x2="1120" [attr.y2]="y" />
+                <line class="bac" x1="180" [attr.y1]="y" x2="940" [attr.y2]="y" />
                 }
-
-                <!-- hàng ghế trong hội trường -->
-                <g class="ghe-doan">
-                    <rect x="150" y="660" width="130" height="28" fill="#B02525" />
-                    <rect x="286" y="660" width="130" height="28" fill="#B02525" />
-                    <rect x="480" y="660" width="180" height="28" fill="#B02525" />
-                    <rect x="676" y="660" width="180" height="28" fill="#B02525" />
-                    <rect x="930" y="660" width="220" height="28" fill="#B02525" />
-                </g>
-                <g class="ghe-doan">
-                    @for (i of ghe4; track i) {
-                    <rect [attr.x]="152 + i * 66" y="702" width="58" height="28" fill="#B02525" rx="2" />
-                    } @for (i of ghe11; track i) {
-                    <rect [attr.x]="482 + i * 34" y="702" width="28" height="28" fill="#B02525" rx="2" />
-                    } @for (i of ghe4; track i) {
-                    <rect [attr.x]="932 + i * 56" y="702" width="48" height="28" fill="#B02525" rx="2" />
-                    }
-                </g>
-                <g class="ghe-doan">
-                    @for (i of ghe4; track i) {
-                    <rect [attr.x]="152 + i * 66" y="744" width="58" height="28" fill="#B02525" rx="2" />
-                    }
-                    <rect x="480" y="744" width="180" height="28" fill="#B02525" />
-                    <rect x="676" y="744" width="180" height="28" fill="#B02525" />
-                    @for (i of ghe4; track i) {
-                    <rect [attr.x]="932 + i * 56" y="744" width="48" height="28" fill="#B02525" rx="2" />
-                    }
-                </g>
-                <g class="ghe-doan">
-                    @for (i of ghe17; track i) {
-                    <rect [attr.x]="152 + i * 59" y="792" width="50" height="24" fill="#4CAF50" rx="2" />
-                    } @for (i of ghe4; track i) {
-                    <rect [attr.x]="1150 - i * 59" y="792" width="50" height="24" fill="#4CAF50" rx="2" />
-                    }
-                </g>
             </g>
 
-            <!-- tuyến đường đi -->
+            <!-- bục nhận bằng và bàn trao bằng: tuyến đi vòng phía sau, không cắt ngang -->
+            <g class="scene-dim">
+                <rect x="400" y="178" width="240" height="58" fill="#E53935" />
+                <text class="buclb" x="520" y="213">BỤC NHẬN BẰNG</text>
+                <rect x="720" y="246" width="100" height="62" fill="#E53935" />
+            </g>
+
+            <!-- nhãn hàng ghế hai bên -->
+            <g class="scene-dim">
+                @for (n of nhanHang; track $index) {
+                <text class="rowlb" [attr.x]="nhanTraiX" [attr.y]="n.y">{{ n.label }}</text>
+                <text class="rowlb" [attr.x]="nhanPhaiX" [attr.y]="n.y">{{ n.label }}</text>
+                }
+            </g>
+
+            <!-- ========== KHỐI KHU VỰC CHỖ NGỒI ========== -->
+            @for (kv of khuVucs; track kv.id) {
+            <g class="khuvuc" [class.on]="khuVucOn() === kv.id" (mouseenter)="hoverKhuVuc(kv.id, $event)">
+                <rect class="band" [attr.x]="kv.x" [attr.y]="kv.y" [attr.width]="kv.w" [attr.height]="kv.h" [attr.fill]="kv.mau" />
+                @for (g of kv.ghe; track $index) {
+                <rect class="ghe" [attr.x]="g.x" [attr.y]="g.y" [attr.width]="g.w" [attr.height]="g.h" [attr.fill]="g.mau" rx="1.5" />
+                }
+                <text class="zonelb" [attr.x]="giuaX" [attr.y]="kv.tenY">{{ kv.ten }}</text>
+                <rect class="hit" [attr.x]="kv.x" [attr.y]="kv.y" [attr.width]="kv.w" [attr.height]="kv.h" />
+            </g>
+            }
+
+            <!-- ========== LUỒNG CÁC BƯỚC LÊN NHẬN BẰNG ========== -->
             <g class="tuyen">
                 @for (d of tatCaSeg; track $index) {
                 <path class="route-glow" [attr.d]="d" />
@@ -145,19 +72,17 @@
                 }
             </g>
 
-            <!-- khung chú thích từng bước -->
+            <!-- huy hiệu số bước -->
             @for (b of buocs; track b.so) {
             <g class="buoc" [class.on]="buocOn() === b.so" (mouseenter)="hoverBuoc(b.so, $event)">
-                <rect class="plate" [attr.x]="b.box.x" [attr.y]="b.box.y" [attr.width]="b.box.w" [attr.height]="b.box.h" rx="14" />
-                <text class="bt" [attr.x]="b.box.x + b.box.w / 2" [attr.y]="b.box.y + 30">Bước {{ b.so }}</text>
-                @for (d of b.dong; track $index) {
-                <text class="bd" [attr.x]="b.box.x + b.box.w / 2" [attr.y]="b.box.y + 56 + $index * 24">{{ d }}</text>
-                }
-                <rect class="hit" [attr.x]="b.box.x" [attr.y]="b.box.y" [attr.width]="b.box.w" [attr.height]="b.box.h" rx="14" />
+                <text class="bnhan" [attr.x]="b.nhan.x" [attr.y]="b.nhan.y" [attr.text-anchor]="b.nhan.neo">{{ b.ten }}</text>
+                <circle class="vong" [attr.cx]="b.badge.x" [attr.cy]="b.badge.y" r="21" />
+                <circle class="tron" [attr.cx]="b.badge.x" [attr.cy]="b.badge.y" r="21" />
+                <text class="bso" [attr.x]="b.badge.x" [attr.y]="b.badge.y + 7">{{ b.so }}</text>
+                <circle class="hit" [attr.cx]="b.badge.x" [attr.cy]="b.badge.y" r="26" />
             </g>
             }
         </svg>
-        }
 
         <!-- tooltip bám theo con trỏ -->
         <div class="tip" #tip role="status" aria-live="polite" [class.show]="khuVucOn() || buocOn()" [style.left.px]="tipLeft()" [style.top.px]="tipTop()">
@@ -178,20 +103,30 @@
                 <span class="letter" style="background: #e53935">{{ b.so }}</span>
                 <div>
                     <h3>Bước {{ b.so }}</h3>
-                    <span class="room">Hướng dẫn lên nhận bằng</span>
+                    <span class="room">{{ b.ten }}</span>
                 </div>
             </div>
-            <p>{{ b.dong.join(' ') }}</p>
+            <p>{{ b.moTa }}</p>
             }
         </div>
     </div>
 
     <aside class="panel">
-        @if (cheDo() === 'cho-ngoi') {
-        <h2>Khu vực chỗ ngồi</h2>
+        <h2>Các bước lên nhận bằng</h2>
+        <ol class="buoclist">
+            @for (b of buocs; track b.so) {
+            <li (mouseenter)="hoverBuoc(b.so, $event)" (mouseleave)="clear()" [class.on]="buocOn() === b.so">
+                <span class="so">{{ b.so }}</span>
+                <span class="txt">{{ b.moTa }}</span>
+            </li>
+            }
+        </ol>
+        <div class="foot">Sinh viên đi lên bằng lối bên phải, nhận bằng ở giữa sân khấu rồi đi xuống bằng lối bên trái để không cắt ngang dòng người đang chờ.</div>
+
+        <h2 class="mt">Khu vực chỗ ngồi</h2>
         <ul class="leg">
             @for (kv of khuVucs; track kv.id) {
-            <li (mouseenter)="hoverKhuVuc(kv.id, $event)" [class.on]="khuVucOn() === kv.id">
+            <li (mouseenter)="hoverKhuVuc(kv.id, $event)" (mouseleave)="clear()" [class.on]="khuVucOn() === kv.id">
                 <span class="dot" [style.background]="kv.mau"></span>
                 <span class="txt">
                     {{ kv.ten }}
@@ -200,14 +135,6 @@
                 <span class="num">{{ kv.soGhe }}</span>
             </li>
             }
-            <li (mouseenter)="hoverKhuVuc('PHU_HUYNH', $event)" [class.on]="khuVucOn() === 'PHU_HUYNH'">
-                <span class="dot" style="background: #4fc3f7"></span>
-                <span class="txt">
-                    PHỤ HUYNH, NGƯỜI THÂN
-                    <em>Tầng 3 - G3</em>
-                </span>
-                <span class="num">{{ gheTang3.length }}</span>
-            </li>
         </ul>
 
         <h2 class="mt">Phòng chờ của các Khoa</h2>
@@ -223,17 +150,5 @@
                 }
             </tbody>
         </table>
-        } @else {
-        <h2>Các bước lên nhận bằng</h2>
-        <ol class="buoclist">
-            @for (b of buocs; track b.so) {
-            <li (mouseenter)="hoverBuoc(b.so, $event)" [class.on]="buocOn() === b.so">
-                <span class="so">{{ b.so }}</span>
-                <span class="txt">{{ b.dong.join(' ') }}</span>
-            </li>
-            }
-        </ol>
-        <div class="foot">Sinh viên đi từ hàng ghế bên phải lên sân khấu, nhận bằng ở giữa sân khấu rồi đi xuống bằng lối bên trái để không cắt ngang dòng người đang chờ.</div>
-        }
     </aside>
 </div>

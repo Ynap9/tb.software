@@ -1,10 +1,11 @@
 /**
  * Dữ liệu sơ đồ lễ trao bằng — HUCE.
- * Vẽ lại theo hai bản in của Nhà trường: sơ đồ vị trí chỗ ngồi (tầng 2, tầng 3 nhà G3)
- * và hướng dẫn các bước lên nhận bằng. Dữ liệu tĩnh, chưa gọi API.
+ * Gộp hai bản in của Nhà trường vào chung một mặt bằng tầng 2 nhà G3:
+ * vị trí chỗ ngồi của từng khu vực và luồng bốn bước sinh viên lên nhận bằng.
+ * Dữ liệu tĩnh, chưa gọi API.
  */
 
-/** Một khu vực ghế trong hội trường tầng 2 */
+/** Một khu vực ghế trong hội trường */
 export interface IKhuVucNgoi {
     id: string;
     ten: string;
@@ -15,33 +16,22 @@ export interface IKhuVucNgoi {
     mau: string;
     /** màu ghế trong khu vực */
     mauGhe: string;
-    /** ghế đại biểu vẽ liền thành dải, không tách từng ghế như ghế sinh viên */
-    laDaiBieu?: boolean;
 }
 
-/** Nhãn các hàng ghế, đọc từ trên sân khấu xuống cuối hội trường */
-export const HANG_GHE = ['A', "A'", 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W'];
+/** Nhãn các hàng ghế, đọc từ sân khấu xuống cuối hội trường */
+export const HANG_GHE = ['A', "A'", 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
 
 /** Số ghế của ba dãy trong một hàng: dãy trái, dãy giữa, dãy phải */
-export const DAY_GHE_TANG_2 = [5, 13, 5];
+export const DAY_GHE = [5, 13, 5];
 
-/** Các khu vực chỗ ngồi ở tầng 2 nhà G3 */
+/** Các khu vực chỗ ngồi trong hội trường */
 export const KHU_VUC_NGOI: IKhuVucNgoi[] = [
-    { id: 'DAI_BIEU', ten: 'GHẾ ĐẠI BIỂU', tu: 0, den: 1, mau: '#F3D2CE', mauGhe: '#C62828', laDaiBieu: true },
+    { id: 'DAI_BIEU', ten: 'GHẾ ĐẠI BIỂU', tu: 0, den: 1, mau: '#F3D2CE', mauGhe: '#C62828' },
     { id: 'SAU_DH', ten: 'TÂN TIẾN SĨ, THẠC SĨ', tu: 2, den: 3, mau: '#F5A38B', mauGhe: '#4CAF50' },
-    { id: 'KINH_TE', ten: 'KHOA KINH TẾ VÀ QUẢN LÝ XÂY DỰNG', tu: 4, den: 11, mau: '#F7E489', mauGhe: '#4CAF50' },
-    { id: 'CNTT', ten: 'KHOA CÔNG NGHỆ THÔNG TIN', tu: 12, den: 15, mau: '#C9A6DE', mauGhe: '#4CAF50' },
-    { id: 'KIEN_TRUC', ten: 'KHOA KIẾN TRÚC VÀ QUY HOẠCH', tu: 16, den: 23, mau: '#F0A088', mauGhe: '#4CAF50' }
+    { id: 'KINH_TE', ten: 'KHOA KINH TẾ VÀ QUẢN LÝ XÂY DỰNG', tu: 4, den: 7, mau: '#F7E489', mauGhe: '#4CAF50' },
+    { id: 'CNTT', ten: 'KHOA CÔNG NGHỆ THÔNG TIN', tu: 8, den: 11, mau: '#C9A6DE', mauGhe: '#4CAF50' },
+    { id: 'KIEN_TRUC', ten: 'KHOA KIẾN TRÚC VÀ QUY HOẠCH', tu: 12, den: 15, mau: '#F0A088', mauGhe: '#4CAF50' }
 ];
-
-/** Số hàng ghế và số ghế mỗi dãy của khu vực phụ huynh ở tầng 3 */
-export const TANG_3 = {
-    ten: 'PHỤ HUYNH, NGƯỜI THÂN',
-    mau: '#4FC3F7',
-    mauGhe: '#4CAF50',
-    soHang: 7,
-    day: [6, 13, 6]
-};
 
 /** Phòng chờ của từng Khoa trước khi vào hội trường */
 export interface IPhongCho {
@@ -59,48 +49,61 @@ export const PHONG_CHO: IPhongCho[] = [
     { khoa: 'Khoa Kỹ thuật Môi trường (CQ + VLVH)', phong: 'P.24-H2' }
 ];
 
-/** Một bước trong hướng dẫn lên nhận bằng */
+/** Một bước trong luồng lên nhận bằng */
 export interface IBuocNhanBang {
     so: number;
-    /** các dòng chữ trong khung chú thích, xuống dòng theo đúng bản in */
-    dong: string[];
-    /** các chặng đường đi tương ứng với bước này */
+    /** nhãn ngắn hiện cạnh huy hiệu trên sơ đồ */
+    ten: string;
+    /** mô tả đầy đủ theo bản hướng dẫn của Nhà trường */
+    moTa: string;
+    /** các chặng đường đi của bước này */
     seg: string[];
-    /** khung chú thích */
-    box: { x: number; y: number; w: number; h: number };
-    /** căn chữ trong khung */
-    canGiua?: boolean;
+    /** vị trí huy hiệu số bước trên tuyến */
+    badge: { x: number; y: number };
+    /** vị trí nhãn ngắn và cách neo chữ so với huy hiệu */
+    nhan: { x: number; y: number; neo: 'start' | 'middle' | 'end' };
 }
 
 /**
- * Bốn bước lên nhận bằng. Toạ độ vẽ trong hệ 1400 x 900 của sơ đồ hội trường:
- * sân khấu ở trên, hàng ghế ở dưới, sinh viên đi từ phải sang trái.
+ * Bốn bước lên nhận bằng, toạ độ trong hệ 1120 x 1120 của mặt bằng hội trường.
+ * Sinh viên lên bằng lối bên phải, lách qua bàn trao bằng rồi đi vòng phía sau
+ * bục nhận bằng, cuối cùng xuống bằng lối bên trái.
  */
 export const BUOC_NHAN_BANG: IBuocNhanBang[] = [
     {
         so: 1,
-        dong: ['Sinh viên xếp hàng', 'quét mã QR'],
-        seg: ['M 1080 838 L 1080 646'],
-        box: { x: 1092, y: 664, w: 292, h: 84 }
+        ten: 'Xếp hàng quét mã QR',
+        moTa: 'Sinh viên xếp hàng quét mã QR',
+        // đi hết lối bên phải, dừng ở ngang hàng ghế đại biểu
+        seg: ['M 799 937 L 799 397'],
+        badge: { x: 799, y: 420 },
+        nhan: { x: 767, y: 425, neo: 'end' }
     },
     {
         so: 2,
-        dong: ['Sinh viên nghe gọi tên,', 'bước lên sân khấu,', 'Lãnh đạo Khoa chúc mừng'],
-        seg: ['M 1080 540 L 950 540 L 950 262'],
-        box: { x: 1092, y: 404, w: 292, h: 116 }
+        ten: 'Bước lên sân khấu',
+        moTa: 'Sinh viên nghe gọi tên, bước lên sân khấu, Lãnh đạo Khoa chúc mừng',
+        // vượt bậc thềm rồi lách sang trái để tránh bàn trao bằng
+        seg: ['M 799 390 L 799 318 L 690 318 L 690 158'],
+        badge: { x: 799, y: 363 },
+        nhan: { x: 767, y: 368, neo: 'end' }
     },
     {
         so: 3,
-        dong: ['Sinh viên nhận bằng', 'từ thầy Hiệu trưởng,', 'chụp ảnh'],
-        seg: ['M 950 262 L 328 262'],
-        box: { x: 548, y: 74, w: 330, h: 122 },
-        canGiua: true
+        ten: 'Nhận bằng, chụp ảnh',
+        moTa: 'Sinh viên nhận bằng từ thầy Hiệu trưởng, chụp ảnh',
+        // đi vòng phía sau bục nhận bằng, không cắt ngang bục
+        seg: ['M 690 158 L 321 158'],
+        badge: { x: 520, y: 158 },
+        nhan: { x: 520, y: 124, neo: 'middle' }
     },
     {
         so: 4,
-        dong: ['Đi xuống hội trường', '(kết thúc)'],
-        seg: ['M 328 262 L 328 838'],
-        box: { x: 72, y: 352, w: 292, h: 104 },
-        canGiua: true
+        ten: 'Đi xuống hội trường',
+        moTa: 'Đi xuống hội trường (kết thúc)',
+        // xuống bằng lối bên trái, về chỗ ngồi
+        seg: ['M 321 158 L 321 937'],
+        badge: { x: 321, y: 455 },
+        nhan: { x: 353, y: 460, neo: 'start' }
     }
 ];
