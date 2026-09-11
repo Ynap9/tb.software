@@ -1,0 +1,291 @@
+/* Bảng màu và bố cục khung ngoài của nhóm màn thống kê.
+   Các biến khai báo trên .tk-root nên mọi component con nằm trong router-outlet
+   đều thừa hưởng được. */
+.tk-root {
+    --bg: #0b132b;
+    --dot: #1c2a4a;
+    --panel: #0f172a;
+    --panel-2: #1e293b;
+    --panel-3: #334155;
+    --cyan: #22d3ee;
+    --cyan-dim: #0e7490;
+    --navy: #0e7490;
+    --navy-deep: #0b132b;
+    --route: #f2681f;
+    --route-soft: #fbd9c2;
+    --ink: #e2e8f0;
+    --muted: #94a3b8;
+    --line: #334155;
+    --paper: #0b132b;
+    --card: #0f172a;
+    --sheet: #ffffff;
+    --sheet-ink: #16202e;
+    --sheet-muted: #5c6b80;
+    --sheet-line: #c9d2de;
+    --txt-2: #cbd5e1;
+    --accent-fill: rgba(8, 145, 178, 0.2);
+    --accent-fill-2: rgba(8, 145, 178, 0.28);
+    --shadow-1: 0 14px 30px rgba(0, 0, 0, 0.35);
+    --shadow-2: 0 18px 40px rgba(0, 0, 0, 0.45);
+    --shadow-sheet: 0 15px 35px rgba(0, 0, 0, 0.6);
+    --danger-bd: #7f1d1d;
+    --danger-bg: rgba(190, 18, 60, 0.14);
+    --danger-tx: #fb7185;
+
+    --c-a: #b02525;
+    --c-b: #9fa8da;
+    --c-c: #3e9e52;
+    --c-d: #b49bd8;
+    --c-e: #7cc79b;
+    --c-g: #f0a268;
+    --c-h: #8b9be2;
+    --c-i: #c3de9c;
+    --c-mn: #fbe28f;
+    --seat: #63be8b;
+    --slab: #8d959e;
+
+    min-height: 100vh;
+    padding: 0 16px 1px;
+    background-color: var(--bg);
+    background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+    background-size: 24px 24px;
+    color: var(--ink);
+    font-family: 'Montserrat', system-ui, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Chế độ sáng ---------- */
+.tk-root[data-theme='light'] {
+    --bg: #edf1f7;
+    --dot: #d3dce9;
+    --panel: #ffffff;
+    --panel-2: #eef3fa;
+    --panel-3: #cbd5e1;
+    --cyan: #0e7490;
+    --cyan-dim: #7cbfd2;
+    --ink: #16202e;
+    --txt-2: #374558;
+    --muted: #5c6b80;
+    --line: #c9d2de;
+    --card: #ffffff;
+    --accent-fill: rgba(14, 116, 144, 0.1);
+    --accent-fill-2: rgba(14, 116, 144, 0.13);
+    --shadow-1: 0 10px 24px rgba(15, 35, 70, 0.1);
+    --shadow-2: 0 12px 28px rgba(15, 35, 70, 0.12);
+    --shadow-sheet: 0 10px 26px rgba(15, 35, 70, 0.18);
+    --danger-bd: #e9a3a3;
+    --danger-bg: #fef4f4;
+    --danger-tx: #b02525;
+}
+
+.tk-root * {
+    box-sizing: border-box;
+}
+
+.wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 0 26px;
+}
+
+/* ---------- Header ---------- */
+header {
+    max-width: 1400px;
+    margin: 18px auto 0;
+    background: var(--panel);
+    color: var(--ink);
+    border: 1px solid var(--panel-3);
+    border-radius: 12px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    box-shadow: var(--shadow-2);
+}
+.crest {
+    height: 42px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    background: var(--accent-fill-2);
+    border: 1px solid var(--cyan-dim);
+    color: var(--cyan);
+    border-radius: 9px;
+    width: 42px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    font-size: 11px;
+
+    img {
+        display: none;
+        height: 38px;
+        width: auto;
+    }
+
+    &.has-img {
+        width: auto;
+        background: transparent;
+        border: 0;
+        padding: 0;
+        border-radius: 0;
+        box-shadow: none;
+
+        img {
+            display: block;
+        }
+        span {
+            display: none;
+        }
+    }
+}
+header h1 {
+    margin: 0;
+    font-size: clamp(15px, 2.2vw, 22px);
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    line-height: 1.15;
+}
+header .sub {
+    margin: 2px 0 0;
+    font-size: 11.5px;
+    color: var(--muted);
+    font-weight: 500;
+}
+.hgrow {
+    flex: 1 1 260px;
+}
+.themebtn {
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--cyan);
+    background: var(--accent-fill);
+    border: 1px solid var(--cyan-dim);
+    border-radius: 999px;
+    padding: 6px 13px;
+    white-space: nowrap;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
+
+    &:hover {
+        background: var(--accent-fill-2);
+    }
+    &:focus-visible {
+        outline: 2px solid var(--cyan);
+        outline-offset: 2px;
+    }
+}
+
+/* ---------- Bố cục sidebar ---------- */
+.shell {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding-top: 10px;
+}
+.sidenav {
+    width: 188px;
+    flex: none;
+    position: sticky;
+    top: 10px;
+}
+.content {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ---------- Tabs ---------- */
+.tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 100%;
+    margin: 0 0 8px;
+    background: var(--panel);
+    border: 1px solid var(--panel-3);
+    border-radius: 12px;
+    padding: 5px;
+    box-shadow: var(--shadow-1);
+}
+.tab {
+    border: 1px solid transparent;
+    background: transparent;
+    font: inherit;
+    font-weight: 600;
+    font-size: 12.5px;
+    color: var(--muted);
+    padding: 8px 12px 8px 9px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    align-items: center;
+    column-gap: 10px;
+    justify-items: start;
+    text-align: left;
+    width: 100%;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-decoration: none;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
+
+    svg {
+        width: 16px;
+        height: 16px;
+        display: block;
+        justify-self: center;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        opacity: 0.85;
+    }
+
+    &:hover {
+        color: var(--ink);
+        background: var(--panel-2);
+    }
+
+    &.active {
+        background: var(--accent-fill);
+        color: var(--cyan);
+        border-color: var(--cyan-dim);
+
+        svg {
+            opacity: 1;
+        }
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--cyan);
+        outline-offset: 2px;
+    }
+}
+
+@media (max-width: 900px) {
+    .shell {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .sidenav {
+        width: 100%;
+        position: static;
+    }
+    .tabs {
+        flex-direction: row;
+        width: fit-content;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tk-root * {
+        transition: none !important;
+    }
+}

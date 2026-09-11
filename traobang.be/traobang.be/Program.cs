@@ -12,6 +12,8 @@ using System.Text;
 using traobang.be.application.Auth.Implements;
 using traobang.be.application.Auth.Interfaces;
 using traobang.be.application.Base;
+using traobang.be.application.ThongKe.Implements;
+using traobang.be.application.ThongKe.Interfaces;
 using traobang.be.application.TraoBang.Implements;
 using traobang.be.application.TraoBang.Interface;
 using traobang.be.application.TraoBang.Interfaces;
@@ -73,10 +75,10 @@ builder.Host.UseNLog();
 
 #region db
 string connectionString = builder.Configuration.GetConnectionString("TRAO_BANG")
-    ?? throw new InvalidOperationException("Không tìm th?y connection string \"TRAO_BANG\" trong appsettings.json");
+    ?? throw new InvalidOperationException("Khï¿½ng tï¿½m th?y connection string \"TRAO_BANG\" trong appsettings.json");
 
 string hangfireConnectionString = builder.Configuration.GetConnectionString("HANGFIRE")
-    ?? throw new InvalidOperationException("Không tìm th?y connection string \"HANGFIRE\" trong appsettings.json");
+    ?? throw new InvalidOperationException("Khï¿½ng tï¿½m th?y connection string \"HANGFIRE\" trong appsettings.json");
 
 builder.Services.AddDbContext<TbDbContext>(options =>
 {
@@ -290,6 +292,7 @@ builder.Services.AddScoped<ISubPlanService, SubPlanService>();
 builder.Services.AddScoped<ISlideService, SlideService>();
 builder.Services.AddScoped<IGiaoDienService, GiaoDienService>();
 builder.Services.AddScoped<IPrepareDataService, PrepareDataService>();
+builder.Services.AddScoped<IThongKeService, ThongKeService>();
 
 #endregion
 

@@ -1,0 +1,192 @@
+/* Các khối dùng lại ở nhiều màn trong nhóm thống kê.
+   Biến màu (--panel, --cyan, ...) do component layout khai báo trên .tk-root,
+   các component con thừa hưởng qua DOM nên chỉ cần dùng, không cần khai báo lại. */
+
+/* ---------- Stat strip ---------- */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+    gap: 9px;
+    margin: 0 0 16px;
+}
+.stat {
+    background: var(--panel);
+    border: 1px solid var(--panel-3);
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+.stat b {
+    display: block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 26px;
+    line-height: 1.15;
+    color: var(--cyan);
+}
+.stat span {
+    font-size: 10.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+.stat.warn {
+    border-color: var(--danger-bd);
+    background: var(--danger-bg);
+}
+.stat.warn b {
+    color: var(--danger-tx);
+}
+
+/* ---------- Dòng tổng kết đầu mỗi tab ---------- */
+.stafftotal {
+    margin-bottom: 12px;
+    font-size: 12.5px;
+    color: var(--muted);
+}
+.stafftotal b {
+    color: var(--ink);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 15px;
+}
+
+/* ---------- Tooltip ---------- */
+.tip {
+    position: absolute;
+    pointer-events: none;
+    z-index: 20;
+    width: 288px;
+    background: var(--panel);
+    border: 1px solid var(--panel-3);
+    border-radius: 12px;
+    box-shadow: var(--shadow-2);
+    padding: 13px 15px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+        opacity 0.14s ease,
+        transform 0.14s ease;
+}
+.tip.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+.tip .th {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 7px;
+}
+.tip .letter {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 15px;
+    color: #fff;
+    flex: none;
+}
+.tip h3 {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 700;
+    line-height: 1.25;
+}
+.tip .room {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11.5px;
+    color: var(--muted);
+    font-weight: 700;
+}
+.tip p {
+    margin: 0 0 10px;
+    font-size: 12.8px;
+    line-height: 1.45;
+    color: var(--txt-2);
+}
+.tip .who {
+    margin-top: 9px;
+    font-size: 11.8px;
+    color: var(--muted);
+    border-top: 1px dashed var(--panel-3);
+    padding-top: 8px;
+}
+
+/* ---------- Bảng chung ---------- */
+.tblwrap {
+    background: var(--panel);
+    border: 1px solid var(--panel-3);
+    border-radius: 14px;
+    padding: 6px 4px;
+    overflow-x: auto;
+    box-shadow: var(--shadow-1);
+}
+table.kb {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13.4px;
+}
+table.kb th {
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    font-weight: 400;
+    font-family: 'Share Tech Mono', monospace;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--panel-2);
+    white-space: nowrap;
+}
+table.kb td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--panel-2);
+    vertical-align: middle;
+    color: var(--ink);
+}
+table.kb tr:last-child td {
+    border-bottom: 0;
+}
+table.kb tbody tr:hover {
+    background: var(--panel-2);
+}
+table.kb .stt {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--muted);
+    width: 44px;
+    letter-spacing: 0.5px;
+}
+table.kb .unit {
+    font-weight: 600;
+}
+table.kb .n {
+    font-family: 'Share Tech Mono', monospace;
+    font-weight: 700;
+    text-align: right;
+    width: 78px;
+}
+table.kb .loc {
+    color: var(--txt-2);
+}
+table.kb tfoot td {
+    padding: 12px 14px;
+    font-weight: 700;
+    border-top: 2px solid var(--panel-3);
+    color: var(--ink);
+}
+table.kb td.tag2 {
+    font-weight: 800;
+    width: 60px;
+}
+table.kb .chip {
+    display: inline-grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #12203a;
+    border: 1.5px solid rgba(0, 0, 0, 0.28);
+}

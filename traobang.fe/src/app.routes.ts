@@ -10,7 +10,6 @@ import { MainScreen } from '@/pages/trao-bang/main-screen/main-screen';
 import { SideScreen } from '@/pages/trao-bang/side-screen/side-screen';
 import { SanKhauMain } from '@/pages/trao-bang/san-khau-main/san-khau-main';
 
-
 export const appRoutes: Routes = [
     {
         path: '',
@@ -28,22 +27,18 @@ export const appRoutes: Routes = [
     },
     {
         path: 'guest',
-        children: [
-            { path: 'trao-bang/profile', component: GuestProfile, title: 'Thông tin sinh viên nhận bằng' }
-        ]
+        children: [{ path: 'trao-bang/profile', component: GuestProfile, title: 'Thông tin sinh viên nhận bằng' }]
     },
     {
         path: 'guest',
-        children: [
-            { path: 'trao-bang/main-screen', component: MainScreen, title: 'Sân khấu' }
-        ]
+        children: [{ path: 'trao-bang/main-screen', component: MainScreen, title: 'Sân khấu' }]
     },
     {
         path: 'guest',
-        children: [
-            { path: 'trao-bang/side-screen', component: SideScreen, title: 'Cánh gà' }
-        ]
+        children: [{ path: 'trao-bang/side-screen', component: SideScreen, title: 'Cánh gà' }]
     },
+    // Thống kê nhập học K71: màn công khai, không cần đăng nhập
+    { path: 'thong-ke', loadChildren: () => import('./app/pages/thong-ke/thong-ke.routes') },
     { path: 'landing', component: Landing },
     { path: 'notfound', component: Notfound },
     { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.routes') },

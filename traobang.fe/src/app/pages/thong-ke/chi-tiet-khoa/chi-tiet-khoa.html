@@ -1,0 +1,97 @@
+<a class="quaylai" routerLink="/thong-ke/khoa">← Danh sách các khoa</a>
+
+@if (khoa(); as k) {
+<div class="khoahead">
+    <div class="kh-ten">
+        <h2>{{ k.ten }}</h2>
+        <span class="room">Khoa thứ {{ k.order }} · {{ k.truongKhoa }}</span>
+    </div>
+    <span class="tt" [class.g]="clsKhoa() === 'g'" [class.c]="clsKhoa() === 'c'">{{ nhanTrangThaiKhoa() }}</span>
+    <div class="prog">
+        <span class="track">
+            <i [class.g]="pct() >= 100" [class.c]="pct() > 0 && pct() < 100" [style.width.%]="pct() > 100 ? 100 : pct()"></i>
+        </span>
+        <span class="pv">{{ p1(pct()) }}%</span>
+    </div>
+</div>
+}
+
+<div class="stats">
+    @for (c of cards(); track c.l) {
+    <div class="stat">
+        <b>{{ nf(c.v) }}</b>
+        <span>{{ c.l }}</span>
+    </div>
+    }
+</div>
+
+<p class="stafftotal">
+    Toàn bộ sinh viên trong danh sách nhận bằng của khoa.
+    <em class="ct-note">Tự cập nhật khi có sinh viên check-in hoặc khi sân khấu chuyển người. Đang hiển thị <b>{{ rows().length }}</b>/{{ khoa()?.soLuongSinhVien ?? 0 }} sinh viên.</em>
+</p>
+
+<div class="ct-toolbar">
+    <select class="kbsel" aria-label="Lọc theo trạng thái" [value]="trangThaiLoc()" (change)="chonTrangThai($any($event.target).value)">
+        @for (t of boLocTrangThai; track t.v) {
+        <option [value]="t.v">{{ t.l }}</option>
+        }
+    </select>
+
+    <div class="nhsearch">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m20 20-3-3"></path>
+        </svg>
+        <input type="text" placeholder="Tìm mã SV, họ tên, lớp, ngành…" autocomplete="off" [value]="query()" (input)="timKiem($any($event.target).value)" />
+    </div>
+</div>
+
+@if (loi()) {
+<div class="ct-loi">
+    <p>{{ loi() }}</p>
+    <button type="button" (click)="getChiTiet()">Thử lại</button>
+</div>
+}
+
+<div class="tblwrap">
+    <table class="kb">
+        <thead>
+            <tr>
+                <th class="stt">STT</th>
+                <th>Mã sinh viên</th>
+                <th>Họ và tên</th>
+                <th>Lớp</th>
+                <th>Ngành đào tạo</th>
+                <th>Cấp bằng</th>
+                <th>Xếp hạng</th>
+                <th class="stt">Hàng đợi</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (dangTai()) {
+            <tr>
+                <td colspan="9" class="ct-empty">Đang tải danh sách sinh viên…</td>
+            </tr>
+            } @else if (!rows().length) {
+            <tr>
+                <td colspan="9" class="ct-empty">Không tìm thấy sinh viên phù hợp.</td>
+            </tr>
+            } @else { @for (r of rows(); track r.sv.id) {
+            <tr [class.dang-trao]="r.cls === 'c'" [class.da-len]="r.cls === 'g'">
+                <td class="stt">{{ r.sv.stt }}</td>
+                <td class="mssv">{{ r.sv.maSoSinhVien }}</td>
+                <td class="unit">{{ r.sv.hoVaTen }}</td>
+                <td class="mssv">{{ r.sv.lop }}</td>
+                <td class="loc">{{ r.sv.tenNganhDaoTao }}</td>
+                <td class="loc">{{ r.sv.capBang }}</td>
+                <td class="loc">{{ r.sv.xepHang }}</td>
+                <td class="stt mssv">{{ r.sv.orderHangDoi ?? '—' }}</td>
+                <td>
+                    <span class="tt" [class.g]="r.cls === 'g'" [class.c]="r.cls === 'c'" [class.i]="r.cls === 'i'" [class.w]="r.cls === 'w'"> {{ r.nhan }} </span>
+                </td>
+            </tr>
+            } }
+        </tbody>
+    </table>
+</div>

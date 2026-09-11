@@ -1,0 +1,154 @@
+<p class="stafftotal">
+    Mặt bằng hội trường tầng 2 nhà G3 — nơi diễn ra lễ trao bằng.
+    <em class="sd-note">Các khối màu là khu vực chỗ ngồi của từng Khoa, tuyến đỏ là luồng bốn bước sinh viên lên nhận bằng.</em>
+</p>
+
+<div class="grid">
+    <div class="mapcard" #mapcard [class.focusing]="khuVucOn() || buocOn()" (mousemove)="place($event)" (mouseleave)="clear()">
+        <svg viewBox="0 0 1120 1120" role="img" aria-label="Sơ đồ hội trường và luồng các bước lên nhận bằng">
+            <defs>
+                <marker id="mtb" viewBox="0 0 12 12" refX="10.5" refY="6" markerWidth="13" markerHeight="13" markerUnits="userSpaceOnUse" orient="auto">
+                    <path d="M1 0.8 L11 6 L1 11.2 z" fill="#E53935" />
+                </marker>
+            </defs>
+
+            <!-- ========== KHUNG PHÒNG ========== -->
+            <g class="scene-dim">
+                <!-- sảnh phía sau hội trường -->
+                <rect [attr.x]="HALL.x" [attr.y]="SANH.y" [attr.width]="HALL.w" [attr.height]="SANH.h" fill="#A8E6A3" stroke="#111" stroke-width="2" />
+                <text class="floor" [attr.x]="giuaX" [attr.y]="SANH.y + 72">TẦNG 2 - G3</text>
+
+                <!-- tường hội trường -->
+                <rect [attr.x]="HALL.x" [attr.y]="HALL.y" [attr.width]="HALL.w" [attr.height]="HALL.h" fill="#fff" stroke="#111" stroke-width="5" />
+
+                <!-- sân khấu -->
+                <rect x="170" y="140" width="780" height="195" fill="#fff" stroke="#111" stroke-width="2" />
+                <text class="sk" x="240" y="306">SÂN KHẤU</text>
+
+                <!-- mép sân khấu và các bậc bước lên -->
+                <rect x="170" y="337" width="100" height="10" fill="#111" />
+                @for (y of bacSanKhau; track $index) {
+                <line class="bac" x1="180" [attr.y1]="y" x2="940" [attr.y2]="y" />
+                }
+            </g>
+
+            <!-- bục nhận bằng và bàn trao bằng: tuyến đi vòng phía sau, không cắt ngang -->
+            <g class="scene-dim">
+                <rect x="400" y="178" width="240" height="58" fill="#E53935" />
+                <text class="buclb" x="520" y="213">BỤC NHẬN BẰNG</text>
+                <rect x="720" y="246" width="100" height="62" fill="#E53935" />
+            </g>
+
+            <!-- nhãn hàng ghế hai bên -->
+            <g class="scene-dim">
+                @for (n of nhanHang; track $index) {
+                <text class="rowlb" [attr.x]="nhanTraiX" [attr.y]="n.y">{{ n.label }}</text>
+                <text class="rowlb" [attr.x]="nhanPhaiX" [attr.y]="n.y">{{ n.label }}</text>
+                }
+            </g>
+
+            <!-- ========== KHỐI KHU VỰC CHỖ NGỒI ========== -->
+            @for (kv of khuVucs; track kv.id) {
+            <g class="khuvuc" [class.on]="khuVucOn() === kv.id" (mouseenter)="hoverKhuVuc(kv.id, $event)">
+                <rect class="band" [attr.x]="kv.x" [attr.y]="kv.y" [attr.width]="kv.w" [attr.height]="kv.h" [attr.fill]="kv.mau" />
+                @for (g of kv.ghe; track $index) {
+                <rect class="ghe" [attr.x]="g.x" [attr.y]="g.y" [attr.width]="g.w" [attr.height]="g.h" [attr.fill]="g.mau" rx="1.5" />
+                }
+                <text class="zonelb" [attr.x]="giuaX" [attr.y]="kv.tenY">{{ kv.ten }}</text>
+                <rect class="hit" [attr.x]="kv.x" [attr.y]="kv.y" [attr.width]="kv.w" [attr.height]="kv.h" />
+            </g>
+            }
+
+            <!-- ========== LUỒNG CÁC BƯỚC LÊN NHẬN BẰNG ========== -->
+            <g class="tuyen">
+                @for (d of tatCaSeg; track $index) {
+                <path class="route-glow" [attr.d]="d" />
+                } @for (b of buocs; track b.so) { @for (d of b.seg; track $index) {
+                <path class="route" [class.mo]="buocOn() && buocOn() !== b.so" [attr.d]="d" marker-end="url(#mtb)" />
+                } } @for (d of tatCaSeg; track $index) {
+                <path class="route-dash" [attr.d]="d" />
+                } @for (d of muiTenGiua; track $index) {
+                <path class="route" [attr.d]="d" marker-end="url(#mtb)" />
+                }
+            </g>
+
+            <!-- huy hiệu số bước -->
+            @for (b of buocs; track b.so) {
+            <g class="buoc" [class.on]="buocOn() === b.so" (mouseenter)="hoverBuoc(b.so, $event)">
+                <text class="bnhan" [attr.x]="b.nhan.x" [attr.y]="b.nhan.y" [attr.text-anchor]="b.nhan.neo">{{ b.ten }}</text>
+                <circle class="vong" [attr.cx]="b.badge.x" [attr.cy]="b.badge.y" r="21" />
+                <circle class="tron" [attr.cx]="b.badge.x" [attr.cy]="b.badge.y" r="21" />
+                <text class="bso" [attr.x]="b.badge.x" [attr.y]="b.badge.y + 7">{{ b.so }}</text>
+                <circle class="hit" [attr.cx]="b.badge.x" [attr.cy]="b.badge.y" r="26" />
+            </g>
+            }
+        </svg>
+
+        <!-- tooltip bám theo con trỏ -->
+        <div class="tip" #tip role="status" aria-live="polite" [class.show]="khuVucOn() || buocOn()" [style.left.px]="tipLeft()" [style.top.px]="tipTop()">
+            @if (khuVucDangXem; as kv) {
+            <div class="th">
+                <span class="letter" [style.background]="kv.mau" style="color: #12203a">{{ kv.hangDau }}</span>
+                <div>
+                    <h3>{{ kv.ten }}</h3>
+                    <span class="room">Hàng {{ kv.hangDau }} → {{ kv.hangCuoi }}</span>
+                </div>
+            </div>
+            <div class="kpis">
+                <span class="kpi"><b>{{ kv.soHang }}</b>hàng ghế</span>
+                <span class="kpi"><b>{{ kv.soGhe }}</b>chỗ ngồi</span>
+            </div>
+            } @if (buocDangXem; as b) {
+            <div class="th">
+                <span class="letter" style="background: #e53935">{{ b.so }}</span>
+                <div>
+                    <h3>Bước {{ b.so }}</h3>
+                    <span class="room">{{ b.ten }}</span>
+                </div>
+            </div>
+            <p>{{ b.moTa }}</p>
+            }
+        </div>
+    </div>
+
+    <aside class="panel">
+        <h2>Các bước lên nhận bằng</h2>
+        <ol class="buoclist">
+            @for (b of buocs; track b.so) {
+            <li (mouseenter)="hoverBuoc(b.so, $event)" (mouseleave)="clear()" [class.on]="buocOn() === b.so">
+                <span class="so">{{ b.so }}</span>
+                <span class="txt">{{ b.moTa }}</span>
+            </li>
+            }
+        </ol>
+        <div class="foot">Sinh viên đi lên bằng lối bên phải, nhận bằng ở giữa sân khấu rồi đi xuống bằng lối bên trái để không cắt ngang dòng người đang chờ.</div>
+
+        <h2 class="mt">Khu vực chỗ ngồi</h2>
+        <ul class="leg">
+            @for (kv of khuVucs; track kv.id) {
+            <li (mouseenter)="hoverKhuVuc(kv.id, $event)" (mouseleave)="clear()" [class.on]="khuVucOn() === kv.id">
+                <span class="dot" [style.background]="kv.mau"></span>
+                <span class="txt">
+                    {{ kv.ten }}
+                    <em>Hàng {{ kv.hangDau }} → {{ kv.hangCuoi }}</em>
+                </span>
+                <span class="num">{{ kv.soGhe }}</span>
+            </li>
+            }
+        </ul>
+
+        <h2 class="mt">Phòng chờ của các Khoa</h2>
+        <table class="pc">
+            <tbody>
+                @for (p of phongCho; track p.khoa) {
+                <tr>
+                    <td>{{ p.khoa }}</td>
+                    @if (p.hienPhong) {
+                    <td class="ph" [attr.rowspan]="p.gopDong">{{ p.phong }}</td>
+                    }
+                </tr>
+                }
+            </tbody>
+        </table>
+    </aside>
+</div>
