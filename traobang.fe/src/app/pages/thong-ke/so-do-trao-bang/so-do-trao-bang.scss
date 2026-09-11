@@ -295,63 +295,6 @@ svg {
     }
 }
 
-.leg {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-
-    li {
-        display: flex;
-        gap: 9px;
-        align-items: center;
-        padding: 5px 7px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background 0.15s ease;
-
-        &:hover,
-        &.on {
-            background: var(--panel-2);
-        }
-    }
-
-    .dot {
-        width: 20px;
-        height: 20px;
-        border-radius: 5px;
-        flex: none;
-        border: 1.5px solid rgba(0, 0, 0, 0.28);
-    }
-
-    .txt {
-        font-size: 12.2px;
-        font-weight: 600;
-        line-height: 1.25;
-        color: var(--ink);
-
-        em {
-            display: block;
-            font-style: normal;
-            font-weight: 500;
-            font-size: 11px;
-            color: var(--muted);
-            font-family: 'Share Tech Mono', monospace;
-        }
-    }
-
-    .num {
-        margin-left: auto;
-        font-family: 'Share Tech Mono', monospace;
-        font-size: 12px;
-        color: var(--cyan);
-        font-weight: 700;
-        white-space: nowrap;
-    }
-}
-
 /* ---------- Danh sách bốn bước ---------- */
 .buoclist {
     list-style: none;
@@ -397,31 +340,94 @@ svg {
     }
 }
 
-/* ---------- Bảng phòng chờ ---------- */
-table.pc {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
+/* ---------- Danh sách khoa: số thứ tự, tên, vị trí ---------- */
+.dskhoa {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 
-    td {
+    li {
+        display: flex;
+        gap: 10px;
+        align-items: baseline;
         padding: 7px 8px;
+        border-radius: 8px;
         border-bottom: 1px solid var(--panel-2);
-        color: var(--ink);
-        line-height: 1.35;
+
+        &:last-child {
+            border-bottom: 0;
+        }
     }
 
-    tr:last-child td {
-        border-bottom: 0;
-    }
-
-    .ph {
+    .stt {
+        flex: none;
+        min-width: 42px;
         font-family: 'Share Tech Mono', monospace;
+        font-size: 12.5px;
         font-weight: 700;
         color: var(--cyan);
+    }
+
+    .noidung {
+        font-size: 12.4px;
+        line-height: 1.4;
+    }
+
+    .ten {
+        font-weight: 600;
+        color: var(--ink);
+    }
+
+    .vt {
+        margin-left: 4px;
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 11.5px;
+        color: var(--muted);
         white-space: nowrap;
-        text-align: center;
-        border-left: 1px solid var(--panel-2);
-        width: 96px;
+
+        &.chua {
+            font-family: inherit;
+            font-style: italic;
+        }
+    }
+}
+
+.dk-trong {
+    margin: 0;
+    padding: 14px 8px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+/* gọi API thất bại: báo lỗi kèm nút thử lại */
+.dk-loi {
+    padding: 14px 10px;
+    text-align: center;
+    background: var(--danger-bg);
+    border: 1px solid var(--danger-bd);
+    border-radius: 10px;
+
+    p {
+        margin: 0 0 8px;
+        color: var(--danger-tx);
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    button {
+        cursor: pointer;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        font-size: 11.5px;
+        color: var(--cyan);
+        background: var(--accent-fill);
+        border: 1px solid var(--cyan-dim);
+        border-radius: 999px;
+        padding: 5px 14px;
     }
 }
 

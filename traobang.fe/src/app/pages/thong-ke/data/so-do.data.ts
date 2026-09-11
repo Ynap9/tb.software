@@ -33,20 +33,32 @@ export const KHU_VUC_NGOI: IKhuVucNgoi[] = [
     { id: 'KIEN_TRUC', ten: 'KHOA KIẾN TRÚC VÀ QUY HOẠCH', tu: 12, den: 15, mau: '#F0A088', mauGhe: '#4CAF50' }
 ];
 
-/** Phòng chờ của từng Khoa trước khi vào hội trường */
-export interface IPhongCho {
-    khoa: string;
-    phong: string;
+/** Vị trí ngồi hoặc phòng chờ của một khoa */
+export interface IViTriKhoa {
+    /** từ khoá để nhận ra khoa trong tên lấy từ DB, viết thường, không dấu */
+    tuKhoa: string[];
+    viTri: string;
 }
 
-export const PHONG_CHO: IPhongCho[] = [
-    { khoa: 'Khoa Xây dựng Dân dụng và Công nghiệp', phong: 'P.25, 26-H2' },
-    { khoa: 'Khoa Vật liệu Xây dựng', phong: 'P.14-H2' },
-    { khoa: 'Ban Đào tạo kỹ sư chất lượng cao', phong: 'P.14-H2' },
-    { khoa: 'Khoa Xây dựng Công trình thuỷ', phong: 'P.14-H2' },
-    { khoa: 'Khoa Cơ khí', phong: 'P.14-H2' },
-    { khoa: 'Khoa Cầu đường', phong: 'P.26-H2' },
-    { khoa: 'Khoa Kỹ thuật Môi trường (CQ + VLVH)', phong: 'P.24-H2' }
+/**
+ * Vị trí của từng khoa trong buổi lễ. Tên khoa lấy từ DB nên không so khớp nguyên văn
+ * mà dò theo từ khoá không dấu — tránh lệch vì "&" và "và", "thủy" và "thuỷ".
+ * Khoa nào không khớp từ khoá nào sẽ hiện là chưa có vị trí.
+ */
+export const VI_TRI_KHOA: IViTriKhoa[] = [
+    // ngồi trong hội trường G3
+    { tuKhoa: ['tien si', 'thac si', 'sau dai hoc'], viTri: 'Hội trường G3' },
+    { tuKhoa: ['kinh te'], viTri: 'Hội trường G3' },
+    { tuKhoa: ['cong nghe thong tin'], viTri: 'Hội trường G3' },
+    { tuKhoa: ['kien truc'], viTri: 'Hội trường G3' },
+    // chờ ở các phòng nhà H2
+    { tuKhoa: ['dan dung'], viTri: 'P.25, P.26-H2' },
+    { tuKhoa: ['vat lieu'], viTri: 'P.14-H2' },
+    { tuKhoa: ['chat luong cao'], viTri: 'P.14-H2' },
+    { tuKhoa: ['cong trinh thuy'], viTri: 'P.14-H2' },
+    { tuKhoa: ['co khi'], viTri: 'P.14-H2' },
+    { tuKhoa: ['cau duong'], viTri: 'P.26-H2' },
+    { tuKhoa: ['moi truong'], viTri: 'P.24-H2' }
 ];
 
 /** Một bước trong luồng lên nhận bằng */
@@ -74,8 +86,8 @@ export const BUOC_NHAN_BANG: IBuocNhanBang[] = [
         so: 1,
         ten: 'Xếp hàng quét mã QR',
         moTa: 'Sinh viên xếp hàng quét mã QR',
-        // đi hết lối bên phải, dừng ở ngang hàng ghế đại biểu
-        seg: ['M 799 937 L 799 397'],
+        // từ khe giữa hàng F và G (khu Khoa Kinh tế) đi lên, dừng ở ngang hàng ghế đại biểu
+        seg: ['M 799 641 L 799 397'],
         badge: { x: 799, y: 420 },
         nhan: { x: 767, y: 425, neo: 'end' }
     },
@@ -101,8 +113,8 @@ export const BUOC_NHAN_BANG: IBuocNhanBang[] = [
         so: 4,
         ten: 'Đi xuống hội trường',
         moTa: 'Đi xuống hội trường (kết thúc)',
-        // xuống bằng lối bên trái, về chỗ ngồi
-        seg: ['M 321 158 L 321 937'],
+        // xuống bằng lối bên trái, kết thúc ở khe giữa hàng F và G
+        seg: ['M 321 158 L 321 641'],
         badge: { x: 321, y: 455 },
         nhan: { x: 353, y: 460, neo: 'start' }
     }

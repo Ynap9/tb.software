@@ -123,32 +123,28 @@
         </ol>
         <div class="foot">Sinh viên đi lên bằng lối bên phải, nhận bằng ở giữa sân khấu rồi đi xuống bằng lối bên trái để không cắt ngang dòng người đang chờ.</div>
 
-        <h2 class="mt">Khu vực chỗ ngồi</h2>
-        <ul class="leg">
-            @for (kv of khuVucs; track kv.id) {
-            <li (mouseenter)="hoverKhuVuc(kv.id, $event)" (mouseleave)="clear()" [class.on]="khuVucOn() === kv.id">
-                <span class="dot" [style.background]="kv.mau"></span>
-                <span class="txt">
-                    {{ kv.ten }}
-                    <em>Hàng {{ kv.hangDau }} → {{ kv.hangCuoi }}</em>
+        <h2 class="mt">Thứ tự và vị trí các khoa</h2>
+        @if (dangTaiKhoa()) {
+        <p class="dk-trong">Đang tải danh sách khoa…</p>
+        } @else if (loiKhoa()) {
+        <div class="dk-loi">
+            <p>{{ loiKhoa() }}</p>
+            <button type="button" (click)="getDanhSachKhoa()">Thử lại</button>
+        </div>
+        } @else if (!dongKhoa().length) {
+        <p class="dk-trong">Chương trình đang hoạt động chưa có khoa nào.</p>
+        } @else {
+        <ol class="dskhoa">
+            @for (k of dongKhoa(); track k.id) {
+            <li>
+                <span class="stt">{{ k.stt }}/{{ tongKhoa() }}</span>
+                <span class="noidung">
+                    <span class="ten">{{ k.ten }}</span>
+                    <span class="vt" [class.chua]="!k.viTri">({{ k.viTri ?? 'chưa có vị trí' }})</span>
                 </span>
-                <span class="num">{{ kv.soGhe }}</span>
             </li>
             }
-        </ul>
-
-        <h2 class="mt">Phòng chờ của các Khoa</h2>
-        <table class="pc">
-            <tbody>
-                @for (p of phongCho; track p.khoa) {
-                <tr>
-                    <td>{{ p.khoa }}</td>
-                    @if (p.hienPhong) {
-                    <td class="ph" [attr.rowspan]="p.gopDong">{{ p.phong }}</td>
-                    }
-                </tr>
-                }
-            </tbody>
-        </table>
+        </ol>
+        }
     </aside>
 </div>
