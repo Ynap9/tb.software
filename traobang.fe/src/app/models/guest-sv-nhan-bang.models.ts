@@ -12,6 +12,7 @@ export interface IViewGuestSvNhanBang {
     tenNganhDaoTao?: string;
     capBang?: string;
     linkQR?: string;
+    linkQrOnly?: string;
     lop?: string;
     soQuyetDinhTotNghiep?: string;
     ngayQuyetDinh?: string;
