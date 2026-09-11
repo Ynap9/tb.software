@@ -33,3 +33,8 @@ export interface IUpdateUser extends ICreateUser {
 }
 
 export interface IFindPagingUser extends IBaseRequestPaging {}
+
+export interface IChangePassword {
+  currentPassword: string;
+  newPassword: string;
+}

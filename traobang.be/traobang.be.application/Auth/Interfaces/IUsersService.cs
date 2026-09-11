@@ -13,5 +13,10 @@ namespace traobang.be.application.Auth.Interfaces
         public Task<ViewMeDto> GetMe();
         public Task Delete(string id);
         public Task ToggleLockAccount(string id);
+        /// <summary>
+        /// Người dùng đang đăng nhập tự đổi mật khẩu của mình
+        /// </summary>
+        /// <param name="dto"></param>
+        public Task ChangePassword(ChangePasswordDto dto);
     }
 }

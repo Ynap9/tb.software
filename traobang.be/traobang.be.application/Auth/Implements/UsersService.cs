@@ -189,6 +189,22 @@ namespace traobang.be.application.Auth.Implements
             await _userManager.DeleteAsync(user);
         }
 
+        public async Task ChangePassword(ChangePasswordDto dto)
+        {
+            // không log dto vì chứa mật khẩu
+            _logger.LogInformation($"{nameof(ChangePassword)}");
+
+            var user = await _userManager.FindByIdAsync(getCurrentUserId())
+                ?? throw new UserFriendlyException(ErrorCodes.AuthErrorUserNotFound);
+
+            var result = await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                throw new UserFriendlyException(ErrorCodes.AuthErrorChangePassword, string.Join("; ", result.Errors.Select(e => e.Description)));
+            }
+        }
+
         public async Task ToggleLockAccount(string id)
         {
             _logger.LogInformation($"{nameof(ToggleLockAccount)} id={id}");

@@ -141,6 +141,25 @@ namespace traobang.be.Controllers.Auth
         }
 
         /// <summary>
+        /// Tự đổi mật khẩu của chính mình
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPut("change-password")]
+        public async Task<ApiResponse> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            try
+            {
+                await _usersService.ChangePassword(dto);
+                return new();
+            }
+            catch (Exception ex)
+            {
+                return OkException(ex);
+            }
+        }
+
+        /// <summary>
         /// Xóa user
         /// </summary>
         /// <param name="id"></param>

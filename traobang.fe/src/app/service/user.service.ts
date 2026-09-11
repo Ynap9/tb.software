@@ -1,5 +1,5 @@
 
-import { IFindPagingUser, IViewRowUser, ICreateUser, IViewUser, IUpdateUser } from '@/models/auth/user.models';
+import { IFindPagingUser, IViewRowUser, ICreateUser, IViewUser, IUpdateUser, IChangePassword } from '@/models/auth/user.models';
 import { IBaseResponse, IBaseResponsePaging, IBaseResponseWithData } from '@/shared/models/request-paging.base.models';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
@@ -31,6 +31,10 @@ export class UserService {
 
     getMe() {
         return this.http.get<IBaseResponseWithData<IViewUser>>(`${this.api}/me`);
+    }
+
+    changePassword(body: IChangePassword) {
+        return this.http.put<IBaseResponse>(`${this.api}/change-password`, body);
     }
 
     delete(id: string) {

@@ -9,6 +9,8 @@ import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '@/service/auth.service';
 import { PopoverModule } from 'primeng/popover';
+import { DialogService } from 'primeng/dynamicdialog';
+import { ChangePassword } from '@/pages/user-management/user/change-password/change-password';
 
 @Component({
     selector: 'app-topbar',
@@ -99,6 +101,7 @@ import { PopoverModule } from 'primeng/popover';
 })
 export class AppTopbar {
     _authService = inject(AuthService);
+    _dialogService = inject(DialogService);
 
     items!: MenuItem[];
     overlayMenuItems: MenuItem[] = [
@@ -106,6 +109,13 @@ export class AppTopbar {
             label: 'Tài khoản',
             icon: 'pi pi-user',
             command: () => {}
+        },
+        {
+            label: 'Đổi mật khẩu',
+            icon: 'pi pi-key',
+            command: () => {
+                this.onOpenChangePassword();
+            }
         },
         {
             separator: true
@@ -147,5 +157,9 @@ export class AppTopbar {
 
     toggleDarkMode() {
         this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
+    }
+
+    onOpenChangePassword() {
+        this._dialogService.open(ChangePassword, { header: 'Đổi mật khẩu', closable: true, modal: true, styleClass: 'w-[450px]', focusOnShow: false });
     }
 }

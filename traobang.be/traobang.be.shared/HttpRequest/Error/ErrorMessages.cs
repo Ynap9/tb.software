@@ -40,6 +40,7 @@
             { ErrorCodes.AuthErrorRoleInUsed, "Role đang được sử dụng. Không thể xóa." },
             { ErrorCodes.AuthErrorCannotDeleteSuperAdmin, "Không thể xóa Super Admin." },
             { ErrorCodes.AuthErrorCannotDeleteCurrentUser, "Không thể xóa người dùng hiện tại đang đăng nhập." },
+            { ErrorCodes.AuthErrorChangePassword, "Đổi mật khẩu không thành công" },
         };
         public static string GetMessage(int code)
         {

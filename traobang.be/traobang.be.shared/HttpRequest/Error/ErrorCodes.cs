@@ -19,6 +19,7 @@
         public const int AuthErrorRoleInUsed = 107;
         public const int AuthErrorCannotDeleteSuperAdmin = 108;
         public const int AuthErrorCannotDeleteCurrentUser = 109;
+        public const int AuthErrorChangePassword = 110;
 
         public const int ServiceAccountErrorNotFound = 701;
         public const int GoogleSheetUrlErrorInvalid = 702;
