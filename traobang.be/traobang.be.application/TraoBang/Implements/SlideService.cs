@@ -15,6 +15,7 @@ using traobang.be.infrastructure.external.File;
 using traobang.be.infrastructure.external.File.Dtos;
 using traobang.be.infrastructure.external.QrCode;
 using traobang.be.infrastructure.external.QrCode.Dtos;
+using traobang.be.infrastructure.external.SignalR.Service.Interfaces;
 using traobang.be.shared.Constants.TraoBang;
 using traobang.be.shared.HttpRequest.AppException;
 using traobang.be.shared.HttpRequest.BaseRequest;
@@ -31,6 +32,7 @@ namespace traobang.be.application.TraoBang.Implements
         private readonly IQrCodeService _qrCodeService;
         private readonly FileS3Config _fileS3Config;
         private readonly TemplateSettings _templateSettings;
+        private readonly ITraoBangService _traoBangService;
 
         public SlideService(
             TbDbContext tbDbContext,
@@ -41,7 +43,8 @@ namespace traobang.be.application.TraoBang.Implements
             IQrCodeService qrCodeService,
             IOptions<FileS3Config> fileS3Config,
             IOptions<TemplateSettings> templateSettings,
-            IMapper mapper)
+            IMapper mapper,
+            ITraoBangService traoBangService)
         : base(tbDbContext, logger, httpContextAccessor, mapper)
         {
             _excelService = excelService;
@@ -49,6 +52,7 @@ namespace traobang.be.application.TraoBang.Implements
             _qrCodeService = qrCodeService;
             _fileS3Config = fileS3Config.Value;
             _templateSettings = templateSettings.Value;
+            _traoBangService = traoBangService;
         }
 
         public void Create(CreateSlideDto dto)
@@ -729,7 +733,7 @@ namespace traobang.be.application.TraoBang.Implements
             }
         }
 
-        public void RevertTienDoTraoBang(int idTienDo)
+        public async Task RevertTienDoTraoBang(int idTienDo)
         {
             _logger.LogInformation($"{nameof(RevertTienDoTraoBang)} idTienDo={idTienDo}");
 
@@ -738,25 +742,16 @@ namespace traobang.be.application.TraoBang.Implements
                 var tienDo = _tbDbContext.TienDoTraoBangs.Where(x => x.Id == idTienDo && !x.Deleted).FirstOrDefault()
                     ?? throw new UserFriendlyException(ErrorCodes.TraoBangErrorTienDoNotFound);
 
+                // chỉ gỡ khỏi hàng đợi, slide (kể cả loại text) vẫn giữ nguyên để checkin lại được
                 tienDo.Deleted = true;
                 tienDo.DeletedBy = getCurrentName();
                 tienDo.DeletedDate = DateTime.Now;
 
-                // Nếu là loại slide text thì xóa cả tiến độ lẫn slide đó
-                if (tienDo.LoaiSlide == LoaiSlides.TEXT)
-                {
-                    var slide = _tbDbContext.Slides.Where(x => x.Id == tienDo.IdSlide && !x.Deleted).FirstOrDefault();
-                    if (slide != null)
-                    {
-                        slide.Deleted = true;
-                        slide.DeletedBy = getCurrentName();
-                        slide.DeletedDate = DateTime.Now;
-                    }
-                }
-
                 _tbDbContext.SaveChanges();
                 tran.Commit();
             }
+
+            await _traoBangService.NotifyCheckIn();
         }
 
         /// <summary>

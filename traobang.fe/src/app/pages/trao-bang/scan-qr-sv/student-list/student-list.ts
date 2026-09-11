@@ -95,19 +95,19 @@ export class StudentList extends BaseComponent {
         );
     }
 
-    onDeleteSlide(slideId: number | undefined) {
-        if (!slideId) return;
+    onRevertSlideText(id: number | undefined) {
+        if (!id) return;
         this.confirmAction(
             {
-                header: 'Xóa slide',
-                message: 'Bạn chắc chắn muốn xóa slide?'
+                header: 'Gỡ slide khỏi hàng đợi',
+                message: 'Bạn chắc chắn muốn gỡ slide khỏi hàng đợi?'
             },
             () => {
-                // Call API to delete slide
-                this._slideDragDropService.changeStatus(slideId)
+                // Gỡ khỏi hàng đợi, slide vẫn giữ nguyên
+                this._slideDragDropService.changeStatus(id)
                     .subscribe({
                         next: (res) => {
-                            if (this.isResponseSucceed(res, true, 'Đã xóa thành công')) {
+                            if (this.isResponseSucceed(res, true, 'Đã gỡ slide khỏi hàng đợi')) {
                                 this.deleteSlide.emit(true);
                             }
                         }

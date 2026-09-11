@@ -74,6 +74,6 @@ namespace traobang.be.application.TraoBang.Interfaces
         /// Remove slide khỏi tiến độ trao bằng
         /// </summary>
         /// <param name="idTienDo"></param>
-        public void RevertTienDoTraoBang(int idTienDo);
+        public Task RevertTienDoTraoBang(int idTienDo);
     }
 }

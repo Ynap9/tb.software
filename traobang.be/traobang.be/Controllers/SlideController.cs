@@ -54,11 +54,11 @@ namespace traobang.be.Controllers
 
         [Permission(PermissionKeys.SlideRevertTienDo)]
         [HttpPut("tien-do/revert/{id}")]
-        public ApiResponse RevertTienDoTraoBang(int id)
+        public async Task<ApiResponse> RevertTienDoTraoBang(int id)
         {
             try
             {
-                _slideService.RevertTienDoTraoBang(id);
+                await _slideService.RevertTienDoTraoBang(id);
                 return new();
             }
             catch (Exception ex)

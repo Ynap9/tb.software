@@ -140,6 +140,12 @@ export class ScanQrSv extends BaseComponent implements OnDestroy {
         });
     }
 
+    // gỡ khỏi hàng đợi: slide text được gỡ sẽ quay lại danh sách slide chờ nên phải load lại cả thông tin subplan
+    onRevertTienDo() {
+        this.getHangDoi();
+        this.getCurrentSubPlan();
+    }
+
     // check sv đã trong hàng đợi chưa, có rồi thì hỏi lại trước khi đẩy vào tiếp
     checkHangDoi(mssv: string, callback: () => void) {
         this.loading = true;

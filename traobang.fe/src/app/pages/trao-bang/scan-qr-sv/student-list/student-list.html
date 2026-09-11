@@ -61,7 +61,7 @@
             <td [ngClass]="getRowClass(student)">
                 <p-button *ngIf="student.loaiSlide !== loaiSlide.TEXT" icon="pi pi-replay" (onClick)="changeStatus(student.id)"
                     class="mr-3" label="" />
-                <p-button *ngIf="student.loaiSlide === loaiSlide.TEXT && !student.isSlideDauCuoi" icon="pi pi-trash" (onClick)="onDeleteSlide(student.id)"
+                <p-button *ngIf="student.loaiSlide === loaiSlide.TEXT && !student.isSlideDauCuoi" icon="pi pi-replay" (onClick)="onRevertSlideText(student.id)"
                     class="mr-3" label="" />
             </td>
         </tr>
