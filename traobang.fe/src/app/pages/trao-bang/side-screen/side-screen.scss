@@ -61,6 +61,32 @@ tbody tr {
     max-width: 180px;
 }
 
+/* Cố định width cho cột STT */
+.stt-column {
+    width: 4rem;
+    min-width: 4rem;
+    max-width: 4rem;
+}
+
+/* Cố định width cho cột MSSV */
+.mssv-column {
+    width: 8rem;
+    min-width: 8rem;
+    max-width: 8rem;
+}
+
+/* Cố định width cho cột Ngành/Chuyên ngành */
+.nganh-column {
+    width: 20rem;
+    min-width: 20rem;
+    max-width: 20rem;
+}
+
+/* Cột Họ và Tên chỉ set min-width, ăn hết phần width còn lại */
+.ho-ten-column {
+    min-width: 16rem;
+}
+
 /* Ngôi sao CHỈ hiện khi có animation */
 .star-blink-effect td.status-column::after {
     content: '⭐';
