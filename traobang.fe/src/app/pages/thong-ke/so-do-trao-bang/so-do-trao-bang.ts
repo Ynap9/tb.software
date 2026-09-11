@@ -1,5 +1,7 @@
-import { Component, ElementRef, ViewChild, signal } from '@angular/core';
-import { BUOC_NHAN_BANG, DAY_GHE, HANG_GHE, IBuocNhanBang, IPhongCho, KHU_VUC_NGOI, PHONG_CHO } from '../data/so-do.data';
+import { IThongKeKhoa } from '@/models/traobang/thong-ke.models';
+import { ThongKeService } from '@/service/thong-ke.service';
+import { Component, ElementRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { BUOC_NHAN_BANG, DAY_GHE, HANG_GHE, IBuocNhanBang, KHU_VUC_NGOI, VI_TRI_KHOA } from '../data/so-do.data';
 
 /** Một ghế trên sơ đồ */
 interface IGhe {
@@ -33,11 +35,14 @@ interface INhanHang {
     y: number;
 }
 
-/** Một dòng trong bảng phòng chờ, gộp các khoa dùng chung một phòng */
-interface IDongPhongCho extends IPhongCho {
-    /** chỉ dòng đầu của nhóm mới in tên phòng */
-    hienPhong: boolean;
-    gopDong: number;
+/** Một dòng trong danh sách khoa: số thứ tự, tên khoa, vị trí */
+interface IDongKhoa {
+    id?: number;
+    /** thứ tự lên nhận bằng, đếm từ 1 */
+    stt: number;
+    ten: string;
+    /** vị trí ngồi hoặc phòng chờ, null nếu chưa khai báo cho khoa này */
+    viTri: string | null;
 }
 
 // ---------- kích thước mặt bằng hội trường ----------
@@ -61,9 +66,11 @@ const LOI_DI = 44;
     templateUrl: './so-do-trao-bang.html',
     styleUrl: './so-do-trao-bang.scss'
 })
-export class SoDoTraoBang {
+export class SoDoTraoBang implements OnInit {
     @ViewChild('mapcard') mapcard?: ElementRef<HTMLElement>;
     @ViewChild('tip') tipEl?: ElementRef<HTMLElement>;
+
+    _thongKeService = inject(ThongKeService);
 
     readonly HALL = HALL;
     readonly SANH = SANH;
@@ -89,7 +96,27 @@ export class SoDoTraoBang {
     /** tâm hội trường, dùng để căn giữa các nhãn */
     giuaX = HALL.x + HALL.w / 2;
 
-    phongCho: IDongPhongCho[] = this.dungPhongCho();
+    // ---------- danh sách khoa lấy từ DB ----------
+
+    /** các khoa của plan đang active */
+    dsKhoa = signal<IThongKeKhoa[]>([]);
+    dangTaiKhoa = signal(true);
+    loiKhoa = signal<string | null>(null);
+
+    /** tổng số khoa, là mẫu số của số thứ tự */
+    tongKhoa = computed(() => this.dsKhoa().length);
+
+    /** mỗi khoa kèm số thứ tự theo Order và vị trí tra từ bảng vị trí */
+    dongKhoa = computed<IDongKhoa[]>(() =>
+        [...this.dsKhoa()]
+            .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+            .map((k, i) => ({
+                id: k.id,
+                stt: i + 1,
+                ten: k.ten ?? '',
+                viTri: this.timViTri(k.ten ?? '')
+            }))
+    );
 
     // ---------- luồng các bước lên nhận bằng ----------
 
@@ -114,6 +141,41 @@ export class SoDoTraoBang {
     get buocDangXem(): IBuocNhanBang | null {
         const so = this.buocOn();
         return so ? (this.buocs.find((x) => x.so === so) ?? null) : null;
+    }
+
+    ngOnInit(): void {
+        this.getDanhSachKhoa();
+    }
+
+    getDanhSachKhoa() {
+        this.loiKhoa.set(null);
+
+        // chỉ cần tên và thứ tự khoa, không kèm danh sách sinh viên
+        this._thongKeService.getAllKhoa().subscribe({
+            next: (res) => {
+                this.dangTaiKhoa.set(false);
+                if (res.status === 1) {
+                    this.dsKhoa.set(res.data ?? []);
+                } else {
+                    this.loiKhoa.set(res.message || 'Không lấy được danh sách khoa.');
+                }
+            },
+            error: () => {
+                this.dangTaiKhoa.set(false);
+                this.loiKhoa.set('Không kết nối được máy chủ. Vui lòng thử lại.');
+            }
+        });
+    }
+
+    /** bỏ dấu tiếng Việt, đưa về chữ thường để dò từ khoá */
+    private boDau(s: string): string {
+        return s.normalize('NFD').replace(/\p{M}/gu, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+    }
+
+    /** tra vị trí của một khoa theo từ khoá trong tên khoa */
+    private timViTri(ten: string): string | null {
+        const t = this.boDau(ten);
+        return VI_TRI_KHOA.find((v) => v.tuKhoa.some((k) => t.includes(k)))?.viTri ?? null;
     }
 
     // ---------- tương tác ----------
@@ -232,20 +294,6 @@ export class SoDoTraoBang {
 
     private dungNhanHang(): INhanHang[] {
         return HANG_GHE.map((label, i) => ({ label, y: this.yHang(i) + GHE_CAO / 2 + 4 }));
-    }
-
-    private dungPhongCho(): IDongPhongCho[] {
-        return PHONG_CHO.map((p, i) => {
-            const dauNhom = i === 0 || PHONG_CHO[i - 1].phong !== p.phong;
-
-            // các khoa dùng chung một phòng thì gộp ô, chỉ dòng đầu in tên phòng
-            let gop = 0;
-            for (let j = i; dauNhom && j < PHONG_CHO.length && PHONG_CHO[j].phong === p.phong; j++) {
-                gop++;
-            }
-
-            return { ...p, hienPhong: dauNhom, gopDong: gop };
-        });
     }
 
     /** tách một chặng thành các đoạn thẳng thành phần */
