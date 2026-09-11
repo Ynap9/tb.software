@@ -75,16 +75,16 @@ tbody tr {
     max-width: 8rem;
 }
 
-/* Cố định width cho cột Ngành/Chuyên ngành */
-.nganh-column {
-    width: 20rem;
-    min-width: 20rem;
-    max-width: 20rem;
+/* Họ và Tên giữ đúng min, phần width còn lại dồn hết cho Ngành/Chuyên ngành */
+.ho-ten-column {
+    width: 16rem;
+    min-width: 16rem;
+    max-width: 16rem;
 }
 
-/* Cột Họ và Tên chỉ set min-width, ăn hết phần width còn lại */
-.ho-ten-column {
-    min-width: 16rem;
+.nganh-column {
+    width: 100%;
+    min-width: 18rem;
 }
 
 /* Ngôi sao CHỈ hiện khi có animation */
