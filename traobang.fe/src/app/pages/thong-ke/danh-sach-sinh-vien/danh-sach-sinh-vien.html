@@ -1,0 +1,86 @@
+<div class="stats">
+    @for (c of cards(); track c.l) {
+    <div class="stat">
+        <b>{{ nf(c.v) }}</b>
+        <span>{{ c.l }}</span>
+    </div>
+    }
+</div>
+
+<p class="stafftotal">
+    Hàng chờ trao bằng của buổi lễ, xếp theo đúng thứ tự lên nhận bằng — thứ tự khoa trước, trong mỗi khoa theo thứ tự vào hàng chờ.
+    <em class="dssv-note">Tự cập nhật khi có sinh viên check-in hoặc khi sân khấu chuyển người. Đang hiển thị <b>{{ rows().length }}</b>/{{ tongSinhVien() }} sinh viên.</em>
+</p>
+
+<div class="dssv-toolbar">
+    <select class="kbsel" aria-label="Lọc theo khoa" [value]="khoaLoc()" (change)="chonKhoa($any($event.target).value)">
+        <option value="">Tất cả các khoa</option>
+        @for (k of dsKhoa(); track k) {
+        <option [value]="k">{{ k }}</option>
+        }
+    </select>
+
+    <select class="kbsel" aria-label="Lọc theo trạng thái" [value]="trangThaiLoc()" (change)="chonTrangThai($any($event.target).value)">
+        @for (t of boLocTrangThai; track t.v) {
+        <option [value]="t.v">{{ t.l }}</option>
+        }
+    </select>
+
+    <div class="nhsearch">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m20 20-3-3"></path>
+        </svg>
+        <input type="text" placeholder="Tìm mã SV, họ tên, lớp, ngành…" autocomplete="off" [value]="query()" (input)="timKiem($any($event.target).value)" />
+    </div>
+</div>
+
+@if (loi()) {
+<div class="dssv-loi">
+    <p>{{ loi() }}</p>
+    <button type="button" (click)="getHangDoi()">Thử lại</button>
+</div>
+}
+
+<div class="tblwrap">
+    <table class="kb">
+        <thead>
+            <tr>
+                <th class="stt">STT</th>
+                <th>Mã sinh viên</th>
+                <th>Họ và tên</th>
+                <th>Lớp</th>
+                <th>Khoa</th>
+                <th>Ngành đào tạo</th>
+                <th>Cấp bằng</th>
+                <th>Xếp hạng</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (dangTai()) {
+            <tr>
+                <td colspan="9" class="dssv-empty">Đang tải hàng chờ trao bằng…</td>
+            </tr>
+            } @else if (!rows().length) {
+            <tr>
+                <td colspan="9" class="dssv-empty">Chưa có sinh viên nào trong hàng chờ.</td>
+            </tr>
+            } @else { @for (r of rows(); track r.sv.id) {
+            <tr [class.dang-trao]="r.cls === 'c'">
+                <td class="stt">{{ r.sv.stt }}</td>
+                <td class="mssv">{{ r.sv.maSoSinhVien }}</td>
+                <td class="unit">{{ r.sv.hoVaTen }}</td>
+                <td class="mssv">{{ r.sv.lop }}</td>
+                <td class="loc">{{ r.sv.tenKhoa }}</td>
+                <td class="loc">{{ r.sv.tenNganhDaoTao }}</td>
+                <td class="loc">{{ r.sv.capBang }}</td>
+                <td class="loc">{{ r.sv.xepHang }}</td>
+                <td>
+                    <span class="tt" [class.g]="r.cls === 'g'" [class.c]="r.cls === 'c'">{{ r.nhan }}</span>
+                </td>
+            </tr>
+            } }
+        </tbody>
+    </table>
+</div>

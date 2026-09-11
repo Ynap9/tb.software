@@ -1,0 +1,117 @@
+<p class="stafftotal">
+    Thống kê trao bằng theo Khoa của chương trình đang diễn ra, xếp theo thứ tự lên nhận bằng.
+    <em class="nhwarn">Tự cập nhật theo tiến độ trên sân khấu; ngưỡng đạt là {{ GOAL }}% số sinh viên có mặt trong danh sách.</em>
+</p>
+
+<!-- vòng tỷ lệ đã trao bằng + các số liệu tổng quan -->
+@if (hero(); as h) {
+<div class="nhhero">
+    <div class="nhgauge">
+        <svg viewBox="0 0 132 132">
+            <circle cx="66" cy="66" [attr.r]="h.R" fill="none" stroke="var(--panel-2)" stroke-width="11" />
+            <circle cx="66" cy="66" [attr.r]="h.R" fill="none" stroke="var(--cyan)" stroke-width="11" stroke-linecap="round" [attr.stroke-dasharray]="h.C.toFixed(1)" [attr.stroke-dashoffset]="h.off.toFixed(1)" transform="rotate(-90 66 66)" />
+            <line x1="66" y1="7" x2="66" y2="19" stroke="#e0912a" stroke-width="2.6" [attr.transform]="'rotate(' + h.gAng.toFixed(1) + ' 66 66)'" />
+        </svg>
+        <div class="c">
+            <b>{{ p1(h.pctT) }}%</b>
+            <span>Đã trao bằng</span>
+        </div>
+    </div>
+
+    <div class="herostats">
+        <div class="hs">
+            <div class="l">Tổng số sinh viên</div>
+            <div class="v">{{ nf(h.tong) }}</div>
+        </div>
+        <div class="hs goal">
+            <div class="l">Đã lên nhận bằng</div>
+            <div class="v">{{ nf(h.daTrao) }}</div>
+        </div>
+        <div class="hs">
+            <div class="l">Còn lại</div>
+            <div class="v">{{ nf(h.conLai) }}</div>
+        </div>
+        <div class="hs">
+            <div class="l">Vắng mặt</div>
+            <div class="v">{{ nf(h.vangMat) }}</div>
+        </div>
+        <div class="hs">
+            <div class="l">Khoa đã xong</div>
+            <div class="v">{{ h.soKhoaXong }} <small>/ {{ h.soKhoa }}</small></div>
+        </div>
+    </div>
+</div>
+}
+
+<!-- tiến trình của khoa đang trao bằng -->
+@if (khoaDangTrao(); as k) {
+<div class="dangtrao">
+    <span class="badge">Đang trao bằng</span>
+    <span class="ten">{{ k.ten }}</span>
+    <span class="so">{{ nf(k.soLuongDaTrao ?? 0) }} / {{ nf(k.soLuongThamGia ?? 0) }} sinh viên đã lên nhận bằng</span>
+</div>
+}
+
+<div class="nhtoolbar">
+    <div class="nhtools">
+        <div class="nhsearch">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m20 20-3-3"></path>
+            </svg>
+            <input type="text" placeholder="Tìm khoa, trưởng khoa…" autocomplete="off" [value]="query()" (input)="timKiem($any($event.target).value)" />
+        </div>
+    </div>
+</div>
+
+@if (loi()) {
+<div class="tk-loi">
+    <p>{{ loi() }}</p>
+    <button type="button" (click)="getThongKe()">Thử lại</button>
+</div>
+}
+
+<div class="nhtablewrap">
+    <table class="nhtable">
+        <thead>
+            <tr>
+                <th class="s stth" [class.on]="sortKey() === 'order'" (click)="doiSort('order')">STT<span class="ar">{{ muiTen('order') }}</span></th>
+                @for (c of cotBang; track c.k) {
+                <th class="s" [class.r]="c.r" [class.hide-sm]="c.hideSm" [class.on]="sortKey() === c.k" (click)="doiSort(c.k)">{{ c.label }}<span class="ar">{{ muiTen(c.k) }}</span></th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (dangTai()) {
+            <tr class="nhempty">
+                <td colspan="6">Đang tải số liệu thống kê…</td>
+            </tr>
+            } @else if (!bang().length) {
+            <tr class="nhempty">
+                <td colspan="6">Không tìm thấy khoa phù hợp.</td>
+            </tr>
+            } @else { @for (b of bang(); track b.khoa.id) {
+            <tr [class.dang-trao]="b.cls === 'c'">
+                <td class="stt">{{ b.order }}</td>
+                <td>
+                    <div class="nhu">
+                        {{ b.ten }}
+                        <span class="sub" [class.g]="b.cls === 'g'" [class.c]="b.cls === 'c'">{{ b.nhanTrangThai }}</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="prog">
+                        <span class="track">
+                            <i [class.g]="clsTyLe(b.pct) === 'g'" [class.c]="clsTyLe(b.pct) === 'c'" [class.w]="clsTyLe(b.pct) === 'w'" [style.width.%]="b.pct > 100 ? 100 : b.pct"></i>
+                        </span>
+                        <span class="pv" [class.g]="clsTyLe(b.pct) === 'g'" [class.c]="clsTyLe(b.pct) === 'c'" [class.w]="clsTyLe(b.pct) === 'w'"> {{ p1(b.pct) }}% </span>
+                    </div>
+                </td>
+                <td class="r"><span class="nhmono">{{ nf(b.daTrao) }}</span></td>
+                <td class="r hide-sm"><span class="nhmono">{{ nf(b.conLai) }}</span></td>
+                <td class="r"><span class="nhmono">{{ nf(b.tong) }}</span></td>
+            </tr>
+            } }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,38 @@
+<div class="tk-root" [attr.data-theme]="theme()">
+    <header>
+        <div class="crest" [class.has-img]="coLogo()">
+            <img [src]="logoUrl" alt="Logo Trường Đại học Xây dựng Hà Nội" (load)="coLogo.set(true)" (error)="coLogo.set(false)" />
+            <span>HUCE</span>
+        </div>
+        <div class="hgrow">
+            <h1>Sơ đồ Trao bằng</h1>
+            <p class="sub">Trường Đại học Xây dựng Hà Nội · Lễ trao bằng tốt nghiệp K71 · 21–23/8/2026</p>
+        </div>
+        <button class="themebtn" type="button" aria-label="Đổi chế độ sáng tối" (click)="doiTheme()">{{ theme() === 'light' ? '☾ Chế độ tối' : '☀ Chế độ sáng' }}</button>
+    </header>
+
+    <div class="wrap shell">
+        <aside class="sidenav">
+            <div class="tabs" role="tablist" aria-label="Chế độ xem">
+                @for (tab of tabs; track tab.path) {
+                <a class="tab" role="tab" [routerLink]="[tab.path]" routerLinkActive #rla="routerLinkActive" [attr.aria-selected]="rla.isActive" [class.active]="rla.isActive">
+                    <svg viewBox="0 0 16 16" aria-hidden="true">
+                        @if (tab.path === 'sinh-vien') {
+                        <circle cx="6" cy="5.3" r="2.5" />
+                        } @if (tab.path === 'tong-hop') {
+                        <circle cx="8" cy="8" r="6.2" />
+                        } @for (d of tab.icon; track $index) {
+                        <path [attr.d]="d" />
+                        }
+                    </svg>
+                    {{ tab.label }}
+                </a>
+                }
+            </div>
+        </aside>
+
+        <main class="content">
+            <router-outlet />
+        </main>
+    </div>
+</div>
